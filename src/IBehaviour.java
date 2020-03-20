@@ -1,3 +1,9 @@
+import java.awt.*;
+
 public interface IBehaviour {
-    // default
+    Image getImage();
+
+    float getX();
+
+    float getY();
 }
