@@ -10,8 +10,11 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
-*.jar
+# My custom
+out/
+
+# Package Files
+# we need *.jar if a student has crooked hands
 *.war
 *.nar
 *.ear
