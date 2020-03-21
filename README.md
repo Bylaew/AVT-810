@@ -23,7 +23,7 @@ Collaborator помечается иконкой ![Collaborator](https://icon-ic
 | Попова Анна  | nullptr | [blasse-reiter](https://github.com/blasse-reiter) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
-| Степаненко Владислав  | nullptr | [spankyman125](https://github.com/spankyman125) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Степаненко Владислав  | Stepanenko_Vladislav_Var20 | [spankyman125](https://github.com/spankyman125) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Суханов Елисей  | nullptr | nullptr
 | Тарков Дмитрий     | nullptr | nullptr
 | Чубарова Ирина  | nullptr | nullptr
