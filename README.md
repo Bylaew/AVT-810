@@ -5,7 +5,7 @@
 | ------------- |:------------------:|-----------|
 | Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach)
 | Арнаутов Роман  | nullptr | nullptr
-| Базанов Даниил  | nullptr | nullptr
+| Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik)
 | Бородулькин Денис    | nullptr | nullptr
 | Брикун Максим  | nullptr | nullptr
 | Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew)
@@ -15,7 +15,7 @@
 | Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn)
 | Гулов Андрей  | nullptr | [Gulich235](https://github.com/Gulich235)
 | Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex)    
-| Каныгин Сергей    | nullptr | nullptr
+| Каныгин Сергей    | nullptr | [melanholia](https://github.com/melanholia)
 | Коченко Илья  | nullptr | nullptr
 | Найденов Дмитрий | nullptr | nullptr    
 | Пасечник Андрей     | nullptr | nullptr
