@@ -9,7 +9,7 @@
 | Бородулькин Денис    | nullptr
 | Брикун Максим  | nullptr
 | Булаев Александр  |  Bulaev_Alexander_Var2
-| Великанов Данил     | Velikanov_Daniil_var8
+| Великанов Даниил     | Velikanov_Daniil_var8
 | Воропаева Яна  | nullptr
 | Высоцкий Иван  | nullptr    
 | Галкин Данил    | nullptr
