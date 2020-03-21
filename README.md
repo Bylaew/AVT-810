@@ -22,7 +22,7 @@
 | Попова Анна  | nullptr | nullptr
 | Сенников Сергей  | nullptr | nullptr
 | Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord)
-| Степаненко Владислав  | nullptr | nullptr
+| Степаненко Владислав  | nullptr | [spankyman125](https://github.com/spankyman125)
 | Суханов Елисей  | nullptr | nullptr
 | Тарков Дмитрий     | nullptr | nullptr
 | Чубарова Ирина  | nullptr | nullptr
