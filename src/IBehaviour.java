@@ -1,3 +1,4 @@
-public interface IBehaviour {
-    // default
+public interface IBehaviour
+{
+
 }

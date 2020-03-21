@@ -1,2 +1,2 @@
-# AVT-810
-Лабораторные работы студентов НГТУ АВТФ группы АВТ-810 по дисциплине "Технология программирования"
+# RabbitsLifeSimulation
+Lab work - simulation of birth and life of two types of rabbits
