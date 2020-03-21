@@ -1,29 +1,29 @@
 # AVT-810
 ### Лабораторные работы студентов НГТУ АВТФ группы АВТ-810 по дисциплине "Технология программирования"
 ##### Статус студентов:
-| Студент       | Ветка          
-| ------------- |:------------------:
-| Анищук Ника     | nullptr
-| Арнаутов Роман  | nullptr
-| Базанов Даниил  | nullptr
-| Бородулькин Денис    | nullptr
-| Брикун Максим  | nullptr
-| Булаев Александр  |  Bulaev_Alexander_Var2
-| Великанов Даниил     | Velikanov_Daniil_var8
-| Воропаева Яна  | nullptr
-| Высоцкий Иван  | nullptr    
-| Галкин Данил    | nullptr
-| Гулов Андрей  | nullptr
-| Калашников Данил  | nullptr     
-| Каныгин Сергей    | nullptr
-| Коченко Илья  | nullptr
-| Найденов Дмитрий | nullptr    
-| Пасечник Андрей     | nullptr
-| Попова Анна  | nullptr
-| Сенников Сергей  | nullptr  
-| Серебрянников Максим    | nullptr
-| Степаненко Владислав  | nullptr
-| Суханов Елисей  | nullptr
-| Тарков Дмитрий     | nullptr
-| Чубарова Ирина  | nullptr
-| Швехторов Артем  | nullptr
+| Стдуент       | Ветка          | Ссылка на GitHub
+| ------------- |:------------------:|-----------|
+| Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach)
+| Арнаутов Роман  | nullptr | nullptr
+| Базанов Даниил  | nullptr | nullptr
+| Бородулькин Денис    | nullptr | nullptr
+| Брикун Максим  | nullptr | nullptr
+| Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew)
+| Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz)
+| Воропаева Яна  | nullptr | nullptr
+| Высоцкий Иван  | nullptr | nullptr
+| Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn)
+| Гулов Андрей  | nullptr | [Gulich235](https://github.com/Gulich235)
+| Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex)    
+| Каныгин Сергей    | nullptr | nullptr
+| Коченко Илья  | nullptr | nullptr
+| Найденов Дмитрий | nullptr | nullptr    
+| Пасечник Андрей     | nullptr | nullptr
+| Попова Анна  | nullptr | nullptr
+| Сенников Сергей  | nullptr | nullptr
+| Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord)
+| Степаненко Владислав  | nullptr | nullptr
+| Суханов Елисей  | nullptr | nullptr
+| Тарков Дмитрий     | nullptr | nullptr
+| Чубарова Ирина  | nullptr | nullptr
+| Швехторов Артем  | nullptr | [artemon9000](https://github.com/artemon9000)
