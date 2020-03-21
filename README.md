@@ -1,9 +1,10 @@
 # AVT-810
 ### Лабораторные работы студентов НГТУ АВТФ группы АВТ-810 по дисциплине "Технология программирования"
+Collaborator помечается иконкой ![Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 ##### Статус студентов:
 | Студент       | Ветка          | Ссылка на GitHub
 | ------------- |:------------------:|-----------|
-| Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach)
+| Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach) ![is Collaborator](/images/logo.png)
 | Арнаутов Роман  | nullptr | nullptr
 | Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik)
 | Бородулькин Денис    | nullptr | nullptr
@@ -20,7 +21,7 @@
 | Найденов Дмитрий | nullptr | nullptr    
 | Пасечник Андрей     | nullptr | nullptr
 | Попова Анна  | nullptr | nullptr
-| Сенников Сергей  | nullptr | nullptr
+| Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser)
 | Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord)
 | Степаненко Владислав  | nullptr | [spankyman125](https://github.com/spankyman125)
 | Суханов Елисей  | nullptr | nullptr
