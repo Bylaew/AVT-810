@@ -1,22 +1,20 @@
-package nstu.javaprog.lab1.view.element;
+package nstu.javaprog.model;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static nstu.javaprog.lab1.util.ImageReader.readImage;
+import static nstu.javaprog.util.ImageReader.readImage;
 
-public class Guppy extends Fish {
+final class Guppy extends Fish {
     private static final BufferedImage FISH_IMAGE = readImage("./resources/guppy.png");
 
-    public Guppy(int x, int y, int xSpeed, int ySpeed) {
+    Guppy(int x, int y, int xSpeed, int ySpeed) {
         super(x, y, xSpeed, ySpeed);
     }
 
     @Override
     public void normalize(int xMax, int yMax) {
-        int centredY = y + FISH_IMAGE.getHeight() / 2;
-        if (centredY < FISH_IMAGE.getHeight() / 2 || centredY > yMax - FISH_IMAGE.getHeight() / 2)
-            ySpeed = -ySpeed;
+        super.normalize(xMax, yMax, FISH_IMAGE.getWidth(), FISH_IMAGE.getHeight());
     }
 
     @Override

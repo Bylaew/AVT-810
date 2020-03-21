@@ -1,4 +1,4 @@
-package nstu.javaprog.lab1.view.element;
+package nstu.javaprog.model;
 
 import java.awt.*;
 

@@ -1,4 +1,4 @@
-package nstu.javaprog.lab1.util;
+package nstu.javaprog.util;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
