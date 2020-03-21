@@ -9,7 +9,7 @@
 | Арнаутов Роман  | nullptr | nullptr
 | Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Бородулькин Денис    | nullptr | nullptr
-| Брикун Максим  | nullptr | nullptr
+| Брикун Максим  | nullptr | [Mr-Brick1](https://github.com/Mr-Brick1) [is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Воропаева Яна  | Voropaeva_Yana_Var3 | [yanadlx](https://github.com/yanadlx) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
@@ -19,7 +19,7 @@
 | Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Каныгин Сергей    | nullptr | [melanholia](https://github.com/melanholia) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Коченко Илья  | nullptr | nullptr
-| Найденов Дмитрий | nullptr | nullptr    
+| Найденов Дмитрий | nullptr | [Cryoto](https://github.com/Cryoto)  [is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Пасечник Андрей     | nullptr | nullptr
 | Попова Анна  | nullptr | [blasse-reiter](https://github.com/blasse-reiter) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
