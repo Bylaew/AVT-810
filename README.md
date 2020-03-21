@@ -10,7 +10,7 @@
 | Брикун Максим  | nullptr | nullptr
 | Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew)
 | Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz)
-| Воропаева Яна  | nullptr | [yanadlx](https://github.com/yanadlx)
+| Воропаева Яна  | Voropaeva_Yana_Var3 | [yanadlx](https://github.com/yanadlx)
 | Высоцкий Иван  | nullptr | [AiVan6](https://github.com/AiVan6)
 | Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn)
 | Гулов Андрей  | nullptr | [Gulich235](https://github.com/Gulich235)
