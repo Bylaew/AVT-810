@@ -23,9 +23,9 @@
 | Пасечник Андрей     | nullptr | nullptr
 | Попова Анна  | nullptr | [blasse-reiter](https://github.com/blasse-reiter) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
-| Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Серебрянников Максим    | Serebrennikov_Maxim_Var4 | [TheSilverLord](https://github.com/TheSilverLord) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Степаненко Владислав  | Stepanenko_Vladislav_Var7 | [spankyman125](https://github.com/spankyman125) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Суханов Елисей  | nullptr | nullptr
-| Тарков Дмитрий     | nullptr | [Risegek](https://github.com/Risegek) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Тарков Дмитрий     | Tarkov_Dmitriy_Var1 | [Risegek](https://github.com/Risegek) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Чубарова Ирина  | nullptr | nullptr
 | Швехторов Артем  | nullptr | [artemon9000](https://github.com/artemon9000) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
