@@ -4,27 +4,27 @@ Collaborator помечается иконкой ![Collaborator](https://icon-ic
 ##### Статус студентов:
 | Студент       | Ветка          | Ссылка на GitHub
 | ------------- |:------------------:|-----------|
-| Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach) ![is Collaborator](/images/logo.png)
+| Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Арнаутов Роман  | nullptr | nullptr
-| Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik)
+| Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Бородулькин Денис    | nullptr | nullptr
 | Брикун Максим  | nullptr | nullptr
-| Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew)
-| Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz)
-| Воропаева Яна  | Voropaeva_Yana_Var3 | [yanadlx](https://github.com/yanadlx)
-| Высоцкий Иван  | nullptr | [AiVan6](https://github.com/AiVan6)
-| Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn)
-| Гулов Андрей  | nullptr | [Gulich235](https://github.com/Gulich235)
-| Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex)    
-| Каныгин Сергей    | nullptr | [melanholia](https://github.com/melanholia)
+| Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Воропаева Яна  | Voropaeva_Yana_Var3 | [yanadlx](https://github.com/yanadlx) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Высоцкий Иван  | nullptr | [AiVan6](https://github.com/AiVan6) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Гулов Андрей  | nullptr | [Gulich235](https://github.com/Gulich235) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Каныгин Сергей    | nullptr | [melanholia](https://github.com/melanholia) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Коченко Илья  | nullptr | nullptr
 | Найденов Дмитрий | nullptr | nullptr    
 | Пасечник Андрей     | nullptr | nullptr
-| Попова Анна  | nullptr | nullptr
-| Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser)
-| Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord)
-| Степаненко Владислав  | nullptr | [spankyman125](https://github.com/spankyman125)
+| Попова Анна  | nullptr | [blasse-reiter](https://github.com/blasse-reiter) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Сенников Сергей  | nullptr | [UnknwUser](https://github.com/UnknwUser) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Серебрянников Максим    | nullptr | [TheSilverLord](https://github.com/TheSilverLord) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Степаненко Владислав  | nullptr | [spankyman125](https://github.com/spankyman125) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Суханов Елисей  | nullptr | nullptr
 | Тарков Дмитрий     | nullptr | nullptr
 | Чубарова Ирина  | nullptr | nullptr
-| Швехторов Артем  | nullptr | [artemon9000](https://github.com/artemon9000)
+| Швехторов Артем  | nullptr | [artemon9000](https://github.com/artemon9000) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
