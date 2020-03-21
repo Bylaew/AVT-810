@@ -1,14 +1,14 @@
 # AVT-810
 ### Лабораторные работы студентов НГТУ АВТФ группы АВТ-810 по дисциплине "Технология программирования"
 > *Collaborator помечается иконкой ![Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)* <br />
-> *Collaborators вовлечены в процесс обучения по ТП и с высокой вероятностью (рано или поздно) опубликуют свою ветку со своей лабораторной работой*
+> *Collaborators вовлечены в процесс обучения по ТП и с высокой вероятностью (рано или поздно) опубликуют собственную ветку с выполненной лабораторной работой с соответствующим вариантом*
 ##### Статус студентов:
 | Студент       | Ветка          | Ссылка на GitHub
 | ------------- |:------------------:|-----------|
 | Анищук Ника     | nullptr | [NikLixach](https://github.com/NikLixach) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
-| Арнаутов Роман  | nullptr | nullptr
+| Арнаутов Роман  | nullptr | [skillpnt](https://github.com/skillpnt) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Базанов Даниил  | nullptr | [kingpersik](https://github.com/kingpersik) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
-| Бородулькин Денис    | nullptr | nullptr
+| Бородулькин Денис    | nullptr | [OttoDietrich](https://github.com/OttoDietrich) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Брикун Максим  | nullptr | [Mr-Brick1](https://github.com/Mr-Brick1) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
