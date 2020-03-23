@@ -1,5 +1,6 @@
 package com.company;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
@@ -13,6 +14,7 @@ public class Worker extends Ant{
         super(x,y);
         count++;
         img =  new ImageIcon("src/res/Worker.jpg").getImage();
+
     }
 
     @Override
