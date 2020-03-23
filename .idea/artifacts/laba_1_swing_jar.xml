@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="laba_1_swing:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/laba_1_swing_jar</output-path>
+    <root id="archive" name="laba_1_swing.jar">
+      <element id="module-output" name="laba_1_swing" />
+    </root>
+  </artifact>
+</component>
