@@ -32,7 +32,7 @@ public class Habitat
         frame.setSize(width,height);
         frame.setVisible(true);
         frame.setResizable(false);
-        i=0;t1=10;t2=3;p1=1;p2=0.7;
+        i=0;t1=2;t2=3;p1=0.8;p2=0.7;
         time=0;
         timer=new Timer();
         array = new House[1500];
