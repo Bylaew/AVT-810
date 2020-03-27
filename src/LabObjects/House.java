@@ -1,0 +1,11 @@
+package LabObjects;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+abstract public class House {
+    protected int x,y;
+    protected BufferedImage image;
+    abstract public void draw(Graphics gr);
+}
