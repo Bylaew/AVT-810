@@ -10,8 +10,7 @@ public class Habitat
     //private Image background;
     private int width;
     private int height;
-    private StoneFactory stoneFactory;
-    private WoodFactory woodFactory;
+    private ConcreteFactory allFactory;
     boolean simulation=false;
     private Timer timer;
     private float time;
@@ -26,8 +25,7 @@ public class Habitat
     {
         this.height=720;
         this.width=1280;
-        stoneFactory= new StoneFactory();
-        woodFactory= new WoodFactory();
+        allFactory= new ConcreteFactory();
         JFrame frame = new JFrame("Simulation");
         frame.setSize(width,height);
         frame.setVisible(true);
@@ -100,14 +98,14 @@ public class Habitat
         {
             if (Math.random() < p1)
             {
-                array[i]=stoneFactory.create((int)(Math.random()*width),(int)(Math.random()*height));
+                array[i]=allFactory.createStone((int)(Math.random()*width),(int)(Math.random()*height));
                 frame.getGraphics().drawImage(array[i].getImage(), array[i].getX(), array[i].getY(), null);
                 i++;
             }
         }
         if (time/1000 % t2 == 0 && time!=0 ) {
             if (Math.random() < p2) {
-                array[i] = woodFactory.create((int) (Math.random() * width), (int) (Math.random() * height));
+                array[i] = allFactory.createWood((int) (Math.random() * width), (int) (Math.random() * height));
                 frame.getGraphics().drawImage(array[i].getImage(), array[i].getX(), array[i].getY(), null);
                 i++;
             }

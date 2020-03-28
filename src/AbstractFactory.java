@@ -1,5 +1,5 @@
 public interface AbstractFactory
 {
-    House create();
-    House create(int x, int y);
+    House createWood(int x, int y);
+    House createStone(int x, int y);
 }
