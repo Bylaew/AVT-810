@@ -1,9 +1,8 @@
 package LabObjects;
 
 public interface IBehaviour {
-    void move();
-    void getX();
-    void getY();
-    void setX();
-    void setY();
+    int getX();
+    int getY();
+    void setX(int x);
+    void setY(int y);
 }

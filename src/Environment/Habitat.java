@@ -103,11 +103,11 @@ public class Habitat extends JFrame {
 
     public void Update(long time) {
         if (Math.random() < 0.6 && time%2==0) {
-            factory.createWood(container, height, width);
+            container.add(factory.createWood(height, width));
             countWood++;
         }
         if (Math.random() < 0.3 && time % 1 == 0) {
-            factory.createKap(container, height, width);
+            container.add(factory.createKap(height, width));
             countKap++;
         }
         repaint();
