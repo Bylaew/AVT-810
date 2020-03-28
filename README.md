@@ -13,7 +13,7 @@
 | Булаев Александр  |  Bulaev_Alexander_Var2 | [Bylaew](https://github.com/bylaew) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Великанов Даниил     | Velikanov_Daniil_var8 | [Nebelherz](https://github.com/Nebelherz) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Воропаева Яна  | Voropaeva_Yana_Var3 | [yanadlx](https://github.com/yanadlx) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
-| Высоцкий Иван  | Visotsky_Ivan_Var4 | [AiVan6](https://github.com/AiVan6) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
+| Высоцкий Иван  | {Visotsky}_{Ivan}_Var{4} | [AiVan6](https://github.com/AiVan6) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Галкин Данил    | nullptr | [snigerscn](https://github.com/snigerscn) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Гулов Андрей  | Gulov_Andrey_Var7 | [Gulich235](https://github.com/Gulich235) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
 | Калашников Данил  | nullptr | [scrolltex](https://github.com/scrolltex) ![is Collaborator](https://icon-icons.com/icons2/894/PNG/32/Tick_Mark_Circle_icon-icons.com_69145.png)
