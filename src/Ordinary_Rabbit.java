@@ -1,12 +1,11 @@
-import java.awt.Image;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
-
 public class Ordinary_Rabbit extends Rabbit
 {
-    private Image image;
+    private static BufferedImage image;
     static int count = 0;
 
     public Ordinary_Rabbit()
@@ -42,7 +41,7 @@ public class Ordinary_Rabbit extends Rabbit
     }
 
     @Override
-    public Image getImage()
+    public BufferedImage getImage()
     {
         return image;
     }

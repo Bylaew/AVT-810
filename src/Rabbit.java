@@ -1,9 +1,9 @@
-import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public abstract class Rabbit implements IBehaviour
 {
     float x;
     float y;
 
-    public abstract Image getImage();
+    public abstract BufferedImage getImage();
 }
