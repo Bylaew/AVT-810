@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="AVT-810:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="44c57bd8-efcc-4855-b8fc-783b8256384b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.idea.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/AVT-810.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/AVT_810_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AVT-810.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AVT-810.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TP.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/car.png" beforeDir="false" afterPath="$PROJECT_DIR$/car.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Car.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Car.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Habitat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Habitat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Moto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Moto.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="319" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1a1HJKNs8oSFqvIbKD7Le4dzasn" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Git.Branch.Popup.ShowAllRemotes" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="RunManager" selected="Application.AVT-810">
+    <configuration name="AVT-810" type="Application" factoryName="Application">
+      <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="AVT-810" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Main" type="Application" factoryName="Application" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="INCLUDE_PROVIDED_SCOPE" value="true" />
+      <option name="MAIN_CLASS_NAME" value="Main" />
+      <module name="AVT-810" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.AVT-810" />
+      <item itemvalue="Application.Main" />
+    </list>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="44c57bd8-efcc-4855-b8fc-783b8256384b" name="Default Changelist" comment="" />
+      <created>1585896107854</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1585896107854</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="628" y="100" key="#AVT-810" timestamp="1585896438050">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="628" y="100" key="#AVT-810/0.0.1920.1040@0.0.1920.1040" timestamp="1585896438050" />
+    <state x="452" y="95" key="#Code_Folding" timestamp="1585989632290">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="452" y="95" key="#Code_Folding/0.0.1920.1040@0.0.1920.1040" timestamp="1585989632290" />
+    <state x="452" y="95" key="#Project_Structure" timestamp="1585896542834">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="452" y="95" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1585896542834" />
+    <state x="414" y="168" width="1092" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585998678791">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="168" width="1092" height="706" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585998678791" />
+    <state x="721" y="162" key="#com.intellij.ide.util.MemberChooser" timestamp="1585934070834">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="721" y="162" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585934070834" />
+    <state x="757" y="268" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585997001809">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="757" y="268" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585997001809" />
+    <state x="778" y="402" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1585896959361">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="778" y="402" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585896959361" />
+    <state x="690" y="218" width="745" height="667" key="FileChooserDialogImpl" timestamp="1585997077618">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="218" width="745" height="667" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1585997077618" />
+    <state width="1865" height="265" key="GridCell.Tab.0.bottom" timestamp="1586002305054">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="265" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1586002305054" />
+    <state width="1865" height="265" key="GridCell.Tab.0.center" timestamp="1586002305054">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="265" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1586002305054" />
+    <state width="1865" height="265" key="GridCell.Tab.0.left" timestamp="1586002305054">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="265" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1586002305054" />
+    <state width="1865" height="265" key="GridCell.Tab.0.right" timestamp="1586002305054">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="265" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1586002305054" />
+    <state width="1865" height="333" key="GridCell.Tab.1.bottom" timestamp="1585896651906">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="333" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585896651906" />
+    <state width="1865" height="333" key="GridCell.Tab.1.center" timestamp="1585896651905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="333" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585896651905" />
+    <state width="1865" height="333" key="GridCell.Tab.1.left" timestamp="1585896651905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="333" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585896651905" />
+    <state width="1865" height="333" key="GridCell.Tab.1.right" timestamp="1585896651905">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1865" height="333" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585896651905" />
+    <state x="566" y="149" key="NewModule_or_Project.wizard" timestamp="1585896981031">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="566" y="149" key="NewModule_or_Project.wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1585896981031" />
+    <state x="312" y="0" key="SettingsEditor" timestamp="1585997498558">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="312" y="0" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1585997498558" />
+    <state x="591" y="302" key="com.intellij.ide.util.TipDialog" timestamp="1585985035925">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="591" y="302" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585985035925" />
+    <state x="738" y="417" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1585913332273">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="738" y="417" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1585913332273" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/AVT_810$AVT_810.ic" NAME="AVT-810 Coverage Results" MODIFIED="1585896589659" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
