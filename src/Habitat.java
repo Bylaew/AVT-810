@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 class Singleton
 {
@@ -133,7 +134,7 @@ public class Habitat {
         sideMenu.UpdateButtons();
         mainMenu.UpdateButtons();
         if (isStatsAllowed) {
-            new stats(frame);
+            new stats();
         }
     }
     private void resume(){
@@ -141,7 +142,6 @@ public class Habitat {
             isRunning = true;
             System.out.println("Start");
             startTime.start();
-            //vehicles = new ArrayList<>();
            vehicles.reset();
            count = 0;
         }
@@ -166,7 +166,15 @@ public class Habitat {
                 count++;
             }
         }
-        for(int i = 0; i < count; i++) {window.getGraphics().drawImage(vehicles.get(i).getImage(), (int) vehicles.get(i).getX(), (int)vehicles.get(i).getY(), vehicles.get(i).getImage().getWidth(null),  vehicles.get(i).getImage().getHeight(null), null);}
+
+        Image buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics offscreenGraphics = buffer.getGraphics();
+        offscreenGraphics.setColor(window.getBackground());
+        offscreenGraphics.fillRect(0, 0, width, height);
+
+        for(int i = 0; i < count; i++)
+        {offscreenGraphics.drawImage(vehicles.get(i).getImage(), (int) vehicles.get(i).getX(), (int)vehicles.get(i).getY(), vehicles.get(i).getImage().getWidth(null),  vehicles.get(i).getImage().getHeight(null), null);}
+        window.getGraphics().drawImage(buffer, 0, 0, null);
     }
 
     class SideMenu extends JPanel {
@@ -220,7 +228,6 @@ public class Habitat {
             for (int i = 10; i <= 100; i += 10)
                 comboBox.addItem((float) i / 100.0f);
             comboBox.setFocusable(true);
-            comboBox.requestFocus();
 
             add(start);
             add(stop);
@@ -312,27 +319,24 @@ public class Habitat {
 
     class stats extends  JDialog{
 
-
-        stats(JFrame frame){
-
-            JDialog dialog = new JDialog(frame, "Statistics");
+        stats(){
 
             var textArea = new JTextArea("Cars: " + Car.count+ "\nMotorcycles: "+ Moto.count+"\nTotal objects: " + (Car.count + Moto.count)+"\nWork Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
 
-
+            setTitle("Статистика симуляции");
             textArea.setEditable(false);
             textArea.setFont(new Font("Consolas",Font.PLAIN, 18));
 
-            dialog.setLayout(new BorderLayout());
-            dialog.add(textArea, BorderLayout.NORTH);
+            setLayout(new BorderLayout());
+            add(textArea, BorderLayout.NORTH);
 
-            dialog.setSize(new Dimension(320, 165));
-            dialog.setLocationRelativeTo(null);
-            dialog.setResizable(false);
-            dialog.setModal(true);
+            setSize(new Dimension(320, 165));
+            setLocationRelativeTo(null);
+            setResizable(false);
+            setModal(true);
 
             JButton buttonOK = new JButton("Ок");
-            dialog.add(buttonOK, BorderLayout.LINE_START);
+            add(buttonOK, BorderLayout.LINE_START);
             buttonOK.setPreferredSize(new Dimension(150, 50));
 
             buttonOK.addActionListener(e -> {
@@ -344,14 +348,14 @@ public class Habitat {
                 isRunning = false;
                 vehicles.reset();
                 count = 0;
-                dialog.dispose();});
+                this.dispose();});
 
             JButton buttonCancel = new JButton("Отмена");
             buttonCancel.setPreferredSize(new Dimension(150, 50));
-            dialog.add(buttonCancel, BorderLayout.LINE_END);
+            add(buttonCancel, BorderLayout.LINE_END);
 
-            buttonCancel.addActionListener(e -> {resume(); dialog.dispose();});
-            dialog.setVisible(true);
+            buttonCancel.addActionListener(e -> {resume(); dispose();});
+            setVisible(true);
         }
     }
 
@@ -386,6 +390,7 @@ public class Habitat {
             showinfoMI.setSelected(false);
             startMI.addActionListener(e -> resume());
             stopMI.addActionListener(e -> pause());
+
             showinfoMI.addItemListener(e -> {
                 isStatsAllowed = ((JCheckBoxMenuItem) e.getItem()).isSelected();
                 sideMenu.UpdateButtons();
