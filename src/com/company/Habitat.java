@@ -1,16 +1,43 @@
 package com.company;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
+class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {
+    }
+
+    public static Singleton getInstance() {
+        if (instance == null)
+            instance = new Singleton();
+        return instance;
+    }
+
+    private Ant[] array = null;
+
+    public void setArray(Ant[] arr){array = arr;}
+
+    public Ant[] getArray() {
+        return array;
+    }
+
+    public void add(Ant ant, int count) {
+        array[count] = ant;
+    }
+
+    public Ant getAnt(int i) {
+        return array[i];
+    }
+}
 
 public class Habitat {
     private int widht;
     private int height;
-    private ArrayList<Ant> mas;
+    private Singleton mas = Singleton.getInstance();
     private Timer startTime;
     private int warriorCount, workerCount;
     private long timeFromStart = 0;
@@ -47,7 +74,6 @@ public class Habitat {
         this.height = 840;
         this.widht = 1224;
         antFactory = new AntFactory();
-        mas = new ArrayList<Ant>();
     }
 
     public void init() {
@@ -64,22 +90,87 @@ public class Habitat {
         CheckboxGroup infoGroup = new CheckboxGroup();
         Checkbox showTime = new Checkbox("Показывать время симуляции", infoGroup, true);
         Checkbox show_Time = new Checkbox("Скрыть время симуляции", infoGroup, false);
+
         Checkbox showInfo = new Checkbox("Показывать информацию", true);
+
         JToolBar toolBar = new JToolBar();
         JPanel mainPanel = new JPanel();
-
         MenuBar menu = new MenuBar();
         Menu mSim = new Menu("Simulation");
         MenuItem mStart = new MenuItem("Start");
         MenuItem mStop = new MenuItem("Stop");
-        Menu mSettings = new Menu("settings");
+        Menu mSettings = new Menu("Settings");
+        Menu mHelp = new Menu("Help");
+
         CheckboxMenuItem statisticCheckBox = new CheckboxMenuItem("Show statistic", true);
         CheckboxMenuItem timeCheckBox = new CheckboxMenuItem("Show time", true);
+
         JButton settingsButton = new JButton("Settings");
 
         JButton toolStart = new JButton("1");
+
         JButton toolStop = new JButton("2");
+
         JButton toolSettings = new JButton("3");
+
+        window.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                System.out.println(e.getKeyChar());
+                super.keyPressed(e);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_B:
+                        if (!firstTimeRun) {
+                            System.out.println(checkStr(n1.getText()));
+                            if (checkStr(n1.getText()) && checkStr(n2.getText())) {
+                                stopButton.setEnabled(true);
+                                startButton.setEnabled(false);
+                                N1 = Float.parseFloat(n1.getText());
+                                N2 = Float.parseFloat(n2.getText());
+                                P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
+                                P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
+
+                                firstTimeRun = true;
+                                start(window);
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
+                            }
+                        }
+                        break;
+                    case KeyEvent.VK_E:
+                        if (firstTimeRun) {
+                            startTime.stop();
+                            int result = 0;
+                            if (showInfo.getState())
+                                result = statistic(window);
+                            System.out.println(result);
+                            if (result == 0) {
+                                window.repaint();
+                                stopButton.setEnabled(false);
+                                startButton.setEnabled(true);
+                                toolStart.setEnabled(true);
+                                toolStop.setEnabled(false);
+                                workerCount = 0;
+                                warriorCount = 0;
+                                timeFromStart = 0;
+                                firstTimeRun = false;
+                                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
+                                mas.setArray(null);
+                            } else {
+                                startTime.start();
+
+                            }
+                        }
+                        break;
+                    case KeyEvent.VK_T:
+                        if (labelTime.isVisible())
+                            labelTime.setVisible(false);
+                        else labelTime.setVisible(true);
+                        break;
+                }
+            }
+        });
+        window.setFocusable(true);
 
         window.setSize(widht, height);
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -103,6 +194,21 @@ public class Habitat {
         buttonPanel.add(showTime);
         buttonPanel.add(show_Time);
 
+        JLabel n1Label = new JLabel("n1");
+        JLabel n2Label = new JLabel("n2");
+        JLabel p1Label = new JLabel("p1");
+        JLabel p2Label = new JLabel("p2");
+
+        n1Label.setBounds(270,100,30,30);
+        n2Label.setBounds(670,100,30,30);
+        p1Label.setBounds(70,100,30,30);
+        p2Label.setBounds(470,100,30,30);
+
+        buttonPanel.add(n1Label);
+        buttonPanel.add(n2Label);
+        buttonPanel.add(p1Label);
+        buttonPanel.add(p2Label);
+
         p1.setBounds(100, 100, 150, 30);
         n1.setBounds(300, 100, 150, 30);
         p2.setBounds(500, 100, 150, 30);
@@ -111,6 +217,10 @@ public class Habitat {
         n2.setVisible(false);
         p1.setVisible(false);
         p2.setVisible(false);
+        n1Label.setVisible(false);
+        n2Label.setVisible(false);
+        p1Label.setVisible(false);
+        p2Label.setVisible(false);
         buttonPanel.add(p1);
         buttonPanel.add(p2);
         buttonPanel.add(n1);
@@ -121,62 +231,88 @@ public class Habitat {
         mainPanel.setLayout(null);
         mainPanel.add(labelTime);
 
-        window.add(mainPanel);
-        window.add(buttonPanel);
+        window.add(mainPanel).requestFocus();
+        window.add(buttonPanel).requestFocus();
 
-        mStart.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!firstTimeRun) {
-                    System.out.println(checkStr(n1.getText()));
-                    if (checkStr(n1.getText()) && checkStr(n2.getText())) {
-                        stopButton.setEnabled(true);
-                        startButton.setEnabled(false);
-                        N1 = Float.parseFloat(n1.getText());
-                        N2 = Float.parseFloat(n2.getText());
-                        P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                        P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
+      mStart.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              if (!firstTimeRun) {
+                  System.out.println(checkStr(n1.getText()));
+                  if (checkStr(n1.getText()) && checkStr(n2.getText())) {
+                      stopButton.setEnabled(true);
+                      startButton.setEnabled(false);
+                      N1 = Float.parseFloat(n1.getText());
+                      N2 = Float.parseFloat(n2.getText());
+                      P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
+                      P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
 
-                        firstTimeRun = true;
-                        start(window);
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
+                      firstTimeRun = true;
+                      start(window);
+                  } else {
+                      JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
 
-                    }
-                }
-            }
+                  }
+              }
+          }
 
-        });
-        mStop.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (firstTimeRun) {
-                    startTime.stop();
-                    int result = 0;
-                    if (showInfo.getState())
-                        result = statistic(window);
-                    System.out.println(result);
-                    if (result == 0) {
-                        window.repaint();
-                        stopButton.setEnabled(false);
-                        startButton.setEnabled(true);
-                        toolStart.setEnabled(true);
-                        toolStop.setEnabled(false);
-                        workerCount = 0;
-                        warriorCount = 0;
-                        timeFromStart = 0;
-                        firstTimeRun = false;
-                        labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                        mas = null;
-                    } else {
-                        startTime.start();
+      });
+      mStop.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              if (firstTimeRun) {
+                  startTime.stop();
+                  int result = 0;
+                  if (showInfo.getState())
+                      result = statistic(window);
+                  System.out.println(result);
+                  if (result == 0) {
+                      window.repaint();
+                      stopButton.setEnabled(false);
+                      startButton.setEnabled(true);
+                      toolStart.setEnabled(true);
+                      toolStop.setEnabled(false);
+                      workerCount = 0;
+                      warriorCount = 0;
+                      timeFromStart = 0;
+                      firstTimeRun = false;
+                      labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
+                      mas.setArray(null);
+                  } else {
+                      startTime.start();
 
-                    }
-                }
-            }
-        });
-        menu.add(mSim);
-        menu.add(mSettings);
+                  }
+              }
+          }
+      });
+      MenuItem mHelp1 = new MenuItem("Help");
+      mHelp1.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+              JDialog helpDialog = new JDialog(window, "Help");
+              helpDialog.setBounds(100,200,600,400);
+              JTextArea contentArea = new JTextArea();
+              contentArea.setFont(new Font("Arial",Font.ITALIC,24));
+              contentArea.setText("p1 - вероятность появления муровья война\n" +
+                      "p2 - вероятность появления работника\n" +
+                      "n1 - время вероятного появления война\n" +
+                      "p2 - вреся вероятного появления работника\n" +
+                      "t - скрыть/показать время\n" +
+                      "b - начать симуляцию\n" +
+                      "e - закончить симуляцию");
+              contentArea.setLineWrap(true);
+              contentArea.setWrapStyleWord(true);
+              contentArea.setLocation(100,200);
+
+              helpDialog.add(contentArea);
+              helpDialog.setVisible(true);
+          }
+      });
+         mHelp.add(mHelp1);
+
+      menu.add(mSim);
+      menu.add(mSettings);
+      menu.setHelpMenu(mHelp);
 
         timeCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -213,72 +349,12 @@ public class Habitat {
             }
         });
 
-        startTime = new
-
-                Timer(1000, new ActionListener() {
+        startTime = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeFromStart++;
                 labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
                 update(timeFromStart, mainPanel.getGraphics());
-            }
-        });
-
-        window.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                super.keyTyped(e);
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_B:
-                        if (!firstTimeRun) {
-                            System.out.println(checkStr(n1.getText()));
-                            if (checkStr(n1.getText()) && checkStr(n2.getText())) {
-                                stopButton.setEnabled(true);
-                                startButton.setEnabled(false);
-                                N1 = Float.parseFloat(n1.getText());
-                                N2 = Float.parseFloat(n2.getText());
-                                P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                                P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
-
-                                firstTimeRun = true;
-                                start(window);
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
-
-                            }
-                        }
-                        break;
-                    case KeyEvent.VK_E:
-                        if (firstTimeRun) {
-                            startTime.stop();
-                            int result = 0;
-                            if (showInfo.getState())
-                                result = statistic(window);
-                            System.out.println(result);
-                            if (result == 0) {
-                                window.repaint();
-                                stopButton.setEnabled(false);
-                                startButton.setEnabled(true);
-                                toolStart.setEnabled(true);
-                                toolStop.setEnabled(false);
-                                workerCount = 0;
-                                warriorCount = 0;
-                                timeFromStart = 0;
-                                firstTimeRun = false;
-                                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                                mas = null;
-                            } else {
-                                startTime.start();
-
-                            }
-                        }
-                        break;
-                    case KeyEvent.VK_T:
-                        if (labelTime.isVisible())
-                            labelTime.setVisible(false);
-                        else labelTime.setVisible(true);
-                        break;
-                }
             }
         });
 
@@ -328,7 +404,7 @@ public class Habitat {
                     timeFromStart = 0;
                     labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
                     firstTimeRun = false;
-                    mas = null;
+                    mas.setArray(null);
                 } else {
                     startTime.start();
 
@@ -346,12 +422,20 @@ public class Habitat {
                     n2.setVisible(false);
                     p1.setVisible(false);
                     p2.setVisible(false);
+                    n1Label.setVisible(false);
+                    n2Label.setVisible(false);
+                    p1Label.setVisible(false);
+                    p2Label.setVisible(false);
                     isVisibleSettings = false;
                 } else {
                     n1.setVisible(true);
                     n2.setVisible(true);
                     p1.setVisible(true);
                     p2.setVisible(true);
+                    n1Label.setVisible(true);
+                    n2Label.setVisible(true);
+                    p1Label.setVisible(true);
+                    p2Label.setVisible(true);
                     isVisibleSettings = true;
                 }
             }
@@ -408,7 +492,7 @@ public class Habitat {
                     timeFromStart = 0;
                     firstTimeRun = false;
                     labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                    mas = null;
+                    mas.setArray(null);
                 } else {
                     startTime.start();
 
@@ -423,29 +507,51 @@ public class Habitat {
                     n2.setVisible(false);
                     p1.setVisible(false);
                     p2.setVisible(false);
+                    n1Label.setVisible(false);
+                    n2Label.setVisible(false);
+                    p1Label.setVisible(false);
+                    p2Label.setVisible(false);
                     isVisibleSettings = false;
                 } else {
                     n1.setVisible(true);
                     n2.setVisible(true);
                     p1.setVisible(true);
                     p2.setVisible(true);
+                    n1Label.setVisible(true);
+                    n2Label.setVisible(true);
+                    p1Label.setVisible(true);
+                    p2Label.setVisible(true);
                     isVisibleSettings = true;
                 }
             }
         });
+
         toolBar.add(toolStart);
         toolBar.add(toolStop);
         toolBar.add(toolSettings);
         toolBar.setBackground(Color.YELLOW);
-        window.add(toolBar);
+        window.add(toolBar).requestFocus();
+
+        System.out.println(window.isFocusable());
 
         window.setVisible(true);
+        System.out.println(window.isFocusable());
+
+        window.addFocusListener(new FocusAdapter() {
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                window.requestFocus();
+            }
+        });
     }
 
     private void start(JFrame window) {
         System.out.println("Start");
-        mas = new ArrayList<Ant>();
+        mas.setArray(new Ant[1000]);
         startTime.start();
+        System.out.println(java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
     }
 
     private int statistic(JFrame window) {
@@ -514,22 +620,21 @@ public class Habitat {
     private void update(float time, Graphics g) {
         if (time % N1 == 0) {
             if (Math.random() < P1) {
-                mas.add(antFactory.createWarrior((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40));
-                System.out.println("WarriorCreate(" + mas.get(mas.size() - 1).getX() + "," + mas.get(mas.size() - 1).getY() + ")");
-                for (Ant a : mas)
-                    g.drawImage(a.getImage(), (int) a.getX(), (int) a.getY(), 100, 200, null);
-                warriorCount++;
+                mas.add(antFactory.createWarrior((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40), warriorCount + workerCount);
+                System.out.println("WarriorCreate(" + mas.getAnt(workerCount + warriorCount).getX() + "," + mas.getAnt(workerCount + warriorCount).getY() + ")");
+               warriorCount++;
             }
         }
         if (time % N2 == 0) {
             if (Math.random() < P2) {
-                mas.add(antFactory.createWorker((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40));
-                System.out.println("WorkerCreate(" + mas.get(mas.size() - 1).getX() + "," + mas.get(mas.size() - 1).getY() + ")");
-                for (Ant a : mas)
-                    g.drawImage(a.getImage(), (int) a.getX(), (int) a.getY(), 100, 200, null);
+                mas.add(antFactory.createWorker((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40), warriorCount + workerCount);
+                System.out.println("WorkerCreate(" + mas.getAnt(workerCount + warriorCount).getX() + "," + mas.getAnt(workerCount + warriorCount).getY() + ")");
                 workerCount++;
             }
         }
+        for (int i = 0; i < workerCount + warriorCount; i++)
+            g.drawImage(mas.getAnt(i).getImage(), (int) mas.getAnt(i).getX(), (int) mas.getAnt(i).getY(), 100, 200, null);
+
     }
 
     private boolean checkStr(String str) {
