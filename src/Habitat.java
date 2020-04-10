@@ -8,31 +8,69 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 
-class Singleton
+class Singleton_Vector
 {
-    private static Singleton instance;
-    private Singleton(){}
-    public static Singleton getInstance()
+    private static Singleton_Vector instance;
+    private Singleton_Vector(){}
+    public static Singleton_Vector getInstance()
     {
         if(instance == null)
-            instance = new Singleton();
+            instance = new Singleton_Vector();
         return instance;
     }
 
-    private Rabbit[] array = new Rabbit[1000];
+    private Vector<Rabbit> vector = new Vector<>();
 
-    public void add(Rabbit rabbit, int count)
+    public void add(Rabbit rabbit) { vector.add(rabbit); }
+
+    public Rabbit getRabbit(int index) { return vector.get(index); }
+
+    public void remove(int index) { vector.remove(index); }
+}
+
+class Singleton_TreeSet
+{
+    private static Singleton_TreeSet instance;
+    private Singleton_TreeSet(){}
+    public static Singleton_TreeSet getInstance()
     {
-        array[count] = rabbit;
+        if(instance == null)
+            instance = new Singleton_TreeSet();
+        return instance;
     }
 
-    public Rabbit getRabbit(int i)
+    private TreeSet<Integer> ID_tree = new TreeSet<>();
+
+    public void add(Rabbit rabbit)
     {
-        return array[i];
+        while (ID_tree.contains(rabbit.ID)) rabbit.setID((int)(Math.random()*1000));
+        ID_tree.add(rabbit.ID);
     }
+
+    public void remove(int id) { ID_tree.remove(id); }
+}
+
+class Singleton_HashMap
+{
+    private static Singleton_HashMap instance;
+    private Singleton_HashMap(){}
+    public static Singleton_HashMap getInstance()
+    {
+        if(instance == null)
+            instance = new Singleton_HashMap();
+        return instance;
+    }
+
+    private HashMap<Integer, Long> timeHMap = new HashMap<>();
+
+    public void add(Rabbit rabbit) { timeHMap.put(rabbit.ID, rabbit.birthtime); }
+
+    public void remove(int key) { timeHMap.remove(key); }
+
+    public Set values() { return timeHMap.entrySet(); }
 }
 
 public class Habitat
@@ -50,7 +88,9 @@ public class Habitat
     int N1; // Период рождения обычного кролика
     double P1; // Вероятность рождения обычного кролика
     int N2, K; // Период рождения альбиноса и процент от общего количества кроликов
-    Singleton array = Singleton.getInstance();
+    Singleton_Vector rabbitVector = Singleton_Vector.getInstance();
+    Singleton_TreeSet ID_tree = Singleton_TreeSet.getInstance();
+    Singleton_HashMap timeHashMap = Singleton_HashMap.getInstance();
     int count;
 
     public Habitat()
@@ -74,7 +114,7 @@ public class Habitat
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel field = new JPanel();
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(12, 1, 5, 12));
+        controlPanel.setLayout(new GridLayout(17, 1, 5, 12));
         Container container = frame.getContentPane();
 
         JCheckBox show_info = new JCheckBox("Показывать информацию");
@@ -82,9 +122,11 @@ public class Habitat
         show_info.setFocusable(false);
         JButton start = new JButton("Старт");
         JButton stop = new JButton("Стоп");
+        JButton currentRabbits = new JButton("Текущие объекты");
         stop.setEnabled(false);
         start.setFocusable(false);
         stop.setFocusable(false);
+        currentRabbits.setFocusable(false);
         ButtonGroup sim_time = new ButtonGroup();
         JRadioButton show, hide;
         show = new JRadioButton("Показывать время симуляции", true);
@@ -113,8 +155,20 @@ public class Habitat
         mark3.setText("Вероятность рождения обычного кролика");
         mark3.setEditable(false);
         mark3.setFocusable(false);
+        JTextArea mark4 = new JTextArea();
+        mark4.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        mark4.setText("Время жизни обычного кролика");
+        mark4.setEditable(false);
+        mark4.setFocusable(false);
+        JTextArea mark5 = new JTextArea();
+        mark5.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        mark5.setText("Время жизни альбиноса");
+        mark5.setEditable(false);
+        mark5.setFocusable(false);
         TextField ordinary_period = new TextField("", 10);
         TextField albino_period = new TextField("", 10);
+        TextField ordinary_ltime = new TextField("", 10);
+        TextField albino_ltime = new TextField("", 10);
         JComboBox pcb = new JComboBox();
         for (int i = 10; i <= 100; i += 10)
             pcb.addItem((double)i/100.0);
@@ -150,6 +204,23 @@ public class Habitat
         pcb.addItemListener(e -> P1 = (double)pcb.getSelectedItem());
         start.addActionListener(e -> startMethod(container));
         stop.addActionListener(e -> stopMethod(container));
+        currentRabbits.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JDialog alive = new JDialog();
+                alive.setTitle("Текущие объекты");
+                alive.setModal(true);
+                alive.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                JTextArea textArea = new JTextArea();
+                textArea.setFont(new Font("TimesRoman", Font.ITALIC, 25));
+                textArea.setText("Список живых объектов:\n" + timeHashMap.values());
+                textArea.setEditable(false);
+                Container c = alive.getContentPane();
+                c.add(textArea);
+                alive.pack();
+                alive.setVisible(true);
+            }
+        });
         show.addActionListener(e -> {
             time_text.setVisible(true);
             mshow.setSelected(true);
@@ -218,6 +289,66 @@ public class Habitat
                 }
             }
         });
+        ordinary_ltime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int a;
+                try
+                {
+                    a = Integer.parseInt(ordinary_ltime.getText());
+                    if (a > 0)
+                        Ordinary_Rabbit.lifetime = a;
+                    else throw new NumberFormatException();
+                    frame.requestFocus();
+                }
+                catch (NumberFormatException nfe)
+                {
+                    Ordinary_Rabbit.lifetime = 10000;
+                    JDialog error = new JDialog();
+                    error.setTitle("Ошибка: введено неверное значение");
+                    error.setModal(true);
+                    error.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    JTextArea textArea = new JTextArea();
+                    textArea.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+                    textArea.setText("Значение времени жизни должно быть положительным целочисленным в миллисекундах, \nвведение букв не допускается. \nВыставлено значение по умолчанию: " + Ordinary_Rabbit.lifetime);
+                    textArea.setEditable(false);
+                    Container c = error.getContentPane();
+                    c.add(textArea);
+                    error.pack();
+                    error.setVisible(true);
+                }
+            }
+        });
+        albino_ltime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int a;
+                try
+                {
+                    a = Integer.parseInt(albino_ltime.getText());
+                    if (a > 0)
+                        Albino.lifetime = a;
+                    else throw new NumberFormatException();
+                    frame.requestFocus();
+                }
+                catch (NumberFormatException nfe)
+                {
+                    Albino.lifetime = 12000;
+                    JDialog error = new JDialog();
+                    error.setTitle("Ошибка: введено неверное значение");
+                    error.setModal(true);
+                    error.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+                    JTextArea textArea = new JTextArea();
+                    textArea.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+                    textArea.setText("Значение времени жизни должно быть положительным целочисленным в миллисекундах, \nвведение букв не допускается. \nВыставлено значение по умолчанию: " + Albino.lifetime);
+                    textArea.setEditable(false);
+                    Container c = error.getContentPane();
+                    c.add(textArea);
+                    error.pack();
+                    error.setVisible(true);
+                }
+            }
+        });
         startMI.addActionListener(e -> {
             startMethod(container);
             frame.requestFocus();
@@ -250,6 +381,7 @@ public class Habitat
 
         controlPanel.add(start); // Номер 0 в контейнере controlPanel (не изменять)
         controlPanel.add(stop); // Номер 1 в контейнере controlPanel (не изменять)
+        controlPanel.add(currentRabbits);
         controlPanel.add(show_info);
         controlPanel.add(show);
         controlPanel.add(hide);
@@ -260,6 +392,10 @@ public class Habitat
         controlPanel.add(albino_period);
         controlPanel.add(mark3);
         controlPanel.add(pcb);
+        controlPanel.add(mark4);
+        controlPanel.add(ordinary_ltime);
+        controlPanel.add(mark5);
+        controlPanel.add(albino_ltime);
 
         container.add(controlPanel, BorderLayout.EAST); // Номер 0 в контейнере container (не изменять)
         container.add(field, BorderLayout.CENTER); // Номер 1 в контейнере container (не изменять)
@@ -313,11 +449,27 @@ public class Habitat
 
     private void Update(long time, Graphics g, JPanel field)
     {
+        for (int i = 0; i < count; i++)
+        {
+            if ((rabbitVector.getRabbit(i).birthtime + rabbitVector.getRabbit(i).getLifetime()) <= time)
+            {
+                int id = rabbitVector.getRabbit(i).ID;
+                timeHashMap.remove(id);
+                ID_tree.remove(id);
+                rabbitVector.getRabbit(i).die();
+                rabbitVector.remove(i);
+                count--;
+            }
+        }
+
         if (time % N1 == 0)
         {
             if (Math.random() < P1)
             {
-                array.add(factory.createOrdinary((float)(Math.random() * (field.getWidth() - 58)),(float)(Math.random() * (field.getHeight() - 104))), count);
+                Rabbit rabbit = factory.createOrdinary((float)(Math.random() * (field.getWidth() - 58)),(float)(Math.random() * (field.getHeight() - 104)), time);
+                ID_tree.add(rabbit);
+                rabbitVector.add(rabbit);
+                timeHashMap.add(rabbit);
                 count++;
             }
         }
@@ -326,7 +478,10 @@ public class Habitat
             double p = (double) (K * count) / 100;
             if ((double)Albino.count < p)
             {
-                array.add(factory.createAlbino((float)(Math.random() * (field.getWidth() - 79)), (float)(Math.random() * (field.getHeight() - 128))), count);
+                Rabbit rabbit = factory.createAlbino((float)(Math.random() * (field.getWidth() - 79)),(float)(Math.random() * (field.getHeight() - 128)), time);
+                ID_tree.add(rabbit);
+                rabbitVector.add(rabbit);
+                timeHashMap.add(rabbit);
                 count++;
             }
         }
@@ -337,7 +492,7 @@ public class Habitat
         Graphics fieldImageGraphics= fieldImage.getGraphics();
         fieldImageGraphics.drawImage(image, 0,0, w, h,null);
         for (int i = 0; i < count; i++)
-            fieldImageGraphics.drawImage((array.getRabbit(i)).getImage(), (int)((array.getRabbit(i)).getX()),(int)((array.getRabbit(i)).getY()), null);
+            fieldImageGraphics.drawImage((rabbitVector.getRabbit(i)).getImage(), (int)((rabbitVector.getRabbit(i)).getX()),(int)((rabbitVector.getRabbit(i)).getY()), null);
         g.drawImage(fieldImage,0,0,w,h,null);
     }
 
@@ -347,7 +502,7 @@ public class Habitat
         Component field = container.getComponent(1);
         Component start = controlPanel.getComponent(0);
         Component stop = controlPanel.getComponent(1);
-        JTextArea time_text = (JTextArea)controlPanel.getComponent(5);
+        JTextArea time_text = (JTextArea)controlPanel.getComponent(6);
         if (!sim_is_working)
         {
             sim_is_working = true;

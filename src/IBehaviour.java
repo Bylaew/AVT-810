@@ -1,10 +1,12 @@
 public interface IBehaviour
 {
-    public void setX(float x);
+    void setX(float x);
 
-    public void setY(float y);
+    void setY(float y);
 
-    public float getX();
+    float getX();
 
-    public float getY();
+    float getY();
+
+    void die();
 }
