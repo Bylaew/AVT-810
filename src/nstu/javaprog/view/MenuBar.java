@@ -1,6 +1,8 @@
 package nstu.javaprog.view;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 final class MenuBar extends JMenuBar implements Interdependent {
     private final ViewContainer container;
@@ -40,37 +42,60 @@ final class MenuBar extends JMenuBar implements Interdependent {
     }
 
     private void configureListeners() {
-        activate.addActionListener(event -> {
-            activate();
-            container.activate(this);
+        activate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.activate();
+                container.activate(MenuBar.this);
+            }
         });
 
-        deactivate.addActionListener(event -> {
-            deactivate();
-            container.deactivate(this);
+        deactivate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.deactivate();
+                container.deactivate(MenuBar.this);
+            }
         });
 
-        pause.addActionListener(event -> {
-            pause();
-            container.pause(this);
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.pause();
+                container.pause(MenuBar.this);
+            }
         });
 
-        resume.addActionListener(event -> {
-            resume();
-            container.resume(this);
+        resume.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.resume();
+                container.resume(MenuBar.this);
+            }
         });
 
-        showTime.addActionListener(event -> {
-            showTime();
-            container.showTime(this);
+        showTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.showTime();
+                container.showTime(MenuBar.this);
+            }
         });
 
-        hideTime.addActionListener(event -> {
-            hideTime();
-            container.hideTime(this);
+        hideTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                MenuBar.this.hideTime();
+                container.hideTime(MenuBar.this);
+            }
         });
 
-        showStatisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
+        showStatisticAsDialog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                container.changeStatisticView(MenuBar.this);
+            }
+        });
     }
 
     @Override

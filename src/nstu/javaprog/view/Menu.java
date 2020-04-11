@@ -3,6 +3,8 @@ package nstu.javaprog.view;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 final class Menu extends JPanel implements Interdependent {
     private final ViewContainer container;
@@ -69,41 +71,74 @@ final class Menu extends JPanel implements Interdependent {
     }
 
     private void configureListeners() {
-        activate.addActionListener(event -> {
-            activate();
-            container.activate(this);
+        activate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.activate();
+                container.activate(Menu.this);
+            }
         });
 
-        deactivate.addActionListener(event -> {
-            deactivate();
-            container.deactivate(this);
+        deactivate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.deactivate();
+                container.deactivate(Menu.this);
+            }
         });
 
-        pause.addActionListener(event -> {
-            pause();
-            container.pause(this);
+        pause.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.pause();
+                container.pause(Menu.this);
+            }
         });
 
-        resume.addActionListener(event -> {
-            resume();
-            container.resume(this);
+        resume.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.resume();
+                container.resume(Menu.this);
+            }
         });
 
-        showTime.addActionListener(event -> {
-            showTime();
-            container.showTime(this);
+        showTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.showTime();
+                container.showTime(Menu.this);
+            }
         });
 
-        hideTime.addActionListener(event -> {
-            hideTime();
-            container.hideTime(this);
+        hideTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                Menu.this.hideTime();
+                container.hideTime(Menu.this);
+            }
         });
 
-        showStatisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
+        showStatisticAsDialog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                container.changeStatisticView(Menu.this);
+            }
+        });
 
-        goldSettings.addActionListener(event -> container.changeGoldSettings());
+        goldSettings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                container.changeGoldSettings();
+            }
+        });
 
-        guppySettings.addActionListener(event -> container.changeGuppySettings());
+        guppySettings.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                container.changeGuppySettings();
+            }
+        });
     }
 
     @Override

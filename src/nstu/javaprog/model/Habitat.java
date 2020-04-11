@@ -2,10 +2,10 @@ package nstu.javaprog.model;
 
 import nstu.javaprog.util.Properties;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 public final class Habitat {
     private final TickGenerator generator = new TickGenerator();
@@ -17,8 +17,8 @@ public final class Habitat {
         guppyCreator = new GuppyProbabilisticCreator(1.0f, 1, 1, 1, this);
     }
 
-    public void doForEachElement(Consumer<? super CanvasElement> consumer) {
-        ElementsKeeper.INSTANCE.foreach(consumer);
+    public List<CanvasElement> getElements() {
+        return ElementsKeeper.INSTANCE.get();
     }
 
     public long getTime() {
@@ -36,12 +36,12 @@ public final class Habitat {
         return goldCreator.getProperties();
     }
 
-    public Properties getGuppyProperties() {
-        return guppyCreator.getProperties();
-    }
-
     public void setGoldProperties(Properties properties) {
         goldCreator.setProperties(validateData(properties));
+    }
+
+    public Properties getGuppyProperties() {
+        return guppyCreator.getProperties();
     }
 
     public void setGuppyProperties(Properties properties) {

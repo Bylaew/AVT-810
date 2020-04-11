@@ -3,7 +3,6 @@ package nstu.javaprog.model;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 final class ElementsKeeper {
     public static final ElementsKeeper INSTANCE = new ElementsKeeper();
@@ -20,8 +19,8 @@ final class ElementsKeeper {
         elements.add(element);
     }
 
-    public void foreach(Consumer<? super CanvasElement> consumer) {
-        elements.forEach(consumer);
+    public List<CanvasElement> get() {
+        return elements;
     }
 
     public int getSize() {

@@ -4,9 +4,10 @@ import nstu.javaprog.util.Properties;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.function.Consumer;
 
 final class EnvironmentSettings extends JDialog {
     private static final String[] CHANCE_VALUES = {
@@ -29,7 +30,7 @@ final class EnvironmentSettings extends JDialog {
     private final JComboBox<String> chance = new JComboBox<>(CHANCE_VALUES);
     private final JButton accept = new JButton("Accept");
 
-    EnvironmentSettings(ViewContainer container, Properties properties, Consumer<Properties> consumer) {
+    EnvironmentSettings(ViewContainer container, Properties properties) {
         super(container, "Settings", true);
         setLocationRelativeTo(container);
         setBackground(Color.WHITE);
@@ -47,30 +48,31 @@ final class EnvironmentSettings extends JDialog {
         add(accept);
 
         setProperties(properties);
-        configureListeners(consumer);
+        configureListeners();
         pack();
     }
 
-    private void configureListeners(Consumer<Properties> consumer) {
-        accept.addActionListener(event -> {
-            try {
-                validateData();
-                consumer.accept(getProperties());
-                dispose();
-            } catch (IllegalArgumentException exception) {
-                JOptionPane.showMessageDialog(
-                        this,
-                        exception.getMessage(),
-                        "Error",
-                        JOptionPane.WARNING_MESSAGE
-                );
+    private void configureListeners() {
+        accept.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                try {
+                    EnvironmentSettings.this.validateData();
+                    EnvironmentSettings.this.dispose();
+                } catch (IllegalArgumentException exception) {
+                    JOptionPane.showMessageDialog(
+                            EnvironmentSettings.this,
+                            exception.getMessage(),
+                            "Error",
+                            JOptionPane.WARNING_MESSAGE
+                    );
+                }
             }
         });
 
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-
                 dispose();
             }
         });
@@ -94,19 +96,19 @@ final class EnvironmentSettings extends JDialog {
             );
     }
 
-    private void setProperties(Properties properties) {
-        delay.setText(Integer.toString(properties.getDelay()));
-        chance.setSelectedIndex((int) (properties.getChance() * 10.f) % chance.getItemCount());
-        minSpeed.setText(Integer.toString(properties.getMinSpeed()));
-        maxSpeed.setText(Integer.toString(properties.getMaxSpeed()));
-    }
-
-    private Properties getProperties() {
+    Properties getProperties() {
         return new Properties(
                 (float) chance.getSelectedIndex() / 10.f,
                 Integer.parseInt(delay.getText()),
                 Integer.parseInt(minSpeed.getText()),
                 Integer.parseInt(maxSpeed.getText())
         );
+    }
+
+    private void setProperties(Properties properties) {
+        delay.setText(Integer.toString(properties.getDelay()));
+        chance.setSelectedIndex((int) (properties.getChance() * 10.f) % chance.getItemCount());
+        minSpeed.setText(Integer.toString(properties.getMinSpeed()));
+        maxSpeed.setText(Integer.toString(properties.getMaxSpeed()));
     }
 }

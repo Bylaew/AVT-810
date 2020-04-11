@@ -1,6 +1,5 @@
 package nstu.javaprog.controller;
 
-import nstu.javaprog.model.CanvasElement;
 import nstu.javaprog.model.Habitat;
 import nstu.javaprog.util.Properties;
 
@@ -33,12 +32,12 @@ public final class WindowController {
         return habitat.getGoldProperties();
     }
 
-    public Properties getGuppyProperties() {
-        return habitat.getGuppyProperties();
-    }
-
     public void setGoldProperties(Properties properties) {
         habitat.setGoldProperties(properties);
+    }
+
+    public Properties getGuppyProperties() {
+        return habitat.getGuppyProperties();
     }
 
     public void setGuppyProperties(Properties properties) {
@@ -54,13 +53,15 @@ public final class WindowController {
     }
 
     public void moveElements() {
-        habitat.doForEachElement(CanvasElement::move);
+        for (int i = 0; i < habitat.getElements().size(); i++) {
+            habitat.getElements().get(i).move();
+        }
     }
 
     public void drawElements(Graphics graphics, int width, int height) {
-        habitat.doForEachElement((element) -> {
-            element.normalize(width, height);
-            element.draw(graphics);
-        });
+        for (int i = 0; i < habitat.getElements().size(); i++) {
+            habitat.getElements().get(i).normalize(width, height);
+            habitat.getElements().get(i).draw(graphics);
+        }
     }
 }
