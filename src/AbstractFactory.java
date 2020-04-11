@@ -1,4 +1,6 @@
+
 public interface AbstractFactory {
-    Vehicle createVehicle();
-    Vehicle createVehicle(float x, float y);
+
+    Car createCar(float x, float y, int id);
+    Moto createMoto(float x, float y, int id);
 }

@@ -1,67 +1,40 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-
-class Singleton
-{
-    private static Singleton instance;
-    private Singleton(){}
-    public static Singleton getInstance()
-    {
-        if(instance == null)
-            instance = new Singleton();
-        return instance;
-    }
-
-    private  Vehicle[] array = new Vehicle[1000];
-
-    public void add(Vehicle vehicle, int count)
-    {
-        array[count] = vehicle;
-    }
-
-    public Vehicle get(int i)
-    {
-        return array[i];
-    }
-    public void reset(){
-        array = new Vehicle[1000];
-    }
-}
+import java.util.Map;
 
 public class Habitat {
+    Singleton singleton = Singleton.getInstance();
+    SideMenu sideMenu;
+    MenuBar mainMenu;
+    JFrame frame;
+    ImagePanel window;
     private int width;
     private int height;
-    Singleton vehicles = Singleton.getInstance();
-    int count = 0;
     private Timer startTime;
     private long timeFromStart = 0;
     private float N1, N2, P1, P2;
-    private CarFactory carFactory;
-    private MotoFactory motoFactory;
+    private ConcreteFactory concreteFactory;
     private boolean isRunning = false;
     private boolean isStatsAllowed;
     private boolean isTimeAllowed;
     private JLabel labelTime;
-    SideMenu sideMenu;
-    MenuBar mainMenu;
-    JFrame frame;
-
+    private long carLifetime = 15, motoLifetime = 5;
 
     public void init(float N1, float N2, float P1, float P2) {
-        height = 900;
-        width = 1600;
-        carFactory = new CarFactory();
-        motoFactory = new MotoFactory();
+        concreteFactory = new ConcreteFactory();
         this.N1 = N1;
         this.N2 = N2;
         this.P1 = P1;
         this.P2 = P2;
 
-        frame = new JFrame("Lab 2");
+        frame = new JFrame("Lab 3");
 
-        JPanel window = new JPanel();
+        window = new ImagePanel();
         frame.add(window, BorderLayout.CENTER);
 
         sideMenu = new SideMenu();
@@ -70,27 +43,28 @@ public class Habitat {
         mainMenu = new MenuBar();
         frame.setJMenuBar(mainMenu);
 
-        frame.setPreferredSize(new Dimension(width, height));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        double w = screenSize.getWidth();
+        double h = screenSize.getHeight();
+        frame.setPreferredSize(new Dimension((int)(w/1.5), (int)(h/1.5)));
 
-        JPanel panel = new JPanel();
+
         labelTime = new JLabel();
         labelTime.setText("0:00");
         labelTime.setVisible(false);
-        labelTime.setFont(new Font("Consolas", Font.PLAIN, 60));
-        panel.add(labelTime);
-        window.add(panel);
+        labelTime.setFont(new Font("Consolas", Font.PLAIN, 45));
+        window.add(labelTime);
 
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        frame.setLocation(0, 0);
+        frame.setResizable(true);
         frame.pack();
-        frame.requestFocus();
 
         startTime = new Timer(1000, e -> {
             timeFromStart++;
             labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
             update(timeFromStart, window);
-            sideMenu.timeText.setText("Время: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60+ " секунд(ы)");
+            sideMenu.timeText.setText("Время: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60 + " секунд(ы)");
         });
 
 
@@ -99,25 +73,37 @@ public class Habitat {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_B) {
                     resume();
-                }
-                    else if (e.getKeyCode() == KeyEvent.VK_E) {
+                } else if (e.getKeyCode() == KeyEvent.VK_E) {
                     pause();
 
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_T) {
-                        if (labelTime.isVisible())
-                        {labelTime.setVisible(false); isTimeAllowed = false;}
-                        else {labelTime.setVisible(true); isTimeAllowed = true;}
-                }
-                else if (e.getKeyCode()== KeyEvent.VK_P){
-                    if (isRunning) {pause();}
-                    else {resume();}
+                } else if (e.getKeyCode() == KeyEvent.VK_T) {
+                    if (labelTime.isVisible()) {
+                        labelTime.setVisible(false);
+                        isTimeAllowed = false;
+                    } else {
+                        labelTime.setVisible(true);
+                        isTimeAllowed = true;
+                    }
+                } else if (e.getKeyCode() == KeyEvent.VK_P) {
+                    if (isRunning) {
+                        pause();
+                    } else {
+                        resume();
+                    }
                     sideMenu.UpdateButtons();
                 }
                 sideMenu.UpdateButtons();
                 mainMenu.UpdateButtons();
             }
         });
+
+        frame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent componentEvent) {
+                width = window.getWidth();
+                height = window.getHeight();
+            }
+        });
+
         window.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -126,9 +112,11 @@ public class Habitat {
         });
         frame.setVisible(true);
         window.requestFocus();
+        width = window.getWidth();
+        height = window.getHeight();
     }
 
-    private void pause(){
+    private void pause() {
         startTime.stop();
         isRunning = false;
         sideMenu.UpdateButtons();
@@ -137,14 +125,8 @@ public class Habitat {
             new stats();
         }
     }
-    private void resume(){
-        if (!isRunning) {
-            isRunning = true;
-            System.out.println("Start");
-            startTime.start();
-           vehicles.reset();
-           count = 0;
-        }
+
+    private void resume() {
         startTime.start();
         isRunning = true;
         sideMenu.UpdateButtons();
@@ -152,30 +134,51 @@ public class Habitat {
     }
 
 
-    private void update(float time, JPanel window) {
+    private void update(float time, ImagePanel window) {
         if (time % N1 == 0) {
             if (Math.random() < P1) {
-
-                vehicles.add(carFactory.createVehicle((float) (Math.random() * (width-400)), (float) Math.random() * (height-200) + 50 ), count);
-                count++;
+                int id = singleton.generateId();
+                singleton.vehicles.add(concreteFactory.createCar((float) (Math.random() * (width - 200)), (float) Math.random() * (height - 200) + 50, id));
+                singleton.idSet.add(id);
+                singleton.vehicles.get(singleton.vehicles.size() - 1).setBirthTime(timeFromStart);
+                singleton.vehicles.get(singleton.vehicles.size() - 1).setLifeTime(carLifetime);
+                singleton.Map.put(singleton.vehicles.get(singleton.vehicles.size() - 1).getId(), singleton.vehicles.get(singleton.vehicles.size() - 1).getBirthTime());
             }
         }
         if (time % N2 == 0) {
             if (Math.random() < P2) {
-                vehicles.add(motoFactory.createVehicle((float) Math.random() * (width - 400), (float) Math.random() * (height - 200) + 50 ), count);
-                count++;
+                int id = singleton.generateId();
+                singleton.vehicles.add(concreteFactory.createMoto((float) Math.random() * (width - 200), (float) Math.random() * (height - 200) + 50, id));
+                singleton.idSet.add(id);
+                singleton.vehicles.get(singleton.vehicles.size() - 1).setBirthTime(timeFromStart);
+                singleton.vehicles.get(singleton.vehicles.size() - 1).setLifeTime(motoLifetime);
+                singleton.Map.put(singleton.vehicles.get(singleton.vehicles.size() - 1).getId(), singleton.vehicles.get(singleton.vehicles.size() - 1).getBirthTime());
             }
         }
 
-        Image buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int i = 0; i < singleton.vehicles.size(); i++) {
+            if (singleton.vehicles.get(i).getLifeTime() + singleton.vehicles.get(i).getBirthTime() <= timeFromStart) {
+                singleton.Map.remove(singleton.vehicles.get(i).getId());
+                singleton.idSet.remove(singleton.vehicles.get(i).getId());
+                singleton.vehicles.remove(i);
+
+            }
+        }
+
+
+        BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics offscreenGraphics = buffer.getGraphics();
         offscreenGraphics.setColor(window.getBackground());
         offscreenGraphics.fillRect(0, 0, width, height);
 
-        for(int i = 0; i < count; i++)
-        {offscreenGraphics.drawImage(vehicles.get(i).getImage(), (int) vehicles.get(i).getX(), (int)vehicles.get(i).getY(), vehicles.get(i).getImage().getWidth(null),  vehicles.get(i).getImage().getHeight(null), null);}
-        window.getGraphics().drawImage(buffer, 0, 0, null);
+        for (int i = 0; i < singleton.vehicles.size(); i++) {
+            offscreenGraphics.drawImage(singleton.vehicles.get(i).getImage(), (int) singleton.vehicles.get(i).getX(), (int) singleton.vehicles.get(i).getY(), singleton.vehicles.get(i).getImage().getWidth(null), singleton.vehicles.get(i).getImage().getHeight(null), null);
+        }
+
+        window.setImage(buffer);
+        window.repaint();
     }
+
 
     class SideMenu extends JPanel {
         JButton start = new JButton("Старт");
@@ -186,7 +189,7 @@ public class Habitat {
 
 
         SideMenu() {
-            setLayout(new GridLayout(12, 1));
+            setLayout(new GridLayout(16, 1));
             show_info = new JCheckBox("Показывать статистику");
             show_info.setFocusable(false);
             stop.setEnabled(false);
@@ -202,23 +205,15 @@ public class Habitat {
             hide.setSelected(true);
             timeText = new JTextArea();
             timeText.setFont(new Font("TimesRoman", Font.ITALIC, 14));
-            timeText.setText("Время: " + (timeFromStart / 1000) + " секунд(ы)");
+            timeText.setText("Время: " + (timeFromStart) + " секунд(ы)");
+            timeText.setBackground(getBackground());
             timeText.setEditable(false);
             timeText.setFocusable(false);
-            JTextArea txt1 = new JTextArea();
-            txt1.setFont(new Font("TimesRoman", Font.ITALIC, 14));
-            txt1.setText("Период появления автомобилей ");
-            txt1.setEditable(false);
+            JLabel txt1 = new JLabel("Период появления автомобилей ");
             txt1.setFocusable(false);
-            JTextArea txt2 = new JTextArea();
-            txt2.setFont(new Font("TimesRoman", Font.ITALIC, 14));
-            txt2.setText("Период появления мотоциклов");
-            txt2.setEditable(false);
+            JLabel txt2 = new JLabel("Период появления мотоциклов");
             txt2.setFocusable(false);
-            JTextArea txt3 = new JTextArea();
-            txt3.setFont(new Font("TimesRoman", Font.ITALIC, 14));
-            txt3.setText("Вероятность появления атомобилкей");
-            txt3.setEditable(false);
+            JLabel txt3 = new JLabel("Вероятность появления атомобилкей");
             txt3.setFocusable(false);
             TextField auto_period = new TextField("", 10);
             auto_period.setEnabled(true);
@@ -227,7 +222,20 @@ public class Habitat {
             var comboBox = new JComboBox();
             for (int i = 10; i <= 100; i += 10)
                 comboBox.addItem((float) i / 100.0f);
-            comboBox.setFocusable(true);
+            comboBox.setSelectedItem(P1);
+
+            JLabel txt4 = new JLabel("Время жизни автомобилей");
+            JSlider slider = new JSlider(0, 50, (int)carLifetime);
+            slider.setMajorTickSpacing(10);
+            slider.setMajorTickSpacing(5);
+            slider.setPaintLabels(true);
+            slider.setPaintTicks(true);
+
+            JLabel txt5 = new JLabel("Время жизни мотоциклов");
+            TextField motolifefield = new TextField("", 10);
+            motolifefield.setText(""+motoLifetime);
+
+
 
             add(start);
             add(stop);
@@ -241,16 +249,46 @@ public class Habitat {
             add(moto_period);
             add(txt3);
             add(comboBox);
+            add(txt4);
+            add(slider);
+            add(txt5);
+            add(motolifefield);
 
-            comboBox.addActionListener(e -> {P1 = (float) comboBox.getSelectedItem();
-                System.out.println("P1= " + P1); });
+            comboBox.addActionListener(e -> {
+                P1 = (float) comboBox.getSelectedItem();
+                System.out.println("P1= " + P1);
+            });
 
 
-            show.addActionListener(e -> {labelTime.setVisible(true); isTimeAllowed = true; mainMenu.UpdateButtons();});
-            hide.addActionListener(e-> {labelTime.setVisible(false); isTimeAllowed = false; mainMenu.UpdateButtons();});
+            slider.addChangeListener(e -> carLifetime = ((JSlider)e.getSource()).getValue());
+
+            motolifefield.addActionListener(e -> {
+            int a;
+            try {
+                a = Integer.parseInt(motolifefield.getText());
+                if (a >= 0)
+                    motoLifetime = a;
+                else throw new NumberFormatException();
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
+                motolifefield.setText(" ");
+            }
+            window.requestFocus();
+        });
+
+            show.addActionListener(e -> {
+                labelTime.setVisible(true);
+                isTimeAllowed = true;
+                mainMenu.UpdateButtons();
+            });
+            hide.addActionListener(e -> {
+                labelTime.setVisible(false);
+                isTimeAllowed = false;
+                mainMenu.UpdateButtons();
+            });
 
             show_info.addItemListener(e -> {
-                isStatsAllowed = ((JCheckBox)e.getItem()).isSelected();
+                isStatsAllowed = ((JCheckBox) e.getItem()).isSelected();
 
                 mainMenu.UpdateButtons();
             });
@@ -266,37 +304,31 @@ public class Habitat {
             });
             auto_period.addActionListener(e -> {
                 int a;
-                try
-                {
+                try {
                     a = Integer.parseInt(auto_period.getText());
                     if (a > 0)
                         N1 = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
-                }
-                catch (NumberFormatException nfe)
-                {
+                } catch (NumberFormatException nfe) {
                     N1 = 2;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
                     auto_period.setText(" ");
                 }
+                window.requestFocus();
             });
             moto_period.addActionListener(e -> {
                 int a;
-                try
-                {
+                try {
                     a = Integer.parseInt(moto_period.getText());
                     if (a > 0)
                         N2 = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
-                }
-                catch (NumberFormatException nfe)
-                {
+                } catch (NumberFormatException nfe) {
                     N2 = 3;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
                     moto_period.setText(" ");
                 }
+                window.requestFocus();
             });
         }
 
@@ -308,26 +340,30 @@ public class Habitat {
                 start.setEnabled(true);
                 stop.setEnabled(false);
             }
-            if (isStatsAllowed){
+            if (isStatsAllowed) {
                 show_info.setSelected(true);
-            } else {show_info.setSelected(false);}
-            if (isTimeAllowed){
+            } else {
+                show_info.setSelected(false);
+            }
+            if (isTimeAllowed) {
                 show.setSelected(true);
-            } else {hide.setSelected(true);}
+            } else {
+                hide.setSelected(true);
+            }
         }
     }
 
-    class stats extends  JDialog{
 
-        stats(){
+    class stats extends JDialog {
 
-            var textArea = new JTextArea("Cars: " + Car.count+ "\nMotorcycles: "+ Moto.count+"\nTotal objects: " + (Car.count + Moto.count)+"\nWork Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
+        stats() {
+
+            JTextArea textArea = new JTextArea("Cars: " + Car.count + "\nMotorcycles: " + Moto.count + "\nTotal objects: " + (Car.count + Moto.count) + "\nWork Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
 
             setTitle("Статистика симуляции");
             textArea.setEditable(false);
-            textArea.setFont(new Font("Consolas",Font.PLAIN, 18));
+            textArea.setFont(new Font("Consolas", Font.PLAIN, 18));
 
-            setLayout(new BorderLayout());
             add(textArea, BorderLayout.NORTH);
 
             setSize(new Dimension(320, 165));
@@ -340,30 +376,35 @@ public class Habitat {
             buttonOK.setPreferredSize(new Dimension(150, 50));
 
             buttonOK.addActionListener(e -> {
+                window.setImage(null);
                 frame.repaint();
                 Moto.count = 0;
                 Car.count = 0;
                 timeFromStart = 0;
                 labelTime.setText(timeFromStart / 60 + ":" + "0" + timeFromStart % 60);
                 isRunning = false;
-                vehicles.reset();
-                count = 0;
-                this.dispose();});
+                singleton.reset();
+                this.dispose();
+            });
 
             JButton buttonCancel = new JButton("Отмена");
             buttonCancel.setPreferredSize(new Dimension(150, 50));
             add(buttonCancel, BorderLayout.LINE_END);
 
-            buttonCancel.addActionListener(e -> {resume(); dispose();});
+            buttonCancel.addActionListener(e -> {
+                resume();
+                this.dispose();
+            });
             setVisible(true);
         }
     }
 
 
-    class MenuBar extends JMenuBar{
+    class MenuBar extends JMenuBar {
 
         JMenuItem startMI = new JMenuItem("Старт");
         JMenuItem stopMI = new JMenuItem("Стоп");
+        JMenuItem currentObjs = new JMenuItem("Текущие объекты");
         JRadioButtonMenuItem mshow = new JRadioButtonMenuItem("Показывать время симуляции", true);
         JRadioButtonMenuItem mhide = new JRadioButtonMenuItem("Скрывать время симуляции");
         JCheckBoxMenuItem showinfoMI = new JCheckBoxMenuItem("Показывать информацию");
@@ -374,6 +415,7 @@ public class Habitat {
             simMenu.add(startMI);
 
             simMenu.add(stopMI);
+            simMenu.add(currentObjs);
             JMenu settingsMenu = new JMenu("Параметры");
 
             settingsMenu.add(showinfoMI);
@@ -385,8 +427,9 @@ public class Habitat {
             mhide.setSelected(true);
             settingsMenu.add(mshow);
             settingsMenu.add(mhide);
-            this.add(simMenu);
-            this.add(settingsMenu);
+            add(simMenu);
+            add(settingsMenu);
+            setFocusable(true);
             showinfoMI.setSelected(false);
             startMI.addActionListener(e -> resume());
             stopMI.addActionListener(e -> pause());
@@ -405,17 +448,50 @@ public class Habitat {
                 labelTime.setVisible(false);
                 sideMenu.UpdateButtons();
             });
+            currentObjs.addActionListener(e -> {pause(); new curObjs();});
         }
-            public void UpdateButtons(){
-                if (isStatsAllowed){
-                    showinfoMI.setSelected(true);
-                } else {showinfoMI.setSelected(false);}
 
-                if (isTimeAllowed){
-                    mshow.setSelected(true);
-                } else {mhide.setSelected(true);}
+
+        public void UpdateButtons() {
+            if (isStatsAllowed) {
+                showinfoMI.setSelected(true);
+            } else {
+                showinfoMI.setSelected(false);
             }
 
+            if (isTimeAllowed) {
+                mshow.setSelected(true);
+            } else {
+                mhide.setSelected(true);
+            }
+        }
+
+    }
+
+    class curObjs extends JDialog {
+
+        public curObjs() {
+            setTitle("Текущие объекты");
+            StringBuilder str = new StringBuilder();
+            setLocationRelativeTo(frame);
+            JTextArea text = new JTextArea(singleton.Map.size(), 20);
+            text.setEditable(false);
+            text.setBackground(getBackground());
+            text.setFont(new Font("Dialog", Font.PLAIN, 16));
+
+
+            for(Map.Entry<Integer,Long> item : singleton.Map.entrySet()){
+                str.append("" + "id: ").append(item.getKey()).append("\t").append("  Время рождения: ").append(item.getValue()).append("\n");
+            }
+            text.setText(str.toString().substring(0, str.length()-1));
+
+            setSize(350,350 );
+            setContentPane(new JScrollPane(text));
+            setModal(true);
+            setResizable(true);
+            setVisible(true);
+
+        }
     }
 }
 
