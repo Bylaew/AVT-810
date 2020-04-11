@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Labi:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Labi_jar</output-path>
+    <root id="archive" name="Labi.jar">
+      <element id="module-output" name="Labi" />
+    </root>
+  </artifact>
+</component>
