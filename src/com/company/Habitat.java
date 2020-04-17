@@ -303,6 +303,7 @@ public class Habitat {
               contentArea.setLineWrap(true);
               contentArea.setWrapStyleWord(true);
               contentArea.setLocation(100,200);
+              contentArea.setEditable(false);
 
               helpDialog.add(contentArea);
               helpDialog.setVisible(true);
@@ -427,6 +428,11 @@ public class Habitat {
                     p1Label.setVisible(false);
                     p2Label.setVisible(false);
                     isVisibleSettings = false;
+                    n1.setFocusable(false);
+                    n2.setFocusable(false);
+                    p1.setFocusable(false);
+                    p2.setFocusable(false);
+                    window.requestFocus();
                 } else {
                     n1.setVisible(true);
                     n2.setVisible(true);
@@ -437,6 +443,7 @@ public class Habitat {
                     p1Label.setVisible(true);
                     p2Label.setVisible(true);
                     isVisibleSettings = true;
+
                 }
             }
         });
@@ -542,9 +549,48 @@ public class Habitat {
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
+                if(n1.isFocusable() || n2.isFocusable() || p1.isFocusable() || p2.isFocusable() || show_Time.isFocusable() || showInfo.isFocusable() || showTime.isFocusable());
+                else
+                    window.requestFocus();
+            }
+        });
+        n1.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
                 window.requestFocus();
             }
         });
+        n2.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                window.requestFocus();
+            }
+        });
+        n2.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                window.requestFocus();
+            }
+        });
+        p1.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                window.requestFocus();
+            }
+        });
+        p2.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                super.focusLost(e);
+                window.requestFocus();
+            }
+        });
+
+
     }
 
     private void start(JFrame window) {

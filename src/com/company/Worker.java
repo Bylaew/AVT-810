@@ -21,6 +21,4 @@ public class Worker extends Ant{
     public Image getImage() {
         return img;
     }
-
-
 }
