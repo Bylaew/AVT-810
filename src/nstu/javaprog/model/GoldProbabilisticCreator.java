@@ -6,21 +6,33 @@ import nstu.javaprog.view.ViewContainer;
 final class GoldProbabilisticCreator extends ProbabilisticCreator {
     private final Habitat habitat;
 
-    GoldProbabilisticCreator(float chance, int delay, int minSpeed, int maxSpeed, Habitat habitat) {
-        super(chance, delay, minSpeed, maxSpeed);
+    GoldProbabilisticCreator(
+            float chance,
+            int delay,
+            int minSpeed,
+            int maxSpeed,
+            int lifetime,
+            Habitat habitat
+    ) {
+        super(chance, delay, minSpeed, maxSpeed, lifetime);
         this.habitat = habitat;
     }
 
     @Override
-    public Gold createCanvasElement() {
+    Gold createCanvasElement() {
         Gold newElement = null;
-        if (Float.compare((float) Math.random(), chance) <= 0 && habitat.getTime() % delay == 0) {
+        if (Float.compare((float) Math.random(), properties.getChance()) <= 0
+                && habitat.getTime() % properties.getDelay() == 0) {
             Coordinates coordinates = ViewContainer.getRandomCoordinates();
             newElement = new Gold(
+                    ids++,
                     coordinates.getX(),
                     coordinates.getY(),
-                    (int) (Math.random() * (maxSpeed - minSpeed)) + minSpeed,
-                    (int) (Math.random() * (maxSpeed - minSpeed)) + minSpeed
+                    (int) (Math.random() * (properties.getMaxSpeed() - properties.getMinSpeed()))
+                            + properties.getMinSpeed(),
+                    (int) (Math.random() * (properties.getMaxSpeed() - properties.getMinSpeed()))
+                            + properties.getMinSpeed(),
+                    properties.getLifetime()
             );
             objectCounter.incrementAndGet();
         }

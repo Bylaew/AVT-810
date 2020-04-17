@@ -8,8 +8,8 @@ import static nstu.javaprog.util.ImageReader.readImage;
 final class Guppy extends Fish {
     private static final BufferedImage FISH_IMAGE = readImage("./resources/guppy.png");
 
-    Guppy(int x, int y, int xSpeed, int ySpeed) {
-        super(x, y, xSpeed, ySpeed);
+    Guppy(long id, int x, int y, int xSpeed, int ySpeed, int lifetime) {
+        super(id, x, y, xSpeed, ySpeed, lifetime);
     }
 
     @Override

@@ -5,17 +5,20 @@ public final class Properties {
     private final int delay;
     private final int maxSpeed;
     private final int minSpeed;
+    private final int lifetime;
 
     public Properties(
             float chance,
             int delay,
             int minSpeed,
-            int maxSpeed
+            int maxSpeed,
+            int lifetime
     ) {
         this.delay = delay;
         this.chance = chance;
         this.minSpeed = minSpeed;
         this.maxSpeed = maxSpeed;
+        this.lifetime = lifetime;
     }
 
     public float getChance() {
@@ -32,5 +35,9 @@ public final class Properties {
 
     public int getMinSpeed() {
         return minSpeed;
+    }
+
+    public int getLifetime() {
+        return lifetime;
     }
 }

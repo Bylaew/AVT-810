@@ -21,9 +21,9 @@ public final class ViewContainer extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
 
-        Canvas canvas = new Canvas(this);
-        Menu menu = new Menu(this);
-        MenuBar menuBar = new MenuBar(this);
+        nstu.javaprog.view.Canvas canvas = new nstu.javaprog.view.Canvas(this);
+        nstu.javaprog.view.Menu menu = new nstu.javaprog.view.Menu(this);
+        nstu.javaprog.view.MenuBar menuBar = new nstu.javaprog.view.MenuBar(this);
 
         components.add(canvas);
         components.add(menu);
@@ -37,64 +37,57 @@ public final class ViewContainer extends JFrame {
         setVisible(true);
     }
 
-    public static Coordinates getRandomCoordinates() {
-        return new Coordinates(
-                (int) (Math.random() * WIDTH),
-                (int) (Math.random() * HEIGHT)
-        );
-    }
-
     void activate(Interdependent initiator) {
         windowController.activate();
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.activate();
-        }
+        });
     }
 
     void deactivate(Interdependent initiator) {
         windowController.deactivate();
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.deactivate();
-        }
+        });
     }
 
     void pause(Interdependent initiator) {
         windowController.deactivate();
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.pause();
-        }
+        });
     }
 
     void resume(Interdependent initiator) {
         windowController.activate();
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.resume();
-        }
+        });
     }
 
     void showTime(Interdependent initiator) {
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.showTime();
-        }
+        });
     }
 
     void hideTime(Interdependent initiator) {
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.hideTime();
-        }
+        });
     }
 
     void changeStatisticView(Interdependent initiator) {
-        for (Interdependent component : components) {
+        components.forEach(component -> {
             if (component != initiator)
                 component.changeStatisticView();
-        }
+        });
     }
 
     void drawElements(Graphics graphics, int width, int height) {
@@ -112,30 +105,46 @@ public final class ViewContainer extends JFrame {
     void changeGoldSettings() {
         if (windowController.isLaunched())
             pause(null);
-        EnvironmentSettings environmentSettings = new EnvironmentSettings(
+        new EnvironmentSettings(
                 this,
-                windowController.getGoldProperties()
-        );
-        environmentSettings.setVisible(true);
-        windowController.setGoldProperties(environmentSettings.getProperties());
+                windowController.getGoldProperties(),
+                windowController::setGoldProperties
+        ).setVisible(true);
     }
 
     void changeGuppySettings() {
         if (windowController.isLaunched())
             pause(null);
-        EnvironmentSettings environmentSettings = new EnvironmentSettings(
+        new EnvironmentSettings(
                 this,
-                windowController.getGuppyProperties()
+                windowController.getGuppyProperties(),
+                windowController::setGuppyProperties
+        ).setVisible(true);
+    }
+
+    void showAliveElements() {
+        if (windowController.isLaunched())
+            pause(null);
+        JOptionPane.showMessageDialog(
+                this,
+                new JScrollPane(new JList<>(windowController.getAliveElementsInfo())),
+                "Alive elements",
+                JOptionPane.INFORMATION_MESSAGE
         );
-        environmentSettings.setVisible(true);
-        windowController.setGuppyProperties(environmentSettings.getProperties());
     }
 
     String getCurrentTime() {
-        return Long.toString(windowController.getCurrentTime());
+        return Integer.toString(windowController.getCurrentTime());
     }
 
     String getStatistic() {
         return windowController.getStatistic();
+    }
+
+    public static Coordinates getRandomCoordinates() {
+        return new Coordinates(
+                (int) (Math.random() * WIDTH),
+                (int) (Math.random() * HEIGHT)
+        );
     }
 }

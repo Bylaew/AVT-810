@@ -5,22 +5,17 @@ import nstu.javaprog.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 abstract class ProbabilisticCreator {
+    static long ids = 0;
     final AtomicInteger objectCounter = new AtomicInteger();
-    float chance;
-    int delay;
-    int maxSpeed;
-    int minSpeed;
+    Properties properties;
 
-    ProbabilisticCreator(float chance, int delay, int minSpeed, int maxSpeed) {
+    ProbabilisticCreator(float chance, int delay, int minSpeed, int maxSpeed, int lifetime) {
         if (minSpeed > maxSpeed)
             throw new IllegalArgumentException("minSpeed > maxSpeed");
-        this.chance = chance;
-        this.delay = delay;
-        this.minSpeed = minSpeed;
-        this.maxSpeed = maxSpeed;
+        properties = new Properties(chance, delay, minSpeed, maxSpeed, lifetime);
     }
 
-    abstract CanvasElement createCanvasElement();
+    abstract Fish createCanvasElement();
 
     int getObjectCounter() {
         return objectCounter.get();
@@ -31,13 +26,10 @@ abstract class ProbabilisticCreator {
     }
 
     Properties getProperties() {
-        return new Properties(chance, delay, minSpeed, maxSpeed);
+        return properties;
     }
 
     void setProperties(Properties properties) {
-        this.delay = properties.getDelay();
-        this.chance = properties.getChance();
-        this.minSpeed = properties.getMinSpeed();
-        this.maxSpeed = properties.getMaxSpeed();
+        this.properties = properties;
     }
 }

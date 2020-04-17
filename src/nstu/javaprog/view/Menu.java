@@ -3,8 +3,6 @@ package nstu.javaprog.view;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 final class Menu extends JPanel implements Interdependent {
     private final ViewContainer container;
@@ -14,7 +12,8 @@ final class Menu extends JPanel implements Interdependent {
     private final JButton resume = new JButton("Resume");
     private final JCheckBox showTime = new JCheckBox("Show the time");
     private final JCheckBox hideTime = new JCheckBox("Hide the time");
-    private final JCheckBox showStatisticAsDialog = new JCheckBox("Statistic as dialog");
+    private final JCheckBox statisticAsDialog = new JCheckBox("Statistic as dialog");
+    private final JButton aliveElements = new JButton("Show alive elements");
     private final JButton goldSettings = new JButton("Gold settings");
     private final JButton guppySettings = new JButton("Guppy settings");
 
@@ -34,7 +33,8 @@ final class Menu extends JPanel implements Interdependent {
         resume.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         showTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         hideTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        showStatisticAsDialog.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        statisticAsDialog.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        aliveElements.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         goldSettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         guppySettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
@@ -59,7 +59,8 @@ final class Menu extends JPanel implements Interdependent {
         middle.add(showTime);
         middle.add(hideTime);
         middle.add(new JSeparator(JSeparator.HORIZONTAL));
-        middle.add(showStatisticAsDialog);
+        middle.add(statisticAsDialog);
+        middle.add(aliveElements);
         add(middle);
 
         bot.setBorder(border);
@@ -71,74 +72,43 @@ final class Menu extends JPanel implements Interdependent {
     }
 
     private void configureListeners() {
-        activate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.activate();
-                container.activate(Menu.this);
-            }
+        activate.addActionListener(event -> {
+            activate();
+            container.activate(this);
         });
 
-        deactivate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.deactivate();
-                container.deactivate(Menu.this);
-            }
+        deactivate.addActionListener(event -> {
+            deactivate();
+            container.deactivate(this);
         });
 
-        pause.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.pause();
-                container.pause(Menu.this);
-            }
+        pause.addActionListener(event -> {
+            pause();
+            container.pause(this);
         });
 
-        resume.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.resume();
-                container.resume(Menu.this);
-            }
+        resume.addActionListener(event -> {
+            resume();
+            container.resume(this);
         });
 
-        showTime.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.showTime();
-                container.showTime(Menu.this);
-            }
+        showTime.addActionListener(event -> {
+            showTime();
+            container.showTime(this);
         });
 
-        hideTime.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                Menu.this.hideTime();
-                container.hideTime(Menu.this);
-            }
+        hideTime.addActionListener(event -> {
+            hideTime();
+            container.hideTime(this);
         });
 
-        showStatisticAsDialog.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                container.changeStatisticView(Menu.this);
-            }
-        });
+        statisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
 
-        goldSettings.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                container.changeGoldSettings();
-            }
-        });
+        aliveElements.addActionListener(event -> container.showAliveElements());
 
-        guppySettings.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                container.changeGuppySettings();
-            }
-        });
+        goldSettings.addActionListener(event -> container.changeGoldSettings());
+
+        guppySettings.addActionListener(event -> container.changeGuppySettings());
     }
 
     @Override
@@ -188,7 +158,7 @@ final class Menu extends JPanel implements Interdependent {
 
     @Override
     public void changeStatisticView() {
-        showStatisticAsDialog.setSelected(!showStatisticAsDialog.isSelected());
+        statisticAsDialog.setSelected(!statisticAsDialog.isSelected());
         revalidate();
     }
 }

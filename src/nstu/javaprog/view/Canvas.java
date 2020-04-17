@@ -107,22 +107,24 @@ final class Canvas extends JPanel implements Interdependent {
     public void deactivate() {
         canvasUpdater.deactivate();
         if (isStatisticAsDialog) {
-            int option = JOptionPane.showConfirmDialog(
-                    this,
-                    container.getStatistic(),
-                    "Deactivate generation",
-                    JOptionPane.OK_CANCEL_OPTION
-            );
-            if (option == JOptionPane.OK_OPTION)
-                setDeactivatedScene();
-            else {
-                activate();
-                container.activate(this);
-                if (isPaused) {
-                    pause();
-                    container.pause(this);
+            SwingUtilities.invokeLater(() -> {
+                int option = JOptionPane.showConfirmDialog(
+                        this,
+                        container.getStatistic(),
+                        "Deactivate generation",
+                        JOptionPane.OK_CANCEL_OPTION
+                );
+                if (option == JOptionPane.OK_OPTION)
+                    setDeactivatedScene();
+                else {
+                    activate();
+                    container.activate(this);
+                    if (isPaused) {
+                        pause();
+                        container.pause(this);
+                    }
                 }
-            }
+            });
         } else
             setDeactivatedScene();
     }
@@ -165,12 +167,9 @@ final class Canvas extends JPanel implements Interdependent {
                 @Override
                 public void run() {
                     if (!isSuspended)
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                container.moveElements();
-                                repaint();
-                            }
+                        SwingUtilities.invokeLater(() -> {
+                            container.moveElements();
+                            repaint();
                         });
                 }
             }, 0, 33);
@@ -179,12 +178,9 @@ final class Canvas extends JPanel implements Interdependent {
                 @Override
                 public void run() {
                     if (!isSuspended)
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (currentTime.isVisible())
-                                    currentTime.setText(container.getCurrentTime());
-                            }
+                        SwingUtilities.invokeLater(() -> {
+                            if (currentTime.isVisible())
+                                currentTime.setText(container.getCurrentTime());
                         });
                 }
             }, 0, 1000);
