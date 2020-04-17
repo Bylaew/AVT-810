@@ -2,10 +2,15 @@ package com.company;
 
 public abstract class AbstractRabbit implements InBehavior {
 
-    private int x,y;
+    int x,y;
+    long BirthTime;
+    int ID;
 
-    protected AbstractRabbit() {
-    }
+    protected AbstractRabbit() { }
+
+    abstract long getTimeBirth();
+
+    abstract int getID();
 
     abstract void go();
     abstract void stay();
@@ -15,5 +20,4 @@ public abstract class AbstractRabbit implements InBehavior {
         this.x=x;
         this.y=y;
     }
-
 }

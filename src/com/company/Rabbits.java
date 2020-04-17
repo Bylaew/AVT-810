@@ -6,12 +6,24 @@ import java.io.IOException;
 
 public class Rabbits extends AbstractRabbit{
 
-    private int x,y;
     private BufferedImage image;
+    //int BirthTime;
 
-    Rabbits(int x, int y) {
+    Rabbits(int x, int y,long Birth,int ID) {
         this.x=x;
         this.y=y;
+        this.BirthTime=Birth;
+        this.ID=ID;
+    }
+
+    @Override
+    long getTimeBirth() {
+        return BirthTime;
+    }
+
+    @Override
+    int getID() {
+        return ID;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.company;
 
 public interface abstractFactory {
-    Rabbits createRabbit();
-    albinoRabbit createAlbinoRabbit();
+
+    void  createRabbit(long Birth);
+    void createAlbinoRabbit(long Birth);
 }

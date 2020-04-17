@@ -1,20 +1,39 @@
 package com.company;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.TreeSet;
+import java.util.Vector;
 
 public class Singleton {
-    ArrayList<AbstractRabbit>arr=new ArrayList<AbstractRabbit>();
+    Vector<AbstractRabbit> arr=new Vector();
     private static Singleton instance;
-
+    public TreeSet ID=new TreeSet();
+    HashMap map=new HashMap();
     private Singleton(){}
 
-    public ArrayList<AbstractRabbit> GetArray()
+    public Vector<AbstractRabbit> GetVector()
     {
      return arr;
     }
 
-    public void refreshArray(){
-        arr=new ArrayList<AbstractRabbit>();
+    public void refreshVector() {
+        arr.clear();
+    }
+
+    public TreeSet getID(){
+        return ID;
+    }
+
+    public void refreshID() {
+        ID.clear();
+    }
+
+    public HashMap GetMap() {
+        return map;
+    }
+
+    public void refreshMap(){
+        map.clear();
     }
 
     public static Singleton getInstance()
