@@ -1,153 +1,32 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
-
-class Singleton
-{
-    private static Singleton instance;
-    private Singleton(){}
-    public static Singleton getInstance()
-    {
-        if(instance == null)
-            instance = new Singleton();
-        return instance;
-    }
-
-    private House[] array = new House[1000];
-
-    public void add(House house, int i)
-    {
-        array[i] = house;
-    }
-
-    public House getHouse(int i)
-    {
-        return array[i];
-    }
-}
 
 
 public class Habitat
 {
-    //private Image background;
+
     private int width;
     private int height;
     private ConcreteFactory allFactory;
     boolean simulation=false;
     private Timer timer;
     private float time;
-    Singleton array =Singleton.getInstance();
+    Singleton houseSingleton =Singleton.getInstance();
     private int counter;
 
     //условия: вероятности и время
     private float t1,t2;
     private double p1,p2;
-   public class UserInterface
-    {
-       private JFrame frame = new JFrame("Simulation");
-        JPanel simulation_panel = new JPanel(); // разделение фрейма на область симуляциии и настроек
-        JPanel settings_panel = new JPanel();
-        JTextArea timerInd = new JTextArea();
-        //панель инструментов
-        JMenuBar menubar = new JMenuBar();
-            JMenu menu = new JMenu("Menu");
-                JMenuItem startMenuItem = new JMenuItem("Start");
-                JMenuItem stopMenuItem = new JMenuItem("Stop");
-                JCheckBoxMenuItem showDialogMenuItem = new JCheckBoxMenuItem("Show dialog");
-                JMenu timeItemMenu = new JMenu("Time");
-                    ButtonGroup timeItemMenuGroup = new ButtonGroup();
-                        JRadioButtonMenuItem showTimeMenuItem = new JRadioButtonMenuItem("Show time");
-                        JRadioButtonMenuItem hideTimeMenuItem = new JRadioButtonMenuItem("Hide time");
+    private int stoneLifeTime;
+    private int woodLifeTime;
 
-        //кнопки
-        JPanel onPanel = new JPanel();
-            ButtonGroup onGroup = new ButtonGroup();
-                JToggleButton start_button = new JToggleButton("Start simulation");
-                JToggleButton stop_button = new JToggleButton("Stop simulation");
-        //чекбокс
-        JCheckBox showDialogBox = new JCheckBox("Show dialog");
-        //связанные переключатели
-        JPanel timeSwitchPanel = new JPanel();
-        ButtonGroup bg= new ButtonGroup();
-        JRadioButton showTimeButton= new JRadioButton("Show time");
-        JRadioButton hideTimeButton= new JRadioButton("Hide time");
-        //комбобокс
-        JComboBox cmb1 = new JComboBox();
-        JComboBox cmb2 = new JComboBox();
-        //текстовые зоны
-        JTextField period1 = new JTextField();
-        JTextField period2 = new JTextField();
 
-        UserInterface(){
-            frame.add(settings_panel,BorderLayout.WEST);// настройки слева
-            frame.add(simulation_panel,BorderLayout.CENTER);// симуляция справа
-
-            settings_panel.setBackground(Color.LIGHT_GRAY);
-            settings_panel.add(timerInd);
-
-            timerInd.setVisible(true);
-            timerInd.setFont(new Font("Helvetica",Font.BOLD,14));
-            timerInd.setEditable(false);
-
-            //добавление элементов к верхней панели инструментов
-            menubar.add(menu);
-                menu.add(startMenuItem);
-                menu.add(stopMenuItem);
-                timeItemMenuGroup.add(showTimeMenuItem);
-                timeItemMenuGroup.add(hideTimeMenuItem);
-            menu.add(timeItemMenu);
-                timeItemMenu.add(showTimeMenuItem);
-                timeItemMenu.add(hideTimeMenuItem);
-            //menu.add(showTimeMenuItem);
-            //menu.add(hideTimeMenuItem);
-
-                menu.add(showDialogMenuItem);
-            frame.setJMenuBar(menubar);
-
-            //добавление кнопок
-            onPanel.add(start_button);
-            onPanel.add(stop_button);
-            onGroup.add(start_button);
-            onGroup.add(stop_button);
-
-            //связанные переключатели
-            timeSwitchPanel.add(showTimeButton);
-            timeSwitchPanel.add(hideTimeButton);
-            bg.add(showTimeButton);
-            bg.add(hideTimeButton);
-
-            //настройки комобоксов
-            cmb1.setEditable(false);
-            cmb2.setEditable(false);
-
-            for (int i = 1; i < 10;i=i+1 )
-            {
-                cmb1.addItem((double)i/10);
-                cmb2.addItem((double)i/10);
-            }
-            //добавление элементов к панели настроек
-            settings_panel.setLayout(new GridLayout(12,1,0,4));
-            settings_panel.add(onPanel);
-            settings_panel.add(showDialogBox);
-
-            showDialogBox.setSelected(true);
-            //settings_panel.add(text);
-            settings_panel.add(new JLabel("Probability 1"));
-            settings_panel.add(cmb1);
-            settings_panel.add(new JLabel("Probability 2"));
-            settings_panel.add(cmb2);
-            settings_panel.add(timeSwitchPanel);
-            settings_panel.add(new JLabel("Period 1"));
-            settings_panel.add(period1);
-            settings_panel.add(new JLabel("Period 2"));
-            settings_panel.add(period2);
-
-            simulation_panel.setVisible(true);
-            settings_panel.setVisible(true);};
-
-    }
     Habitat()
     {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -155,21 +34,28 @@ public class Habitat
         this.height=720;
         this.width=1280;
         allFactory= new ConcreteFactory();
-        //JFrame frame = new JFrame("Simulation");
+
         ui.frame.setSize(width,height);
         ui.frame.setVisible(true);
-       // frame.setResizable(false);
+
         counter =0;t1=2;t2=3;p1=0.8;p2=0.7;
         time=0;
-
-
+        stoneLifeTime=5000; woodLifeTime=5000;
         //слушатели
         ui.simulation_panel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 ui.simulation_panel.requestFocus();
-                //super.mouseClicked(e);
+
             }
+        });
+        ui.aliveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                showAlive(ui);
+            }
+
         });
         ui.start_button.addActionListener(new ActionListener() {
             @Override
@@ -297,6 +183,41 @@ public class Habitat
                 }
             }
         });
+        ui.stoneLifeTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int lifeTime;
+                try
+                {
+                    lifeTime = Integer.parseInt(ui.stoneLifeTime.getText());
+                    if (lifeTime > 0 )
+                        stoneLifeTime=lifeTime;
+                    else throw new NumberFormatException();
+                }
+                catch (NumberFormatException ex)
+                {
+                    stoneLifeTime=5;showError();
+                }
+            }
+        });
+        ui.woodLifeTime.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int lifeTime;
+                try
+                {
+                    lifeTime = Integer.parseInt(ui.woodLifeTime.getText());
+                    if (lifeTime > 0 )
+                        woodLifeTime=lifeTime;
+                    else throw new NumberFormatException();
+                }
+                catch (NumberFormatException ex)
+                {
+                    woodLifeTime=5;showError();
+                }
+            }
+        });
+
         ui.simulation_panel.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent code) {
@@ -337,7 +258,7 @@ public class Habitat
         });
 
     }
-    private void pauseSimulation(UserInterface ui)
+    public void pauseSimulation(UserInterface ui)
     {
         if (simulation==true)
         {
@@ -349,6 +270,7 @@ public class Habitat
             {
             showDialog(ui);
             }
+            houseSingleton.clear();
         }
     }
     public void startSimulation(UserInterface ui)
@@ -432,27 +354,82 @@ public class Habitat
             }
         });
     }
+    public void showAlive(UserInterface ui)
+    {
+        JDialog dialog = new JDialog();
+        dialog.setTitle("Alive");
+        String[] cols = {"ID", "LifeTime"};
+        int rows = 100;
+        JTable table = new JTable(new DefaultTableModel(cols, rows));
+        TableModel tableModel = table.getModel();
+
+        int i = 0;
+
+        for (Iterator it = houseSingleton.mapList.descendingMap().entrySet().iterator(); it.hasNext(); i++)
+        {
+            Map.Entry<Integer, String> entry = (Map.Entry<Integer, String>) it.next();
+            tableModel.setValueAt(entry.getValue(), i, 1);
+            tableModel.setValueAt(entry.getKey(), i, 0);
+        }
+        JScrollPane scrollPane = new JScrollPane(table);
+        dialog.add(scrollPane);
+        dialog.setSize(new Dimension(250, 100));
+        dialog.setResizable(false);
+        dialog.setVisible(true);
+        dialog.pack();
+    }
     public void update (float time, JPanel simulation_panel)
     {
-        System.out.println(p1);
-        System.out.println(t1);
-
         if (time/1000 % t1 == 0 && time!=0 )
         {
             if (Math.random() < p1)
             {
-                array.add(allFactory.createStone((int)(Math.random()*simulation_panel.getWidth()),(int)(Math.random()*simulation_panel.getHeight())),counter);
-                simulation_panel.getGraphics().drawImage(array.getHouse(counter).getImage(),
-                        array.getHouse(counter).getX(), array.getHouse(counter).getY(), null);
+                int id = houseSingleton.idRandom();
+                House stoneHouse = allFactory.createStone((int)(Math.random()*simulation_panel.getWidth()),(int)(Math.random()*simulation_panel.getHeight()));
+                stoneHouse.setAppTime((int)time);
+                stoneHouse.setLifePeriod(stoneLifeTime);
+                stoneHouse.setId(id);
+                houseSingleton.houseList.add(houseSingleton.houseList.size(),stoneHouse);
+                houseSingleton.mapList.put(id,(long)stoneHouse.appTime);
+                houseSingleton.idList.add(id);
                 counter++;
             }
         }
-        if (time/1000 % t2 == 0 && time!=0 ) {
+        if (time/1000 % t2 == 0 && time!=0 )
+        {
             if (Math.random() < p2) {
-                array.add(allFactory.createWood((int) (Math.random() * simulation_panel.getWidth()), (int) (Math.random() * simulation_panel.getHeight())),counter);
-                simulation_panel.getGraphics().drawImage(array.getHouse(counter).getImage(), array.getHouse(counter).getX(), array.getHouse(counter).getY(), null);
+                int id = houseSingleton.idRandom();
+                House woodHouse = allFactory.createWood((int) (Math.random() * simulation_panel.getWidth()), (int) (Math.random() * simulation_panel.getHeight()));
+                woodHouse.setAppTime((int)time);
+                woodHouse.setLifePeriod(stoneLifeTime);
+                woodHouse.setId(id);
+                houseSingleton.houseList.add(houseSingleton.houseList.size(),woodHouse);
+                houseSingleton.mapList.put(id,(long)woodHouse.appTime);
+                houseSingleton.idList.add(id);
                 counter++;
             }
         }
+        for (int i=0;i< houseSingleton.houseList.size();i++)
+        {
+            if (houseSingleton.houseList.get(i).appTime + houseSingleton.houseList.get(i).lifePeriod <= time)
+            {
+                houseSingleton.mapList.remove(houseSingleton.houseList.get(i).id);
+                houseSingleton.idList.remove(houseSingleton.houseList.get(i).id);
+                houseSingleton.houseList.remove(i);
+                counter--;
+            }
+        }
+        int w = simulation_panel.getWidth();
+        int h = simulation_panel.getHeight();
+        BufferedImage bufferedImage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
+        for (int i=0;i< houseSingleton.houseList.size();i++)
+        {
+            bufferedImage.getGraphics().drawImage(houseSingleton.houseList.get(i).getImage(),
+                    houseSingleton.houseList.get(i).getX(), houseSingleton.houseList.get(i).getY(), null);
+        }
+        simulation_panel.getGraphics().drawImage(bufferedImage,0,0,w,h,null);
+
+
+
     }
 }
