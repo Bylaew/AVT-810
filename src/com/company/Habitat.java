@@ -28,8 +28,8 @@ public class Habitat {
     private double P1=0.3;
     private long to=0;
     private boolean bol=false;
-    private boolean go=false;
-    private ConcreteFactory obj1;
+    private boolean go=false;//не дает книпоке currentObj продолжить после остановления симуляции
+    private ConcreteFactory concrete;
     private JMenuBar menuBar=new JMenuBar();
 
     public Habitat() {
@@ -455,10 +455,8 @@ public class Habitat {
     public void pause(long t)
     {
         currentTime=t;
-        //obj=Singleton.getInstance();
         mTimer.cancel();
         mTimer=new Timer();
-        //frame.repaint();
     }
 
     public void resume(long t)
@@ -472,7 +470,7 @@ public class Habitat {
 
     public void Start()
     {
-        obj1= new ConcreteFactory();
+        concrete= new ConcreteFactory();
         if (JustStart)
             JustStart = false;
         mTimer.cancel();
@@ -560,15 +558,12 @@ public class Habitat {
                 public void actionPerformed(ActionEvent actionEvent) {
                     if(go) {
                         resume(currentTime);
-                        dispose();
                     }
-                    else
                         dispose();
                 }
             });
             setTitle("Window");
             TextArea text=new TextArea(5,30);
-            //text.setText("Current living Object "+obj.GetMap().size()+"Time "+obj.GetMap().entrySet());
             String data = "Living objects: "+obj.GetMap().size()+'\n';
             data += "ID\tBirth time\n";
             for (Map.Entry entry : (Set<Map.Entry>)obj.GetMap().entrySet()) {
@@ -629,7 +624,7 @@ public class Habitat {
                     || ((Integer)elem.getValue() < 0 && (Long)elem.getKey() + lifeTimeAlbino <= currentTime))
                 toRemove.add(elem);
         }
-        for (Map.Entry elem : toRemove)
+        for (Map.Entry elem : toRemove)//has next о
         {
             obj.GetMap().remove(elem.getKey());
             obj.getID().remove(elem.getValue());
@@ -643,12 +638,12 @@ public class Habitat {
         Random r=new Random();
 
         if(elapseTime%N1==0 && r.nextInt(1)<P1) {
-            obj1.createRabbit(currentTime);
+            concrete.createRabbit(currentTime);
             NumberRabbits++;
             CommonRabbit++;
         }
         if(elapseTime%N2==0 && NumberAlbino<=k*NumberRabbits) {
-            obj1.createAlbinoRabbit(currentTime);
+            concrete.createAlbinoRabbit(currentTime);
             NumberRabbits++;
             NumberAlbino++;
         }
