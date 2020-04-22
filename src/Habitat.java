@@ -1,10 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -75,12 +72,13 @@ class Singleton_HashMap
 
 public class Habitat
 {
+    JPanel field = new JPanel();
     BufferedImage fieldImage;
     private static BufferedImage image;
-    private int width = 1280;
-    private int height = 720;
+    int width = 1366;
+    int height = 768;
     private Timer timer;
-    private long time = 0;
+    long time = 0;
     boolean sim_is_working = false;
     boolean bool_show_info = false;
 
@@ -92,6 +90,9 @@ public class Habitat
     Singleton_TreeSet ID_tree = Singleton_TreeSet.getInstance();
     Singleton_HashMap timeHashMap = Singleton_HashMap.getInstance();
     int count;
+
+    AlbinoAI albinoAI = null;
+    OrdinaryAI ordinaryAI = null;
 
     public Habitat()
     {
@@ -112,9 +113,10 @@ public class Habitat
 
         JFrame frame = new JFrame("Rabbits Simulation");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JPanel field = new JPanel();
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(17, 1, 5, 12));
+        JPanel ordAIbuttons = new JPanel();
+        JPanel albAIbuttons = new JPanel();
+        controlPanel.setLayout(new GridLayout(23, 1, 5, 5));
         Container container = frame.getContentPane();
 
         JCheckBox show_info = new JCheckBox("Показывать информацию");
@@ -123,10 +125,18 @@ public class Habitat
         JButton start = new JButton("Старт");
         JButton stop = new JButton("Стоп");
         JButton currentRabbits = new JButton("Текущие объекты");
+        JButton stopOrdinaryAI = new JButton("Остановка AI \nобычных кроликов");
+        JButton resumeOrdinaryAI = new JButton("Запуск AI \nобычных кроликов");
+        JButton stopAlbinoAI = new JButton("Остановка AI альбиносов");
+        JButton resumeAlbinoAI = new JButton("Запуск AI альбиносов");
         stop.setEnabled(false);
         start.setFocusable(false);
         stop.setFocusable(false);
         currentRabbits.setFocusable(false);
+        stopOrdinaryAI.setFocusable(false);
+        resumeOrdinaryAI.setFocusable(false);
+        stopAlbinoAI.setFocusable(false);
+        resumeAlbinoAI.setFocusable(false);
         ButtonGroup sim_time = new ButtonGroup();
         JRadioButton show, hide;
         show = new JRadioButton("Показывать время симуляции", true);
@@ -165,14 +175,32 @@ public class Habitat
         mark5.setText("Время жизни альбиноса");
         mark5.setEditable(false);
         mark5.setFocusable(false);
+        JTextArea mark6 = new JTextArea();
+        mark6.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        mark6.setText("Приоритет AI обычного кролика");
+        mark6.setEditable(false);
+        mark6.setFocusable(false);
+        JTextArea mark7 = new JTextArea();
+        mark7.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        mark7.setText("Приоритет AI альбиноса");
+        mark7.setEditable(false);
+        mark7.setFocusable(false);
         TextField ordinary_period = new TextField("", 10);
         TextField albino_period = new TextField("", 10);
         TextField ordinary_ltime = new TextField("", 10);
         TextField albino_ltime = new TextField("", 10);
-        JComboBox pcb = new JComboBox();
+        JComboBox<Double> pcb = new JComboBox<>();
         for (int i = 10; i <= 100; i += 10)
             pcb.addItem((double)i/100.0);
         pcb.setFocusable(false);
+        JComboBox<Integer> ordPrt = new JComboBox<>();
+        for (int i = 1; i <= 10; i++)
+            ordPrt.addItem(i);
+        ordPrt.setFocusable(false);
+        JComboBox<Integer> albPrt = new JComboBox<>();
+        for (int i = 1; i <= 10; i++)
+            albPrt.addItem(i);
+        albPrt.setFocusable(false);
 
         // Главное меню
         JMenuBar mainMenu = new JMenuBar();
@@ -202,6 +230,8 @@ public class Habitat
             showinfoMI.setSelected(bool_show_info);
         });
         pcb.addItemListener(e -> P1 = (double)pcb.getSelectedItem());
+        ordPrt.addItemListener(e -> ordinaryAI.setPriority((int)ordPrt.getSelectedItem()));
+        albPrt.addItemListener(e -> albinoAI.setPriority((int)albPrt.getSelectedItem()));
         start.addActionListener(e -> startMethod(container));
         stop.addActionListener(e -> stopMethod(container));
         currentRabbits.addActionListener(new ActionListener() {
@@ -239,7 +269,6 @@ public class Habitat
                     if (a > 0)
                         N1 = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
                 }
                 catch (NumberFormatException nfe)
                 {
@@ -257,6 +286,7 @@ public class Habitat
                     error.pack();
                     error.setVisible(true);
                 }
+                frame.requestFocus();
             }
         });
         albino_period.addActionListener(new ActionListener() {
@@ -269,7 +299,6 @@ public class Habitat
                     if (a > 0)
                         N2 = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
                 }
                 catch (NumberFormatException nfe)
                 {
@@ -287,6 +316,7 @@ public class Habitat
                     error.pack();
                     error.setVisible(true);
                 }
+                frame.requestFocus();
             }
         });
         ordinary_ltime.addActionListener(new ActionListener() {
@@ -299,7 +329,6 @@ public class Habitat
                     if (a > 0)
                         Ordinary_Rabbit.lifetime = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
                 }
                 catch (NumberFormatException nfe)
                 {
@@ -317,6 +346,7 @@ public class Habitat
                     error.pack();
                     error.setVisible(true);
                 }
+                frame.requestFocus();
             }
         });
         albino_ltime.addActionListener(new ActionListener() {
@@ -329,7 +359,6 @@ public class Habitat
                     if (a > 0)
                         Albino.lifetime = a;
                     else throw new NumberFormatException();
-                    frame.requestFocus();
                 }
                 catch (NumberFormatException nfe)
                 {
@@ -347,6 +376,7 @@ public class Habitat
                     error.pack();
                     error.setVisible(true);
                 }
+                frame.requestFocus();
             }
         });
         startMI.addActionListener(e -> {
@@ -378,6 +408,61 @@ public class Habitat
                 hide.setSelected(true);
             }
         });
+        stopOrdinaryAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                synchronized (ordinaryAI)
+                {
+                    try
+                    {
+                        ordinaryAI.wait();
+                    }
+                    catch (InterruptedException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        resumeOrdinaryAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                synchronized (ordinaryAI)
+                {
+                    ordinaryAI.notify();
+                }
+            }
+        });
+        stopAlbinoAI.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                synchronized (albinoAI)
+                {
+                    try
+                    {
+                        albinoAI.wait();
+                    }
+                    catch (InterruptedException ex)
+                    {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        });
+        resumeAlbinoAI.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                synchronized (albinoAI)
+                {
+                    albinoAI.notify();
+                }
+            }
+        });
+
+        ordAIbuttons.add(stopOrdinaryAI);
+        ordAIbuttons.add(resumeOrdinaryAI);
+        albAIbuttons.add(stopAlbinoAI);
+        albAIbuttons.add(resumeAlbinoAI);
 
         controlPanel.add(start); // Номер 0 в контейнере controlPanel (не изменять)
         controlPanel.add(stop); // Номер 1 в контейнере controlPanel (не изменять)
@@ -396,6 +481,12 @@ public class Habitat
         controlPanel.add(ordinary_ltime);
         controlPanel.add(mark5);
         controlPanel.add(albino_ltime);
+        controlPanel.add(ordAIbuttons);
+        controlPanel.add(albAIbuttons);
+        controlPanel.add(mark6);
+        controlPanel.add(ordPrt);
+        controlPanel.add(mark7);
+        controlPanel.add(albPrt);
 
         container.add(controlPanel, BorderLayout.EAST); // Номер 0 в контейнере container (не изменять)
         container.add(field, BorderLayout.CENTER); // Номер 1 в контейнере container (не изменять)
@@ -447,7 +538,7 @@ public class Habitat
         });
     }
 
-    private void Update(long time, Graphics g, JPanel field)
+    public synchronized void generate(long time, JPanel field)
     {
         for (int i = 0; i < count; i++)
         {
@@ -466,7 +557,7 @@ public class Habitat
         {
             if (Math.random() < P1)
             {
-                Rabbit rabbit = factory.createOrdinary((float)(Math.random() * (field.getWidth() - 58)),(float)(Math.random() * (field.getHeight() - 104)), time);
+                Rabbit rabbit = factory.createOrdinary((int)(Math.random() * (field.getWidth() - 58)),(int)(Math.random() * (field.getHeight() - 104)), time);
                 ID_tree.add(rabbit);
                 rabbitVector.add(rabbit);
                 timeHashMap.add(rabbit);
@@ -478,22 +569,31 @@ public class Habitat
             double p = (double) (K * count) / 100;
             if ((double)Albino.count < p)
             {
-                Rabbit rabbit = factory.createAlbino((float)(Math.random() * (field.getWidth() - 79)),(float)(Math.random() * (field.getHeight() - 128)), time);
+                Rabbit rabbit = factory.createAlbino((int)(Math.random() * (field.getWidth() - 79)),(int)(Math.random() * (field.getHeight() - 128)), time);
                 ID_tree.add(rabbit);
                 rabbitVector.add(rabbit);
                 timeHashMap.add(rabbit);
                 count++;
             }
         }
+    }
 
+    public synchronized void draw(Graphics g, JPanel field)
+    {
         //Двойная буфферизация в BufferedImage (устранение мерцания)
         int w = field.getWidth(), h = field.getHeight();
         fieldImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         Graphics fieldImageGraphics= fieldImage.getGraphics();
         fieldImageGraphics.drawImage(image, 0,0, w, h,null);
         for (int i = 0; i < count; i++)
-            fieldImageGraphics.drawImage((rabbitVector.getRabbit(i)).getImage(), (int)((rabbitVector.getRabbit(i)).getX()),(int)((rabbitVector.getRabbit(i)).getY()), null);
+            fieldImageGraphics.drawImage((rabbitVector.getRabbit(i)).getImage(), (rabbitVector.getRabbit(i)).getX(),(rabbitVector.getRabbit(i)).getY(), null);
         g.drawImage(fieldImage,0,0,w,h,null);
+    }
+
+    private synchronized void Update(long time, Graphics g, JPanel field)
+    {
+        generate(time,field);
+        draw(g, field);
     }
 
     private void startMethod(Container container)
@@ -517,6 +617,18 @@ public class Habitat
                     time_text.setText("Время: " + (time/1000) + " секунд(ы)");
                 }
             },1000, 1000);
+            if (ordinaryAI == null)
+            {
+                ordinaryAI = new OrdinaryAI(this);
+                ordinaryAI.going = true;
+                ordinaryAI.start();
+            }
+            if (albinoAI == null)
+            {
+                albinoAI = new AlbinoAI(this);
+                albinoAI.going = true;
+                albinoAI.start();
+            }
         }
     }
 
@@ -531,6 +643,16 @@ public class Habitat
             sim_is_working = false;
             start.setEnabled(true);
             stop.setEnabled(false);
+            if (ordinaryAI != null)
+            {
+                ordinaryAI.going = false;
+                ordinaryAI = null;
+            }
+            if (albinoAI != null)
+            {
+                albinoAI.going = false;
+                albinoAI = null;
+            }
             if (bool_show_info)
             {
                 JDialog info = new JDialog();
