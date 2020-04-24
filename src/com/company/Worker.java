@@ -10,8 +10,8 @@ public class Worker extends Ant{
     Worker(){
         count++;
     };
-    Worker(float x, float y){
-        super(x,y);
+    Worker(float x, float y,int bornTime,int lifeTime,int indef){
+        super(x,y,bornTime,lifeTime,indef);
         count++;
         img =  new ImageIcon("src/res/Worker.jpg").getImage();
 

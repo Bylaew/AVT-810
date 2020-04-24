@@ -8,6 +8,9 @@
   <component name="ChangeListManager">
     <list default="true" id="8843c967-d7a4-4b44-9cf1-5f2b9c3c279b" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/AbstractFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/AbstractFactory.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Ant.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Ant.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/AntFactory.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/AntFactory.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$10.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$11.class" afterDir="false" />
@@ -15,7 +18,12 @@
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$13.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$13.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$14.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$14.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$15.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$15.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$16.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$16.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$18.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$19.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$20.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$5.class" afterDir="false" />
@@ -24,8 +32,17 @@
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$8.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat$9.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Habitat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Singleton.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Singleton.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Warrior.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Warrior.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Worker.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/laba_1_swing/com/company/Worker.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/AbstractFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/AbstractFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Ant.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Ant.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/AntFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/AntFactory.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Habitat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Habitat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/company/Warrior.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Warrior.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/company/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/company/Worker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/res/laba_1_swing.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Отчет, лаба 2.docx" beforeDir="false" afterPath="$PROJECT_DIR$/Отчет, лаба 2.docx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,8 +73,8 @@
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -131,6 +148,10 @@
       <workItem from="1586436275687" duration="389000" />
       <workItem from="1587030822503" duration="1962000" />
       <workItem from="1587097272401" duration="1274000" />
+      <workItem from="1587242135438" duration="6728000" />
+      <workItem from="1587575442701" duration="8529000" />
+      <workItem from="1587621776368" duration="4549000" />
+      <workItem from="1587716805567" duration="3113000" />
     </task>
     <servers />
   </component>
@@ -142,50 +163,54 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="574" y="122" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824@0.0.1536.824" timestamp="1587032059012" />
+    <state x="499" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1587743703038">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="499" y="197" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1536.824@0.0.1536.824" timestamp="1587743703038" />
     <state x="549" y="168" key="FileChooserDialogImpl" timestamp="1584025013698">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1584025013698" />
-    <state width="1493" height="140" key="GridCell.Tab.0.bottom" timestamp="1587099565482">
+    <state width="1493" height="140" key="GridCell.Tab.0.bottom" timestamp="1587743817127">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="140" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587099565482" />
-    <state width="1493" height="140" key="GridCell.Tab.0.center" timestamp="1587099565481">
+    <state width="1493" height="140" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587743817127" />
+    <state width="1493" height="140" key="GridCell.Tab.0.center" timestamp="1587743817127">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="140" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587099565481" />
-    <state width="1493" height="140" key="GridCell.Tab.0.left" timestamp="1587099565481">
+    <state width="1493" height="140" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587743817127" />
+    <state width="1493" height="140" key="GridCell.Tab.0.left" timestamp="1587743817127">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="140" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587099565481" />
-    <state width="1493" height="140" key="GridCell.Tab.0.right" timestamp="1587099565482">
+    <state width="1493" height="140" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587743817127" />
+    <state width="1493" height="140" key="GridCell.Tab.0.right" timestamp="1587743817127">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="140" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587099565482" />
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1586415045453">
+    <state width="1493" height="140" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587743817127" />
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1587626364206">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1586415045453" />
-    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1586415045453">
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587626364206" />
+    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1587626364206">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1586415045453" />
-    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1586415045452">
+    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1587626364206" />
+    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1587626364206">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1586415045452" />
-    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1586415045453">
+    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1587626364206" />
+    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1587626364206">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1586415045453" />
-    <state x="249" y="0" key="SettingsEditor" timestamp="1584971278576">
+    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1587626364206" />
+    <state x="249" y="0" key="SettingsEditor" timestamp="1587743737528">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="249" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1584971278576" />
-    <state x="465" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1587097280048">
+    <state x="249" y="0" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1587743737528" />
+    <state x="465" y="237" key="com.intellij.ide.util.TipDialog" timestamp="1587717043616">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="237" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1587097280048" />
+    <state x="465" y="237" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1587717043616" />
     <state x="406" y="28" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1586414629189">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -194,13 +219,20 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="209" y="33" key="new project wizard/0.0.1536.824@0.0.1536.824" timestamp="1583901318153" />
-    <state x="425" y="187" key="run.anything.popup" timestamp="1583420496156">
+    <state x="425" y="187" key="run.anything.popup" timestamp="1587623804445">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1583420496156" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1583419959625">
+    <state x="425" y="187" key="run.anything.popup/0.0.1536.824@0.0.1536.824" timestamp="1587623804445" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1587245793755">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1583419959625" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1587245793755" />
+  </component>
+  <component name="XDebuggerManager">
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="mas.array" />
+      </configuration>
+    </watches-manager>
   </component>
 </project>

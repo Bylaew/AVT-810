@@ -12,8 +12,8 @@ public class Warrior extends Ant {
 
     }
 
-    Warrior(float x, float y) {
-        super(x, y);
+    Warrior(float x, float y, int lifeTime, int bornTime,int ingef) {
+        super(x, y,bornTime,lifeTime,ingef);
         count++;
             img = new ImageIcon("src/res/Warr.jpg").getImage();
 

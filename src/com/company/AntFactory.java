@@ -8,8 +8,8 @@ public class AntFactory implements AbstractFactory {
     }
 
     @Override
-    public Warrior createWarrior(float x, float y) {
-        return new Warrior(x,y);
+    public Warrior createWarrior(float x, float y,int lifeTime, int bornTime,int ingef) {
+        return new Warrior(x,y,bornTime,lifeTime,ingef);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class AntFactory implements AbstractFactory {
     }
 
     @Override
-    public Worker createWorker(float x, float y) {
-        return new Worker(x,y);
+    public Worker createWorker(float x, float y,int lifeTime, int bornTime,int ingef) {
+        return new Worker(x,y,bornTime,lifeTime,ingef);
     }
 }
