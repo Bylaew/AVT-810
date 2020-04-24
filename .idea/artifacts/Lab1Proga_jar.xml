@@ -2,6 +2,9 @@
   <artifact type="jar" name="Lab1Proga:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Lab1Proga_jar</output-path>
     <root id="archive" name="Lab1Proga.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/resources/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="Lab1Proga" />
     </root>
   </artifact>
