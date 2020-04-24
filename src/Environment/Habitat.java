@@ -124,7 +124,6 @@ public class Habitat extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(width, height));
         CreateGUI();
-        pack();
         setVisible(true);
     }
 
@@ -137,8 +136,6 @@ public class Habitat extends JFrame {
             posib_kap.addItem(i/10.d);
             posib_wood.addItem(i/10.d);
         }
-        period_wood.setFocusable(false);
-        period_kap.setFocusable(false);
         posib_kap.setFocusable(false);
         posib_wood.setFocusable(false);
         posib_wood.setSelectedIndex(1);
@@ -193,10 +190,17 @@ public class Habitat extends JFrame {
         m_stop.setEnabled(false);
         m_view.setState(true);
         time_view.setSelected(time_visible.getModel(), true);
+        pack();
+       setFocusable(true);
+
+
+
+
         m_start.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 start_sim();
+                requestFocusInWindow();
             }
         });
 
@@ -209,6 +213,7 @@ public class Habitat extends JFrame {
                 info_view = true;
                 else
                     info_view=false;
+                requestFocusInWindow();
             }
         });
 
@@ -224,6 +229,7 @@ public class Habitat extends JFrame {
 error.setVisible(true);
 N1 = 1;
                 }
+                requestFocusInWindow();
             }
         });
 
@@ -231,7 +237,7 @@ N1 = 1;
             @Override
             public void actionPerformed(ActionEvent e) {
                 String field1 = new String();
-                field1 = period_wood.getText();
+                field1 = period_kap.getText();
                 try{
                     N2=Integer.parseInt(field1);
                 }catch(NumberFormatException nfe){
@@ -239,6 +245,7 @@ N1 = 1;
                     error.setVisible(true);
                     N2 = 2;
                 }
+                requestFocusInWindow();
             }
         });
 
@@ -247,6 +254,7 @@ N1 = 1;
             @Override
             public void itemStateChanged(ItemEvent e) {
                 P2=posib_kap.getSelectedIndex()/10.d;
+                requestFocusInWindow();
             }
         });
 
@@ -254,6 +262,7 @@ N1 = 1;
             @Override
             public void itemStateChanged(ItemEvent e) {
                 P1=posib_kap.getSelectedIndex()/10.d;
+                requestFocusInWindow();
             }
         });
 
@@ -261,6 +270,7 @@ N1 = 1;
             @Override
             public void actionPerformed(ActionEvent e) {
              stop_sim();
+                requestFocusInWindow();
             }
         });
 
@@ -282,6 +292,7 @@ N1 = 1;
                         s_time.setVisible(true);
                     visible=true;
                 }
+                requestFocusInWindow();
             }
         });
 
@@ -289,6 +300,7 @@ N1 = 1;
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
                 s_time.setVisible(false);
+                requestFocusInWindow();
             }
         });
 
@@ -296,6 +308,7 @@ N1 = 1;
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
                 s_time.setVisible(true);
+                requestFocusInWindow();
             }
         });
 
@@ -305,12 +318,14 @@ N1 = 1;
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
             start_sim();
+                requestFocusInWindow();
             }
         });
         stop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 stop_sim();
+                requestFocusInWindow();
             }
         });
 
@@ -354,7 +369,7 @@ N1 = 1;
                     }
 
                 }
-
+                requestFocusInWindow();
             }
         });
 
