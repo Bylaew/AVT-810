@@ -10,6 +10,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.image.ImageObserver;
 import java.awt.image.ImageProducer;
 
+import static java.awt.event.KeyEvent.*;
+
 public class Habitat
 {
     private int height;
@@ -94,20 +96,20 @@ public class Habitat
 
         Myframe.addKeyListener(new KeyAdapter()
         {
-            @Override
-            public void keyTyped(KeyEvent e)
+            public void keyPressed(KeyEvent e)
             {
-                super.keyTyped(e);
-                switch (e.getKeyChar())
+               super.keyPressed(e);
+
+                switch (e.getKeyCode())
                 {
-                    case 'b':
+                    case VK_B:
                         if (!First_run)
                         {
                             First_run = true;
                             Start(Myframe);
                         }
                         break;
-                    case 'e':
+                    case VK_E:
                         time_start.stop();
                         Info(Myframe);
                         panel.repaint();
@@ -118,7 +120,7 @@ public class Habitat
                         First_run = false;
                         Array = null;
                         break;
-                    case 't':
+                    case VK_T:
                         if (TimeLabel.isVisible())
                             TimeLabel.setVisible(false);
                         else TimeLabel.setVisible(true);
@@ -126,19 +128,18 @@ public class Habitat
                 }
             }
         });
-
         Myframe.setVisible(true);
         Myframe.setLocationRelativeTo(null);
     }
 
-    private void Start(JFrame Myframe)
+    private void Start(JFrame Myframe)//начало времени + массив муравьев
     {
         System.out.println("Start");
         Array = new ArrayList<Ant>();
         time_start.start();
     }
 
-    private void Info(JFrame Myframe)//------Статистика по программе-------
+    private void Info(JFrame Myframe)//------Статистика по программе(Диалоговое окно)-------
 {
     System.out.println("Statistics");
     JDialog Dialog = new JDialog(Myframe, "Statistics");
@@ -173,16 +174,16 @@ public class Habitat
     Dialog.setVisible(true);
 }
 
-    private void update(float time, JFrame Myframe)
+    private void update(float time, JFrame Myframe)//фабрика муравьев
     {
         if (time % Cnt1 == 0)
         {
             if (Math.random() < p1)
             {
-                Array.add(antfactory.createWar((float) (Math.random() * width - 100), (float) Math.random() * height - 200));
+                Array.add(antfactory.createWar(10 + (float) Math.random()*(width-150), 20 + (float) Math.random() * (height-193) ));
                 System.out.println("WarriorCreate(" + Array.get(Array.size()-1).getX() + "," + Array.get(Array.size()-1).getY() + ")" );
                 for(Ant a:Array)
-                    Myframe.getGraphics().drawImage(a.getImage(), (int) a.getX(), (int) a.getY(), 100, 200, null);
+                    Myframe.getGraphics().drawImage(a.getImage(), (int) a.getX(), (int) a.getY(), 150, 150, null);
                 count_ant_war++;
             }
         }
@@ -190,11 +191,11 @@ public class Habitat
         {
             if (Math.random() < p2)
             {
-                Array.add(antfactory.createWork((float) Math.random() * width - 100, (float) Math.random() * height - 200));
+                Array.add(antfactory.createWork(10 + (float) Math.random() * (width-150), 20 + (float) Math.random() * (height-193) ));
 
                 System.out.println("WorkerCreate("+ Array.get(Array.size()-1).getX() + "," + Array.get(Array.size()-1).getY() + ")" );
                 for(Ant a:Array)
-                    Myframe.getGraphics().drawImage(a.getImage(), (int) a.getX(), (int)a.getY(), 100, 200, null);
+                    Myframe.getGraphics().drawImage(a.getImage(), (int) a.getX(), (int)a.getY(), 150, 150, null);
                 count_ant_work++;
             }
         }

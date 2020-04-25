@@ -17,7 +17,7 @@ public class Ant_work extends Ant
     {
         super(x,y);
         count++;
-        image = new ImageIcon("D:\\Lab1_Brikun\\src\\com\\Ant_lab\\ant_worker.png").getImage();
+        image = new ImageIcon("src/com/Ant_lab/ant_worker.png").getImage();
     }
 
     @Override

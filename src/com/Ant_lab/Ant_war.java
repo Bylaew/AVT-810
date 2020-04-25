@@ -17,7 +17,7 @@ public class Ant_war extends Ant
     {
         super(x,y);
         count++;
-        image = new ImageIcon("D:\\Lab1_Brikun\\src\\com\\Ant_lab\\ant_warior.png").getImage();
+        image = new ImageIcon("src/com/Ant_lab/ant_warior.png").getImage();
     }
 
     @Override
