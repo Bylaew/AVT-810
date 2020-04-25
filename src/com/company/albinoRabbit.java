@@ -13,6 +13,14 @@ public class albinoRabbit extends AbstractRabbit {
         this.y=y;
         this.BirthTime=Birth;
         this.ID=ID;
+        this.dirX = 1;
+        this.dirY = 0;
+    }
+
+    @Override
+    void setCoordinates(int x,int y) {
+        this.x=x;
+        this.y=y;
     }
 
     @Override
@@ -23,16 +31,6 @@ public class albinoRabbit extends AbstractRabbit {
     @Override
     int getID() {
         return ID;
-    }
-
-    @Override
-    void go() {
-        System.out.println("Кролик альбинос идет");
-    }
-
-    @Override
-    void stay() {
-        System.out.println("Кролик альбинос стоит");
     }
 
     @Override

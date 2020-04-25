@@ -18,9 +18,9 @@ public class Habitat {
     private boolean ShowTime=false;
     private boolean simulate=false;
     private boolean JustStart=true;
-    private long currentTime;
+    public long currentTime;
     private JPanel panel,panelTwo;
-    private double N1=400;
+    public double N1=400;
     private double N2=500;
     private int lifeTimeRabbit=1000;
     private int lifeTimeAlbino=10000;
@@ -31,6 +31,10 @@ public class Habitat {
     private boolean go=false;//не дает книпоке currentObj продолжить после остановления симуляции
     private ConcreteFactory concrete;
     private JMenuBar menuBar=new JMenuBar();
+    private BaceAICommon baceAICommon=new BaceAICommon(this);
+    private BaceAIAlbino  baceAIAlbino=new BaceAIAlbino(this);
+     boolean ready=true;
+     boolean readyAlbino=true;
 
     public Habitat() {
 
@@ -95,7 +99,6 @@ public class Habitat {
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
                         }
                         if (ShowTime) {
                             g.setColor(Color.MAGENTA);
@@ -134,6 +137,8 @@ public class Habitat {
         KomboBox();
         Texti();
         Meniu();
+        baceAICommon= new BaceAICommon(this);
+        baceAIAlbino=new BaceAIAlbino(this);
         panelTwo.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -142,6 +147,7 @@ public class Habitat {
             }
         });
     }
+
 
     public void Buttons() {
         JButton startButton = new JButton("Start");
@@ -176,8 +182,60 @@ public class Habitat {
         });
 
         panelTwo.add(currentObj);
-        currentObj.setBounds(5,340,130,30);
+        currentObj.setBounds(5,340,180,20);
+        //Habbitat
+        JButton buttonWait=new JButton("Wait Rabbit");
+        buttonWait.setFocusable(false);
+        buttonWait.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent){
+                ready=false;
+            }
+        });
+        panelTwo.add(buttonWait);
+        buttonWait.setBounds(5,370,100,25);
+
+        JButton buttonNotify=new JButton("notify Rabbit");
+        buttonNotify.setFocusable(false);
+        buttonNotify.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                synchronized (obj.GetVector())
+                {
+                    ready=true;
+                    obj.GetVector().notify();
+                }
+            }
+        });
+        panelTwo.add(buttonNotify);
+        buttonNotify.setBounds(5,400,100,25);
+
+        JButton buttonWaitAlb=new JButton("Wait Albino");
+        buttonWaitAlb.setFocusable(false);
+        buttonWaitAlb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                readyAlbino=false;
+            }
+        });
+        panelTwo.add(buttonWaitAlb);
+        buttonWaitAlb.setBounds(5,430,100,25);
+        JButton buttonNoti=new JButton("notify Albino");
+        buttonNoti.setFocusable(false);
+        buttonNoti.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                synchronized (obj.GetVector())
+                {
+                    obj.GetVector().notify();
+                    readyAlbino=true;
+                }
+            }
+        });
+        panelTwo.add(buttonNoti);
+        buttonNoti.setBounds(5,460,100,25);
     }
+
 
     public void chekBox() {
         ButtonGroup currentT=new ButtonGroup();
@@ -282,6 +340,53 @@ public class Habitat {
         cbProbability.setBounds(70,130,80,30);
         panelTwo.add(labelCb);
         panelTwo.add(cbProbability);
+
+        JComboBox BOXrabbit=new JComboBox();
+        BOXrabbit.addItem("1");
+        BOXrabbit.addItem("2");
+        BOXrabbit.setSelectedIndex(0);
+        BOXrabbit.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                JComboBox box=(JComboBox)itemEvent.getSource();
+                if(box.getSelectedIndex()==0) {
+                   // System.out.println(box);
+                    new Thread(baceAICommon).setPriority(Thread.MAX_PRIORITY);
+                }
+                if(box.getSelectedIndex()==1) {
+                    new Thread(baceAICommon).setPriority(Thread.MIN_PRIORITY);
+                }
+            }
+        });
+        BOXrabbit.setFocusable(false);
+        BOXrabbit.setBounds(120,380,70,25);
+        JLabel label=new JLabel("Rabbit priority");
+        label.setBounds(120,360,80,25);
+        panelTwo.add(label);
+        panelTwo.add(BOXrabbit);
+
+
+        JComboBox BOXalbino=new JComboBox();
+        BOXalbino.addItem("1");
+        BOXalbino.addItem("2");
+        BOXalbino.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                JComboBox box=(JComboBox)itemEvent.getSource();
+                if(box.getSelectedIndex()==0) {
+                    new Thread(baceAICommon).setPriority(Thread.MAX_PRIORITY);
+                }
+                if(box.getSelectedIndex()==1) {
+                    new Thread(baceAICommon).setPriority(Thread.MIN_PRIORITY);
+                }
+            }
+        });
+        BOXalbino.setFocusable(false);
+        BOXalbino.setBounds(120,420,70,25);
+        JLabel labelAl=new JLabel("Albino priority");
+        labelAl.setBounds(120,400,80,25);
+        panelTwo.add(labelAl);
+        panelTwo.add(BOXalbino);
     }
 
     public void Texti()
@@ -471,6 +576,8 @@ public class Habitat {
     public void Start()
     {
         concrete= new ConcreteFactory();
+        new Thread(baceAICommon).start();
+        new Thread(baceAIAlbino).start();
         if (JustStart)
             JustStart = false;
         mTimer.cancel();
@@ -489,6 +596,8 @@ public class Habitat {
 
     public void Stop()
     {
+        //baceAICommon.stopped();
+        //baceAIAlbino.stopped();
         mTimer.cancel();
         if(bol&&simulate)
             getMessage();
@@ -619,17 +728,17 @@ public class Habitat {
         Vector<Map.Entry> toRemove = new Vector();
         while (iter.hasNext())
         {
-            Map.Entry elem = iter.next();
-            if (((Integer)elem.getValue() > 0 && (Long)elem.getKey() + lifeTimeRabbit <= currentTime)
-                    || ((Integer)elem.getValue() < 0 && (Long)elem.getKey() + lifeTimeAlbino <= currentTime))
-                toRemove.add(elem);
+            Map.Entry elem = iter.next();//время это key,value это ID
+            if (((Integer)elem.getKey()> 0 && (Long)elem.getValue() + lifeTimeRabbit <= currentTime)
+                    || ((Integer)elem.getKey() < 0 && (Long)elem.getValue() + lifeTimeAlbino <= currentTime))
+                toRemove.add(elem);//Удаление во всех трех коллекциях
         }
         for (Map.Entry elem : toRemove)//has next о
         {
             obj.GetMap().remove(elem.getKey());
-            obj.getID().remove(elem.getValue());
+            obj.getID().remove((Integer)elem.getKey());
             for (AbstractRabbit rabbit : obj.GetVector()) {
-                if (rabbit.ID ==(Integer)elem.getValue()) {
+                if (rabbit.ID ==(Integer) elem.getKey()) {
                     obj.GetVector().remove(rabbit);
                     break;
                 }
@@ -648,6 +757,11 @@ public class Habitat {
             NumberAlbino++;
         }
         frame.repaint();
+    }
+
+    public int getPanelWith()
+    {
+        return panel.getWidth();
     }
 
 }

@@ -7,7 +7,7 @@ import java.util.Vector;
 public class Singleton {
     Vector<AbstractRabbit> arr=new Vector();
     private static Singleton instance;
-    public TreeSet ID=new TreeSet();
+    public TreeSet IDs=new TreeSet();
     HashMap map=new HashMap();
     private Singleton(){}
 
@@ -21,11 +21,11 @@ public class Singleton {
     }
 
     public TreeSet getID(){
-        return ID;
+        return IDs;
     }
 
     public void refreshID() {
-        ID.clear();
+        IDs.clear();
     }
 
     public HashMap GetMap() {
