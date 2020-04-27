@@ -1,12 +1,14 @@
 public interface IBehaviour
 {
-    void setX(float x);
+    void setX(int x);
 
-    void setY(float y);
+    void setY(int y);
 
-    float getX();
+    void setOrientation(Rabbit.Orientation orientation);
 
-    float getY();
+    int getX();
+
+    int getY();
 
     void die();
 }

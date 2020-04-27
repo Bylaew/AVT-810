@@ -3,6 +3,8 @@ public class OrdinaryAI extends BaseAI
 {
     int speed = 4;
     long N = 5000;
+    boolean isStopped = false;
+    long prevtime = 0;
 
     public OrdinaryAI(Habitat h)
     {
@@ -13,50 +15,75 @@ public class OrdinaryAI extends BaseAI
     {
         while (going)
         {
-            for (int i = 0; i < habitat.count; i++)
+            synchronized (this)
             {
-                if (habitat.rabbitVector.getRabbit(i).type == 'o')
+                if (isStopped)
                 {
-                    Ordinary_Rabbit rabbit = (Ordinary_Rabbit) habitat.rabbitVector.getRabbit(i);
-                    checkBounds(rabbit);
-                    int x, y;
-                    x = rabbit.getX();
-                    y = rabbit.getY();
-                    if (rabbit.orientation == 0)
-                        x -= speed;
-                    else if (rabbit.orientation == 1)
-                        x += speed;
-                    else if (rabbit.orientation == 2)
-                        y += speed;
-                    else if (rabbit.orientation == 3)
-                        y -= speed;
-                    else if (rabbit.orientation == 4)
-                    {
-                        x += speed;
-                        y -= speed;
+                    try {
+                        this.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
-                    else if (rabbit.orientation == 5)
+                }
+                else
+                {
+                    for (int i = 0; i < habitat.count; i++)
                     {
-                        x += speed;
-                        y += speed;
+                        if (habitat.rabbitVector.getRabbit(i).type == 'o')
+                        {
+                            Ordinary_Rabbit rabbit = (Ordinary_Rabbit) habitat.rabbitVector.getRabbit(i);
+                            checkBounds(rabbit);
+                            int x, y;
+                            x = rabbit.getX();
+                            y = rabbit.getY();
+                            if (rabbit.orientation == Rabbit.Orientation.LEFT)
+                                x -= speed;
+                            else if (rabbit.orientation == Rabbit.Orientation.RIGHT)
+                                x += speed;
+                            else if (rabbit.orientation == Rabbit.Orientation.BOTTOM)
+                                y += speed;
+                            else if (rabbit.orientation == Rabbit.Orientation.TOP)
+                                y -= speed;
+                            else if (rabbit.orientation == Rabbit.Orientation.TOP_RIGHT)
+                            {
+                                x += speed;
+                                y -= speed;
+                            }
+                            else if (rabbit.orientation == Rabbit.Orientation.BOTTOM_RIGHT)
+                            {
+                                x += speed;
+                                y += speed;
+                            }
+                            else if (rabbit.orientation == Rabbit.Orientation.BOTTOM_LEFT)
+                            {
+                                x -= speed;
+                                y += speed;
+                            }
+                            else
+                            {
+                                x -= speed;
+                                y -= speed;
+                            }
+                            rabbit.setX(x);
+                            rabbit.setY(y);
+                            if ((habitat.time % N == 0)&&(habitat.time / N != prevtime))
+                                rabbit.setOrientation(Rabbit.Orientation.values()[(int)(Math.random()*8)]);
+                        }
                     }
-                    else if (rabbit.orientation == 6)
-                    {
-                        x -= speed;
-                        y += speed;
-                    }
-                    else
-                    {
-                        x -= speed;
-                        y -= speed;
-                    }
-                    rabbit.setX(x);
-                    rabbit.setY(y);
-                    if (habitat.time % N == 0)
-                        rabbit.setOrientation((int)(Math.random()*8));
+                    prevtime = habitat.time / N;
+                    habitat.draw(habitat.field.getGraphics(), habitat.field);
                 }
             }
-            habitat.draw(habitat.field.getGraphics(), habitat.field);
         }
+    }
+
+    public void stopAnimation()
+    {
+        isStopped = true;
+    }
+    public void resumeAnimation()
+    {
+        isStopped = false;
+        this.notify();
     }
 }

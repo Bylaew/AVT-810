@@ -413,14 +413,7 @@ public class Habitat
             public void actionPerformed(ActionEvent e) {
                 synchronized (ordinaryAI)
                 {
-                    try
-                    {
-                        ordinaryAI.wait();
-                    }
-                    catch (InterruptedException ex)
-                    {
-                        ex.printStackTrace();
-                    }
+                    ordinaryAI.stopAnimation();
                 }
             }
         });
@@ -429,7 +422,7 @@ public class Habitat
             public void actionPerformed(ActionEvent e) {
                 synchronized (ordinaryAI)
                 {
-                    ordinaryAI.notify();
+                    ordinaryAI.resumeAnimation();
                 }
             }
         });
@@ -438,14 +431,7 @@ public class Habitat
             public synchronized void actionPerformed(ActionEvent e) {
                 synchronized (albinoAI)
                 {
-                    try
-                    {
-                        albinoAI.wait();
-                    }
-                    catch (InterruptedException ex)
-                    {
-                        ex.printStackTrace();
-                    }
+                    albinoAI.stopAnimation();
                 }
             }
         });
@@ -454,7 +440,7 @@ public class Habitat
             public synchronized void actionPerformed(ActionEvent e) {
                 synchronized (albinoAI)
                 {
-                    albinoAI.notify();
+                    albinoAI.resumeAnimation();
                 }
             }
         });

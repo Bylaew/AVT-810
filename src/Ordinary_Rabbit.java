@@ -13,8 +13,10 @@ public class Ordinary_Rabbit extends Rabbit
     {
         setX(0);
         setY(0);
+        setOrientation(Orientation.values()[1]);
         setBirthtime(0);
         setID(0);
+        type = 'o';
 
         try
         {
@@ -27,12 +29,14 @@ public class Ordinary_Rabbit extends Rabbit
         count++;
     }
 
-    public Ordinary_Rabbit(float x, float y, long time)
+    public Ordinary_Rabbit(int x, int y, long time)
     {
         setX(x);
         setY(y);
+        setOrientation(Orientation.values()[(int)(Math.random()*8)]);
         setBirthtime(time);
         setID((int)(Math.random()*1000));
+        type = 'o';
 
         try
         {
@@ -57,13 +61,15 @@ public class Ordinary_Rabbit extends Rabbit
     @Override
     public long getLifetime() { return lifetime; }
     @Override
-    public void setX(float x) {this.x = x;}
+    public void setX(int x) {this.x = x;}
     @Override
-    public void setY(float y) {this.y = y;}
+    public void setY(int y) {this.y = y;}
     @Override
-    public float getX() {return x;}
+    public void setOrientation(Orientation orientation) { this.orientation = orientation; }
     @Override
-    public float getY() {return y;}
+    public int getX() {return x;}
+    @Override
+    public int getY() {return y;}
     @Override
     public void die()
     {

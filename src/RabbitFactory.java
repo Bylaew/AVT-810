@@ -8,7 +8,7 @@ public class RabbitFactory implements AbstractFactory
     }
 
     @Override
-    public Ordinary_Rabbit createOrdinary(float x, float y, long time)
+    public Ordinary_Rabbit createOrdinary(int x, int y, long time)
     {
         return new Ordinary_Rabbit(x, y, time);
     }
@@ -20,7 +20,7 @@ public class RabbitFactory implements AbstractFactory
     }
 
     @Override
-    public Albino createAlbino(float x, float y, long time)
+    public Albino createAlbino(int x, int y, long time)
     {
         return new Albino(x, y, time);
     }
