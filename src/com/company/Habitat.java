@@ -8,10 +8,12 @@ import java.util.Timer;
 import javax.swing.*;
 import javax.swing.event.*;
 
+
+//Id x и y в 4 пункте передачи
 public class Habitat {
     private int NumberRabbits=0;
-    private Singleton obj=Singleton.getInstance();
-    private JFrame frame;
+    private Singleton singleton=Singleton.getInstance();
+    JFrame frame;
     private Timer mTimer = new Timer();
     private int NumberAlbino;
     private int CommonRabbit;
@@ -31,8 +33,8 @@ public class Habitat {
     private boolean go=false;//не дает книпоке currentObj продолжить после остановления симуляции
     private ConcreteFactory concrete;
     private JMenuBar menuBar=new JMenuBar();
-    private BaceAICommon baceAICommon=new BaceAICommon(this);
-    private BaceAIAlbino  baceAIAlbino=new BaceAIAlbino(this);
+    private BaceAICommon baceAICommon=null;
+    private BaceAIAlbino  baceAIAlbino=null;
      boolean ready=true;
      boolean readyAlbino=true;
 
@@ -75,6 +77,7 @@ public class Habitat {
                     {
                         ShowTime=true;
                     }
+                    chekBox();
                     frame.repaint();
                 }
             }
@@ -93,9 +96,9 @@ public class Habitat {
                 else {
 
                     if (simulate) {
-                        for (int i = 0; i < obj.GetVector().size(); i++) {
+                        for (int i = 0; i < singleton.GetVector().size(); i++) {
                             try {
-                                g.drawImage(obj.GetVector().get(i).getImage(), obj.GetVector().get(i).getX(), obj.GetVector().get(i).getY(), null);
+                                g.drawImage(singleton.GetVector().get(i).getImage(), singleton.GetVector().get(i).getX(), singleton.GetVector().get(i).getY(), null);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -148,7 +151,6 @@ public class Habitat {
         });
     }
 
-
     public void Buttons() {
         JButton startButton = new JButton("Start");
         JButton stopButton = new JButton("End");
@@ -183,7 +185,6 @@ public class Habitat {
 
         panelTwo.add(currentObj);
         currentObj.setBounds(5,340,180,20);
-        //Habbitat
         JButton buttonWait=new JButton("Wait Rabbit");
         buttonWait.setFocusable(false);
         buttonWait.addActionListener(new ActionListener() {
@@ -200,10 +201,10 @@ public class Habitat {
         buttonNotify.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                synchronized (obj.GetVector())
+                synchronized (baceAICommon)
                 {
                     ready=true;
-                    obj.GetVector().notify();
+                    baceAICommon.notify();
                 }
             }
         });
@@ -225,10 +226,10 @@ public class Habitat {
         buttonNoti.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                synchronized (obj.GetVector())
+                synchronized (baceAIAlbino)
                 {
-                    obj.GetVector().notify();
                     readyAlbino=true;
+                    baceAIAlbino.notify();
                 }
             }
         });
@@ -237,14 +238,15 @@ public class Habitat {
     }
 
 
-    public void chekBox() {
+    public void chekBox() {//////////////////////////////////////////////////////////
         ButtonGroup currentT=new ButtonGroup();
         JRadioButton on=new JRadioButton("Visible time");
-        JRadioButton off=new JRadioButton("Not Visible time");
+        JRadioButton off=new JRadioButton("Not Visible time",true);
         on.setFocusable(false);
         off.setFocusable(false);
         currentT.add(on);
         currentT.add(off);
+        //cbProbability.setSelectedIndex(3);
         on.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -257,11 +259,11 @@ public class Habitat {
                 ShowTime=false;
             }
         });
+        //on.setSelected(ShowTime);
         on.setBounds(5,40,90,30);
         off.setBounds(5,70,120,30);
         panelTwo.add(on);
         panelTwo.add(off);
-
         JCheckBox boxInformation=new JCheckBox("Info");
         boxInformation.addItemListener(new ItemListener() {
             @Override
@@ -342,8 +344,8 @@ public class Habitat {
         panelTwo.add(cbProbability);
 
         JComboBox BOXrabbit=new JComboBox();
-        BOXrabbit.addItem("1");
-        BOXrabbit.addItem("2");
+        BOXrabbit.addItem("MAX");
+        BOXrabbit.addItem("MIN");
         BOXrabbit.setSelectedIndex(0);
         BOXrabbit.addItemListener(new ItemListener() {
             @Override
@@ -367,8 +369,8 @@ public class Habitat {
 
 
         JComboBox BOXalbino=new JComboBox();
-        BOXalbino.addItem("1");
-        BOXalbino.addItem("2");
+        BOXalbino.addItem("MAX");
+        BOXalbino.addItem("MIN");
         BOXalbino.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
@@ -575,15 +577,17 @@ public class Habitat {
 
     public void Start()
     {
+        ready=true;
+        readyAlbino=true;
         concrete= new ConcreteFactory();
         new Thread(baceAICommon).start();
         new Thread(baceAIAlbino).start();
         if (JustStart)
             JustStart = false;
         mTimer.cancel();
-        obj.refreshMap();
-        obj.refreshID();
-        obj.refreshVector();
+        singleton.refreshMap();
+        singleton.refreshID();
+        singleton.refreshVector();
         mTimer=new Timer();
         NumberRabbits=0;
         currentTime=0;
@@ -596,8 +600,7 @@ public class Habitat {
 
     public void Stop()
     {
-        //baceAICommon.stopped();
-        //baceAIAlbino.stopped();
+
         mTimer.cancel();
         if(bol&&simulate)
             getMessage();
@@ -661,7 +664,7 @@ public class Habitat {
         {
             JButton button=new JButton("OK");
             button.setFocusable(false);
-            System.out.println(obj.GetMap().entrySet());
+            System.out.println(singleton.GetMap().entrySet());
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent actionEvent) {
@@ -673,9 +676,9 @@ public class Habitat {
             });
             setTitle("Window");
             TextArea text=new TextArea(5,30);
-            String data = "Living objects: "+obj.GetMap().size()+'\n';
+            String data = "Living objects: "+singleton.GetMap().size()+'\n';
             data += "ID\tBirth time\n";
-            for (Map.Entry entry : (Set<Map.Entry>)obj.GetMap().entrySet()) {
+            for (Map.Entry entry : (Set<Map.Entry>)singleton.GetMap().entrySet()) {
                 data += entry.getValue().toString() + '\t' + entry.getKey() + '\n';
             }
             text.setText(data);
@@ -724,7 +727,7 @@ public class Habitat {
 
     public void Update(double elapseTime)
     {
-        Iterator<Map.Entry> iter = obj.GetMap().entrySet().iterator();
+        Iterator<Map.Entry> iter = singleton.GetMap().entrySet().iterator();
         Vector<Map.Entry> toRemove = new Vector();
         while (iter.hasNext())
         {
@@ -735,11 +738,11 @@ public class Habitat {
         }
         for (Map.Entry elem : toRemove)//has next о
         {
-            obj.GetMap().remove(elem.getKey());
-            obj.getID().remove((Integer)elem.getKey());
-            for (AbstractRabbit rabbit : obj.GetVector()) {
+            singleton.GetMap().remove(elem.getKey());
+            singleton.getID().remove((Integer)elem.getKey());
+            for (AbstractRabbit rabbit : singleton.GetVector()) {
                 if (rabbit.ID ==(Integer) elem.getKey()) {
-                    obj.GetVector().remove(rabbit);
+                    singleton.GetVector().remove(rabbit);
                     break;
                 }
             }

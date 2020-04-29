@@ -117,38 +117,38 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1587741186062" />
-    <state width="1493" height="194" key="GridCell.Tab.0.bottom" timestamp="1587814251249">
+    <state width="1493" height="194" key="GridCell.Tab.0.bottom" timestamp="1588179193676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="194" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587814251249" />
-    <state width="1493" height="194" key="GridCell.Tab.0.center" timestamp="1587814251249">
+    <state width="1493" height="194" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588179193676" />
+    <state width="1493" height="194" key="GridCell.Tab.0.center" timestamp="1588179193676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="194" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1587814251249" />
-    <state width="1493" height="194" key="GridCell.Tab.0.left" timestamp="1587814251249">
+    <state width="1493" height="194" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1588179193676" />
+    <state width="1493" height="194" key="GridCell.Tab.0.left" timestamp="1588179193676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="194" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1587814251249" />
-    <state width="1493" height="194" key="GridCell.Tab.0.right" timestamp="1587814251249">
+    <state width="1493" height="194" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1588179193676" />
+    <state width="1493" height="194" key="GridCell.Tab.0.right" timestamp="1588179193676">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="194" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1587814251249" />
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1587771796021">
+    <state width="1493" height="194" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1588179193676" />
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1588178314533">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1587771796021" />
-    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1587771796020">
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1588178314533" />
+    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1588178314533">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1587771796020" />
-    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1587771796020">
+    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1588178314533" />
+    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1588178314533">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1587771796020" />
-    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1587771796021">
+    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1588178314533" />
+    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1588178314533">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1587771796021" />
+    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1588178314533" />
     <state x="290" y="0" key="SettingsEditor" timestamp="1587157184817">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -177,6 +177,17 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="425" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824@0.0.1536.824" timestamp="1586851871356" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/com/company/Habitat.java</url>
+          <line>582</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Labi$Main.ic" NAME="Main Coverage Results" MODIFIED="1584790814574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
