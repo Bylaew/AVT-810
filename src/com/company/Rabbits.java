@@ -3,10 +3,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Rabbits extends AbstractRabbit{
+public class Rabbits extends AbstractRabbit {
 
-    private BufferedImage image;
+    private transient BufferedImage image;
     //int BirthTime;
 
     Rabbits(int x, int y,long Birth,int ID) {

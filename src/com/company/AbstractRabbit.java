@@ -1,6 +1,8 @@
 package com.company;
 
-public abstract class AbstractRabbit implements InBehavior {
+import java.io.Serializable;
+
+public abstract class AbstractRabbit implements InBehavior, Serializable {
 
     int x,y;
     long BirthTime;

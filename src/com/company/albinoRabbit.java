@@ -3,10 +3,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
 public class albinoRabbit extends AbstractRabbit {
 
-    private BufferedImage image;
+    private transient BufferedImage image;
+    //private BufferedImage
 
     albinoRabbit(int x, int y,long Birth,int ID) {
         this.x=x;

@@ -14,8 +14,6 @@ public class ConcreteFactory implements abstractFactory {
         obj.GetVector().add(new Rabbits((int)(Math.random()*550),(int)(Math.random()*500),BirthTime,IDRabbit++));
     }
 
-
-
     @Override
     public void createAlbinoRabbit(long BirthTime) {
         obj.getID().add(IDAlbino);

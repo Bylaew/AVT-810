@@ -3,11 +3,12 @@ package com.company;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Timer;
 import javax.swing.*;
 import javax.swing.event.*;
-
+///Консоль будет запускать одельный поток в пайпет один поток в мейн а другой в читающий
 
 //Id x и y в 4 пункте передачи
 public class Habitat {
@@ -28,15 +29,15 @@ public class Habitat {
     private int lifeTimeAlbino=10000;
     private float k= (float) 0.1;
     private double P1=0.3;
-    private long to=0;
+    private long to=0;//используется для resume обновление времни
     private boolean bol=false;
     private boolean go=false;//не дает книпоке currentObj продолжить после остановления симуляции
     private ConcreteFactory concrete;
     private JMenuBar menuBar=new JMenuBar();
     private BaceAICommon baceAICommon=null;
     private BaceAIAlbino  baceAIAlbino=null;
-     boolean ready=true;
-     boolean readyAlbino=true;
+    public boolean ready=true;
+    public boolean readyAlbino=true;
 
     public Habitat() {
 
@@ -47,11 +48,23 @@ public class Habitat {
         frame.add(panelTwo,BorderLayout.EAST);
         frame.setJMenuBar(menuBar);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                try {
+                    FileOut();
+                } catch (IOException ex) {
+                    System.out.println("IOException"+ex);
+                }
+            }
+        });
         frame.setSize(900,600);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
         Keys();
         frame.requestFocus();
+
     }
 
     public void Keys()
@@ -96,11 +109,13 @@ public class Habitat {
                 else {
 
                     if (simulate) {
-                        for (int i = 0; i < singleton.GetVector().size(); i++) {
-                            try {
-                                g.drawImage(singleton.GetVector().get(i).getImage(), singleton.GetVector().get(i).getX(), singleton.GetVector().get(i).getY(), null);
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                        synchronized (singleton.GetVector()) {
+                            for (int i = 0; i < singleton.GetVector().size(); i++) {
+                                try {
+                                    g.drawImage(singleton.GetVector().get(i).getImage(), singleton.GetVector().get(i).getX(), singleton.GetVector().get(i).getY(), null);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         if (ShowTime) {
@@ -140,6 +155,12 @@ public class Habitat {
         KomboBox();
         Texti();
         Meniu();
+        try {
+            FileIn();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         baceAICommon= new BaceAICommon(this);
         baceAIAlbino=new BaceAIAlbino(this);
         panelTwo.addMouseListener(new MouseAdapter() {
@@ -149,6 +170,53 @@ public class Habitat {
                 frame.requestFocus();
             }
         });
+    }
+
+    public void FileOut() throws IOException {
+        FileWriter writer=new FileWriter("text1.txt");
+        String ShowTimeStr=Boolean.toString(ShowTime);
+        String bolStr=Boolean.toString(bol);
+        String readyStr=Boolean.toString(ready);
+        String readyAlStr=Boolean.toString(readyAlbino);
+        String N1Str=Double.toString(N1);
+        String N2Str=Double.toString(N2);
+        String lifeRabbitStr=Integer.toString(lifeTimeRabbit);
+        String lifeAlbinoStr=Integer.toString(lifeTimeAlbino);
+        String P1Str=Double.toString(P1);
+        String kStr=Float.toString(k);
+        writer.write(ShowTimeStr+","+bolStr+","+readyStr+","+readyAlStr+","+N1Str+","+N2Str+","+lifeRabbitStr+","+
+                lifeAlbinoStr+","+P1Str+","+kStr);
+        writer.close();
+    }
+
+    public void FileIn() throws IOException {
+        File file=new File("text1.txt");
+        FileReader reader=new FileReader(file);
+        BufferedReader re=new BufferedReader(reader);
+        String line=null;
+        while((line=re.readLine())!=null) {
+            System.out.println(line);
+
+                splitUp(line);
+
+        }
+
+        re.close();
+        reader.close();
+    }
+
+    public void splitUp(String line){
+        String[] result=line.split(",");
+        ShowTime=Boolean.parseBoolean(result[0]);
+        bol=Boolean.parseBoolean(result[1]);
+        ready=Boolean.parseBoolean(result[2]);
+        readyAlbino=Boolean.parseBoolean(result[3]);
+        N1=Double.parseDouble(result[4]);
+        N2=Double.parseDouble(result[5]);
+        lifeTimeRabbit=Integer.parseInt(result[6]);
+        lifeTimeAlbino=Integer.parseInt(result[7]);
+        P1=Double.parseDouble(result[8]);
+        k=Float.parseFloat(result[9]);
     }
 
     public void Buttons() {
@@ -237,7 +305,6 @@ public class Habitat {
         buttonNoti.setBounds(5,460,100,25);
     }
 
-
     public void chekBox() {//////////////////////////////////////////////////////////
         ButtonGroup currentT=new ButtonGroup();
         JRadioButton on=new JRadioButton("Visible time");
@@ -270,10 +337,16 @@ public class Habitat {
             public void itemStateChanged(ItemEvent itemEvent) {
                 if(bol) {
                     bol = false;
-                }else
-                    bol=true;
+                }else {
+                    bol = true;
+                }
             }
         });
+        if(bol)
+        {
+            boxInformation.setSelected(true);
+        }else
+            boxInformation.setSelected(false);
         boxInformation.setBounds(105,40,90,30);
         boxInformation.setFocusable(false);
         panelTwo.add(boxInformation);
@@ -352,7 +425,7 @@ public class Habitat {
             public void itemStateChanged(ItemEvent itemEvent) {
                 JComboBox box=(JComboBox)itemEvent.getSource();
                 if(box.getSelectedIndex()==0) {
-                   // System.out.println(box);
+                    // System.out.println(box);
                     new Thread(baceAICommon).setPriority(Thread.MAX_PRIORITY);
                 }
                 if(box.getSelectedIndex()==1) {
@@ -458,7 +531,7 @@ public class Habitat {
                         lifeTimeRabbit=Integer.parseInt(LifeTextRabbit.getText());
                     }catch (NumberFormatException ex){
                         getWindowText();
-                      lifeTimeRabbit =1000;
+                        lifeTimeRabbit =1000;
                     }
                     finally {
                         frame.requestFocus();
@@ -483,7 +556,7 @@ public class Habitat {
                         lifeTimeAlbino=Integer.parseInt(LifeTextAlbino.getText());
                     }catch (NumberFormatException ex){
                         getWindowText();
-                       lifeTimeAlbino=10000;
+                        lifeTimeAlbino=10000;
                     }
                     finally {
                         frame.requestFocus();
@@ -503,12 +576,18 @@ public class Habitat {
         JMenu Menu=new JMenu("Menu");
         JMenuItem StopMenu=new JMenuItem("Stop");
         JMenuItem StarMenu=new JMenuItem("Start");
+        JMenuItem save =new JMenuItem("Save");
+        JMenuItem loading =new JMenuItem("loading");
         JRadioButtonMenuItem one=new JRadioButtonMenuItem("on");
         JRadioButtonMenuItem two=new JRadioButtonMenuItem("off");
+        JMenuItem ConsoleMenu = new JMenuItem("Console");
         Menu.add(StarMenu);
         Menu.add(StopMenu);
+        Menu.add(save);
+        Menu.add(loading);
         Menu.add(one);
         Menu.add(two);
+        Menu.add(ConsoleMenu);
 
         StarMenu.addActionListener(new ActionListener() {
             @Override
@@ -521,6 +600,26 @@ public class Habitat {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 Stop();
+            }
+        });
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    objSave();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        loading.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    ObjLoading();
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
         one.addActionListener(new ActionListener() {
@@ -537,9 +636,52 @@ public class Habitat {
                 frame.repaint();
             }
         });
+        ConsoleMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ConsoleDialog cd = new ConsoleDialog();
+            }
+        });
         Menu.setFocusable(false);
         menuBar.setFocusable(false);
         menuBar.add(Menu);
+    }
+
+    public void objSave() throws IOException {//сохраняет
+        FileOutputStream file=new FileOutputStream("myObj.ser");
+        ObjectOutputStream os = new ObjectOutputStream(file);
+
+        for(AbstractRabbit rabbit:singleton.GetVector()) {
+            os.writeObject(rabbit);
+            System.out.println(rabbit);
+        }
+        os.flush();
+        os.close();
+    }
+
+    public void ObjLoading() throws IOException, ClassNotFoundException {
+        FileInputStream file=new FileInputStream("myObj.ser");
+        ObjectInputStream os=new ObjectInputStream(file);
+        Stop();
+        singleton.GetVector().clear();
+        singleton.GetMap().clear();
+        singleton.getID().clear();
+        while (true) {
+            try {
+                AbstractRabbit rabbit=(AbstractRabbit) os.readObject();
+                rabbit.BirthTime=0;
+                currentTime=0;
+                System.out.println(rabbit);
+                singleton.GetVector().add(rabbit);
+                singleton.getID().add(rabbit.getID());
+                singleton.GetMap().put(rabbit.getID(),rabbit.BirthTime);
+            }catch (IOException e)
+            {
+                os.close();
+                System.out.println("exit");
+                break;
+            }
+        }
     }
 
     private class Updater extends TimerTask{
@@ -577,8 +719,8 @@ public class Habitat {
 
     public void Start()
     {
-        ready=true;
-        readyAlbino=true;
+        System.out.println(ready);
+        System.out.println(readyAlbino);
         concrete= new ConcreteFactory();
         new Thread(baceAICommon).start();
         new Thread(baceAIAlbino).start();
@@ -600,7 +742,6 @@ public class Habitat {
 
     public void Stop()
     {
-
         mTimer.cancel();
         if(bol&&simulate)
             getMessage();
@@ -671,7 +812,7 @@ public class Habitat {
                     if(go) {
                         resume(currentTime);
                     }
-                        dispose();
+                    dispose();
                 }
             });
             setTitle("Window");
@@ -767,4 +908,92 @@ public class Habitat {
         return panel.getWidth();
     }
 
+    public String Execute(String command)
+    {
+        if (command.equals("clear")) {
+            return "";
+        }
+        String[] parts = command.split(" ");
+        if (parts.length == 3 && parts[0].equals("reduce") && parts[1].equals("albino"))
+        {
+            try {
+                int reduce = Integer.parseInt(parts[2]);
+                ReduceAlbino(reduce);
+            }
+            catch (NumberFormatException e)
+            {
+                return "Incorrect parameter for reduce albino command";
+            }
+            return "Albino number is reduced!";
+        }
+        return "Unknown command";
+    }
+
+    public int getCurrentAlbinoNumber()//нужен для различия альбиноса от обычного кролика
+    {
+        int result = 0;
+        for (AbstractRabbit rabbit: singleton.GetVector())
+        {
+            if (rabbit.getID() < 0)
+                result++;
+        }
+        return result;
+    }
+
+    public void ReduceAlbino (int number)
+    {
+        int i = getCurrentAlbinoNumber()*number/100;
+        System.out.println(i);
+        int deleted = 0;
+        Iterator<AbstractRabbit> iter = singleton.GetVector().iterator();
+        while (iter.hasNext())
+        {
+            if (deleted < i)
+            {
+                AbstractRabbit rabbit = iter.next();
+                if (rabbit.getID() < 0)
+                {
+                    singleton.GetMap().remove(rabbit.getID());
+                    singleton.getID().remove(rabbit.getID());
+                    iter.remove();
+                    deleted++;
+                }
+            }
+            else
+                break;
+        }
+    }
+
+    public class ConsoleDialog extends JDialog
+    {
+        ConsoleDialog() {
+            final JTextArea textArea = new JTextArea();
+            textArea.addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent keyEvent) {
+                    super.keyPressed(keyEvent);
+                    if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+                        String[] lines = textArea.getText().split("\n");
+                        String result = Execute(lines[lines.length-1]);
+                        textArea.setText("");
+                        if (result != "")
+                        {
+                            for (String line: lines) {
+                                textArea.append(line);
+                                textArea.append("\n");
+                            }
+                            textArea.append(result);
+                        }
+                    }
+                }
+            });
+            JPanel contents = new JPanel();
+            contents.add(textArea);
+            contents.setLayout(new GridLayout(1, 1));
+            setContentPane(contents);
+            setSize(350, 200);
+            setLocationRelativeTo(null);
+            setVisible(true);
+        }
+    }
 }
