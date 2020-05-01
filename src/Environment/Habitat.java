@@ -4,12 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.awt.image.BufferedImage;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
+
 import LabObjects.ConcreteFactory;
 import LabObjects.House;
-import jdk.nashorn.internal.scripts.JD;
 
 import static java.awt.event.KeyEvent.*;
 
@@ -22,8 +22,6 @@ public class Habitat extends JFrame {
     private Timer m_timer;
     private long t_start = 0;
     private ConcreteFactory factory = new ConcreteFactory();
-    private ArrayList<House> container = new ArrayList();
-    private JTextArea area1;
     private JLabel s_time = new JLabel();
     private JLabel WoodCount = new JLabel();
     private JLabel KapCount = new JLabel();
@@ -31,10 +29,12 @@ public class Habitat extends JFrame {
     private JLabel period_wood_text = new JLabel("Период деревянного");
     private JLabel posib_kap_text = new JLabel("Вероятность капитального");
     private JLabel posib_wood_text = new JLabel("Вероятность деревянного");
-    private boolean visible=true;
+    private JLabel edit_life_wood_text = new JLabel("Время жизни деревянного");
+    private JLabel edit_life_kap_text = new JLabel("Время жизни капитального");
     private int countWood = 0, countKap = 0;
     private JButton start = new JButton("Start");
     private JButton stop = new JButton("Stop");
+    private JButton curr_obj = new JButton("Текущие объекты");
     private boolean sim_active = false;
     private int work_area_w=(width*3/4);
     private int work_area_h=height*3/4;
@@ -56,6 +56,10 @@ public class Habitat extends JFrame {
     private JComboBox posib_kap = new JComboBox();
     private double P1=0.1;
     private double P2=0.2;
+    private int life_time_wood = 2;
+    private int life_time_kap = 5;
+    private JTextField edit_life_wood = new JTextField();
+    private JTextField edit_life_kap = new JTextField();
 
 
 
@@ -70,9 +74,8 @@ public class Habitat extends JFrame {
             info_area.setColor(new Color(221, 5, 0));
             info_area.fillRect((int)(width*3/4), 0, (int)(width/4), height);
             House temp;
-            for (int i = 0; i < container.size(); i++) {
-                temp = container.get(i);
-                temp.draw(g);
+            for (int i = 0; i < Collect.getInstance().size_obj(); i++) {
+                g.drawImage(Collect.getInstance().get_obj(i).getImage(), Collect.getInstance().get_obj(i).getX(), Collect.getInstance().get_obj(i).getY(),null);
             }
 
         }
@@ -100,7 +103,7 @@ public class Habitat extends JFrame {
         m_start.setEnabled(false);
         m_stop.setEnabled(true);
         if(!sim_active){
-            container.clear();
+            Collect.getInstance().clear();
             countWood=0;
             countKap=0;
             sim_active = true;
@@ -109,9 +112,9 @@ public class Habitat extends JFrame {
             m_timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    Update(System.currentTimeMillis() - t_start);
+                    Update((System.currentTimeMillis() - t_start)/1000);
                 }
-            }, 0, 500);
+            }, 0, 1000);
         }
     }
 
@@ -148,6 +151,11 @@ public class Habitat extends JFrame {
         panel.add(period_wood);
         panel.add(period_kap_text);
         panel.add(period_wood_text);
+        panel.add(edit_life_kap);
+        panel.add(edit_life_kap_text);
+        panel.add(edit_life_wood);
+        panel.add(edit_life_wood_text);
+        panel.add(curr_obj);
         ImageIcon icon = new ImageIcon("./resources/USSR.png");
         setIconImage(icon.getImage());
         sim.add(m_start);
@@ -161,18 +169,23 @@ public class Habitat extends JFrame {
         s_time.setBounds((int)(width*3/4)+10, 10, 100, 15);
         start.setBounds((int)(width*3/4)+10,70,200,15);
         stop.setBounds((int)(width*3/4)+10,90,200,15);
-        info.setBounds((int)(width*3/4)+10,110,200,15);
-        period_kap_text.setBounds((int)(width*3/4)+10,170,200,15);
-        period_wood_text.setBounds((int)(width*3/4)+10,190,200,15);
-        period_kap.setBounds((int)(width*3/4)+170,170,70,15);
-        period_wood.setBounds((int)(width*3/4)+170,190,70,15);
+        curr_obj.setBounds((int)(width*3/4)+10,110,200,15);
+        info.setBounds((int)(width*3/4)+10,130,200,15);
+        period_kap_text.setBounds((int)(width*3/4)+10,190,200,15);
+        period_wood_text.setBounds((int)(width*3/4)+10,210,200,15);
+        period_kap.setBounds((int)(width*3/4)+170,190,70,15);
+        period_wood.setBounds((int)(width*3/4)+170,210,70,15);
         info.setSelected(false);
-        time_visible.setBounds((int)(width*3/4)+10,130,200,15);
-        time_invisible.setBounds((int)(width*3/4)+10,150,200,15);
-        posib_kap_text.setBounds((int)(width*3/4)+10,210,200,15);
-        posib_wood_text.setBounds((int)(width*3/4)+10,235,200,15);
-        posib_kap.setBounds((int)(width*3/4)+170, 210,70,20);
-        posib_wood.setBounds((int)(width*3/4)+170, 235,70,20);
+        time_visible.setBounds((int)(width*3/4)+10,150,200,15);
+        time_invisible.setBounds((int)(width*3/4)+10,170,200,15);
+        posib_kap_text.setBounds((int)(width*3/4)+10,230,200,15);
+        posib_wood_text.setBounds((int)(width*3/4)+10,255,200,15);
+        posib_kap.setBounds((int)(width*3/4)+170, 230,70,20);
+        posib_wood.setBounds((int)(width*3/4)+170, 255,70,20);
+        edit_life_kap_text.setBounds((int)(width*3/4)+10,280,200,15);
+        edit_life_wood_text.setBounds((int)(width*3/4)+10,305,200,15);
+        edit_life_kap.setBounds((int)(width*3/4)+170, 280,70,20);
+        edit_life_wood.setBounds((int)(width*3/4)+170, 305,70,20);
         panel.add(s_time);
         panel.add(WoodCount);
         panel.add(KapCount);
@@ -217,6 +230,14 @@ public class Habitat extends JFrame {
             }
         });
 
+        curr_obj.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Dialog_objects msgbox3 = new Dialog_objects(Habitat.this, "Живые", true);
+                msgbox3.setVisible(true);
+            }
+        });
+
         period_wood.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,6 +270,39 @@ N1 = 1;
             }
         });
 
+        edit_life_wood.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String field1 = new String();
+                field1 = edit_life_wood.getText();
+                try{
+                    life_time_wood=Integer.parseInt(field1);
+                }catch(NumberFormatException nfe){
+                    MyError error = new MyError(Habitat.this, "Ошибка", true);
+                    error.setVisible(true);
+                    life_time_wood = 2;
+                }
+                requestFocusInWindow();
+            }
+        });
+
+        edit_life_kap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String field1 = new String();
+                field1 = edit_life_kap.getText();
+                try{
+                    life_time_kap=Integer.parseInt(field1);
+                }catch(NumberFormatException nfe){
+                    MyError error = new MyError(Habitat.this, "Ошибка", true);
+                    error.setVisible(true);
+                    life_time_kap = 5;
+                }
+                requestFocusInWindow();
+            }
+        });
+
+
 
         posib_kap.addItemListener(new ItemListener() {
             @Override
@@ -261,7 +315,7 @@ N1 = 1;
         posib_wood.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                P1=posib_kap.getSelectedIndex()/10.d;
+                P1=posib_wood.getSelectedIndex()/10.d;
                 requestFocusInWindow();
             }
         });
@@ -282,7 +336,6 @@ N1 = 1;
                     WoodCount.setVisible(false);
                     if (time_view.getSelection()==time_invisible.getModel())
                         s_time.setVisible(false);
-                    visible=false;
                 }
                 else
                 {
@@ -290,7 +343,6 @@ N1 = 1;
                     WoodCount.setVisible(true);
                     if (time_view.getSelection()==time_visible.getModel())
                         s_time.setVisible(true);
-                    visible=true;
                 }
                 requestFocusInWindow();
             }
@@ -354,7 +406,6 @@ N1 = 1;
                             WoodCount.setVisible(false);
                             if (time_view.getSelection()==time_invisible.getModel())
                             s_time.setVisible(false);
-                        visible=false;
                         }
                         else
                         {
@@ -363,7 +414,6 @@ N1 = 1;
                             WoodCount.setVisible(true);
                             if (time_view.getSelection()==time_visible.getModel())
                             s_time.setVisible(true);
-                            visible=true;
                         }
                         break;
                     }
@@ -376,15 +426,23 @@ N1 = 1;
     }
 
     public void Update(long time) {
+        int temp_ID;
         if (Math.random() < P1 && time%N1==0) {
-            container.add(factory.createWood(work_area_h, work_area_w));
+            do{
+                temp_ID = (int)(Math.random()*10000);
+            }while(!Collect.getInstance().add_ID(temp_ID));
+            Collect.getInstance().add_obj(factory.createWood(work_area_h, work_area_w,temp_ID),time);
             countWood++;
         }
         if (Math.random() < P2 && time % N2 == 0) {
-            container.add(factory.createKap(work_area_h, work_area_w));
+            do{
+                temp_ID = (int)(Math.random()*10000);
+            }while(!Collect.getInstance().add_ID(temp_ID));
+            Collect.getInstance().add_obj(factory.createKap(work_area_h, work_area_w,temp_ID), time);
             countKap++;
         }
-        s_time.setText("Время:" + time/1000.d);
+        Collect.getInstance().round(time, life_time_wood, life_time_kap);
+        s_time.setText("Время:" + time);
         WoodCount.setText("Деревенные дома:"+countWood);
         KapCount.setText("Капитальные дома:"+countKap);
         repaint();
@@ -422,9 +480,9 @@ N1 = 1;
                     m_timer.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            Update(System.currentTimeMillis() - time_wait - t_start);
+                            Update((System.currentTimeMillis() - time_wait - t_start)/1000);
                         }
-                    }, 0, 500);
+                    }, 0, 1000);
                 }
             });
             ok.addActionListener(new ActionListener() {
@@ -440,6 +498,45 @@ N1 = 1;
 
         }
     }
+
+    class Dialog_objects extends JDialog{
+        private JButton ok = new JButton("Ок");
+        private JPanel buttons = new JPanel();
+        private JPanel text = new JPanel();
+        private JTextArea live_objects = new JTextArea(10, 30);
+        private JScrollPane live_panel= new JScrollPane(live_objects);
+        String str = new String();
+        private int width = 400, height = 300;
+        public Dialog_objects(JFrame parent, String title, boolean modal){
+            super(parent, title, modal);
+            setSize(width, height);
+            add(buttons);
+            add(text);
+            text.add(live_panel, BorderLayout.CENTER);
+            text.setBounds(0,0,width,3*height/4);
+            buttons.setBounds(0,3*height/4,width,height/4);
+            buttons.add(ok);
+            live_panel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            live_objects.setEditable(false);
+            Collection live = (Collect.getInstance().comeback()).entrySet();
+            Iterator it = live.iterator();
+            while(it.hasNext()){
+                Map.Entry me = (Map.Entry)it.next();
+                str = str+"ID объекта: "+me.getKey()+ "  Время рождения: "+me.getValue()+'\n';
+            }
+            live_objects.setText(str);
+            ok.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                    dispose();
+                }
+            });
+        }
+
+
+    }
+
 
 
     class MyError extends JDialog {
