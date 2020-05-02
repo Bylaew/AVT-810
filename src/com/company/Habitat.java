@@ -38,6 +38,7 @@ public class Habitat {
     private BaceAIAlbino  baceAIAlbino=null;
     public boolean ready=true;
     public boolean readyAlbino=true;
+    public boolean starts=true;
 
     public Habitat() {
 
@@ -660,9 +661,15 @@ public class Habitat {
     }
 
     public void ObjLoading() throws IOException, ClassNotFoundException {
-        FileInputStream file=new FileInputStream("myObj.ser");
+        JFileChooser fc = new JFileChooser();
+        fc.setCurrentDirectory(new File("myObj.ser"));
+        fc.showOpenDialog(frame);//плохо понимаю как путь к патке задать
+        File selFile = fc.getSelectedFile();
+        FileInputStream file=new FileInputStream(selFile);
         ObjectInputStream os=new ObjectInputStream(file);
-        Stop();
+
+        starts=false;
+        currentTime=0;
         singleton.GetVector().clear();
         singleton.GetMap().clear();
         singleton.getID().clear();
@@ -670,7 +677,6 @@ public class Habitat {
             try {
                 AbstractRabbit rabbit=(AbstractRabbit) os.readObject();
                 rabbit.BirthTime=0;
-                currentTime=0;
                 System.out.println(rabbit);
                 singleton.GetVector().add(rabbit);
                 singleton.getID().add(rabbit.getID());
@@ -727,9 +733,11 @@ public class Habitat {
         if (JustStart)
             JustStart = false;
         mTimer.cancel();
-        singleton.refreshMap();
-        singleton.refreshID();
-        singleton.refreshVector();
+        if(starts) {
+            singleton.refreshMap();
+            singleton.refreshID();
+            singleton.refreshVector();
+        }
         mTimer=new Timer();
         NumberRabbits=0;
         currentTime=0;
@@ -742,6 +750,7 @@ public class Habitat {
 
     public void Stop()
     {
+        starts=true;
         mTimer.cancel();
         if(bol&&simulate)
             getMessage();
