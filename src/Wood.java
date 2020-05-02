@@ -22,7 +22,7 @@ public class Wood extends House //деревянные домики
         }
         counter++;
     }
-    public Wood(int x, int y)
+    public Wood(double x, double y)
     {
         setX(x);
         setY(y);

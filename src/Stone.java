@@ -22,7 +22,7 @@ public class Stone extends House //деревянные домики
         }
         counter++;
     }
-    public Stone(int x, int y)
+    public Stone(double x, double y)
     {
         setX(x);
         setY(y);

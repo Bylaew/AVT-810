@@ -24,6 +24,13 @@ public class UserInterface
     JToggleButton start_button = new JToggleButton("Start simulation");
     JToggleButton stop_button = new JToggleButton("Stop simulation");
     JButton aliveButton = new JButton("Show alive");
+
+    ButtonGroup stoneAi = new ButtonGroup();
+    ButtonGroup woodAi = new ButtonGroup();
+    JToggleButton sleepStoneAi = new JToggleButton("StoneAi sleep");
+    JToggleButton sleepWoodAi = new JToggleButton("WoodAi sleep");
+    JToggleButton wakeStoneAi = new JToggleButton("StoneAi wake");
+    JToggleButton wakeWoodAi = new JToggleButton("WoodAi wake");
     //чекбокс
     JCheckBox showDialogBox = new JCheckBox("Show dialog");
     //связанные переключатели
@@ -31,9 +38,17 @@ public class UserInterface
     ButtonGroup bg= new ButtonGroup();
     JRadioButton showTimeButton= new JRadioButton("Show time");
     JRadioButton hideTimeButton= new JRadioButton("Hide time");
+    JPanel woodAi_panel = new JPanel();
+    JPanel stoneAi_panel = new JPanel();
+
     //комбобокс
     JComboBox cmb1 = new JComboBox();
     JComboBox cmb2 = new JComboBox();
+    JComboBox cmbPriority1 = new JComboBox();
+    JComboBox cmbPriority2 = new JComboBox();
+
+    JPanel priority_panel = new JPanel();
+
     //текстовые зоны
     JTextField period1 = new JTextField();
     JTextField period2 = new JTextField();
@@ -78,17 +93,23 @@ public class UserInterface
         bg.add(showTimeButton);
         bg.add(hideTimeButton);
 
+        stoneAi.add(sleepStoneAi);stoneAi.add(wakeStoneAi);
+        woodAi.add(sleepWoodAi);woodAi.add(wakeWoodAi);
         //настройки комобоксов
         cmb1.setEditable(false);
         cmb2.setEditable(false);
+        cmbPriority1.setEditable(false);
+        cmbPriority2.setEditable(false);
 
         for (int i = 1; i < 10;i=i+1 )
         {
             cmb1.addItem((double)i/10);
             cmb2.addItem((double)i/10);
+            cmbPriority1.addItem(i);
+            cmbPriority2.addItem(i);
         }
         //добавление элементов к панели настроек
-        settings_panel.setLayout(new GridLayout(17,1,0,0));
+        settings_panel.setLayout(new GridLayout(20,1,0,0));
         settings_panel.add(onPanel);
         settings_panel.add(showDialogBox);
 
@@ -107,7 +128,20 @@ public class UserInterface
         settings_panel.add(stoneLifeTime);
         settings_panel.add(new JLabel("Wood life"));
         settings_panel.add(woodLifeTime);
+
         settings_panel.add(aliveButton);
+        settings_panel.add(stoneAi_panel);
+        settings_panel.add(woodAi_panel);
+
+        stoneAi_panel.add(sleepStoneAi);
+        stoneAi_panel.add(wakeStoneAi);
+        woodAi_panel.add(sleepWoodAi);
+        woodAi_panel.add(wakeWoodAi);
+        settings_panel.add(priority_panel);
+
+        priority_panel.add(cmbPriority1);
+        priority_panel.add(cmbPriority2);
+        settings_panel.add(priority_panel);
 
         simulation_panel.setVisible(true);
         settings_panel.setVisible(true);};

@@ -4,5 +4,4 @@ public class Main
     {
         Habitat habitat = new Habitat();
     }
-
 }
