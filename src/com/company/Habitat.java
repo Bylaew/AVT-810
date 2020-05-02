@@ -662,12 +662,18 @@ public class Habitat {
 
     public void ObjLoading() throws IOException, ClassNotFoundException {
         JFileChooser fc = new JFileChooser();
+        simulate=false;
+        mTimer.cancel();
         fc.setCurrentDirectory(new File("myObj.ser"));
         fc.showOpenDialog(frame);//плохо понимаю как путь к патке задать
         File selFile = fc.getSelectedFile();
         FileInputStream file=new FileInputStream(selFile);
         ObjectInputStream os=new ObjectInputStream(file);
 
+        NumberRabbits=0;
+        currentTime=0;
+        CommonRabbit=0;
+        NumberAlbino=0;
         starts=false;
         currentTime=0;
         singleton.GetVector().clear();
