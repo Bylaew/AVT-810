@@ -9,7 +9,6 @@ import java.util.Timer;
 import javax.swing.*;
 import javax.swing.event.*;
 ///Консоль будет запускать одельный поток в пайпет один поток в мейн а другой в читающий
-
 //Id x и y в 4 пункте передачи
 public class Habitat {
     private int NumberRabbits=0;
@@ -39,6 +38,8 @@ public class Habitat {
     public boolean ready=true;
     public boolean readyAlbino=true;
     public boolean starts=true;
+    private ConsoleDialog cd;
+    private Accepts acc=new Accepts(this);
 
     public Habitat() {
 
@@ -306,7 +307,7 @@ public class Habitat {
         buttonNoti.setBounds(5,460,100,25);
     }
 
-    public void chekBox() {//////////////////////////////////////////////////////////
+    public void chekBox() {
         ButtonGroup currentT=new ButtonGroup();
         JRadioButton on=new JRadioButton("Visible time");
         JRadioButton off=new JRadioButton("Not Visible time",true);
@@ -572,7 +573,7 @@ public class Habitat {
         LifeTextAlbino.setBounds(70,300,120,20);
     }
 
-    public void Meniu()
+    public void Meniu()//////////////////////////////////////////////////////////////////////////////////////////////////
     {
         JMenu Menu=new JMenu("Menu");
         JMenuItem StopMenu=new JMenuItem("Stop");
@@ -640,7 +641,12 @@ public class Habitat {
         ConsoleMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                ConsoleDialog cd = new ConsoleDialog();
+                cd = new ConsoleDialog();
+                acc.setPr(cd.getStream());
+                cd.setPr(acc.getStream());
+                new Thread(cd).start();
+                new Thread(acc).start();
+
             }
         });
         Menu.setFocusable(false);
@@ -955,8 +961,7 @@ public class Habitat {
         return result;
     }
 
-    public void ReduceAlbino (int number)
-    {
+    public void ReduceAlbino (int number) {
         int i = getCurrentAlbinoNumber()*number/100;
         System.out.println(i);
         int deleted = 0;
@@ -971,44 +976,13 @@ public class Habitat {
                     singleton.GetMap().remove(rabbit.getID());
                     singleton.getID().remove(rabbit.getID());
                     iter.remove();
+                    singleton.GetVector();
+                    singleton.getID();
                     deleted++;
                 }
             }
             else
                 break;
-        }
-    }
-
-    public class ConsoleDialog extends JDialog
-    {
-        ConsoleDialog() {
-            final JTextArea textArea = new JTextArea();
-            textArea.addKeyListener(new KeyAdapter() {
-                @Override
-                public void keyPressed(KeyEvent keyEvent) {
-                    super.keyPressed(keyEvent);
-                    if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
-                        String[] lines = textArea.getText().split("\n");
-                        String result = Execute(lines[lines.length-1]);
-                        textArea.setText("");
-                        if (result != "")
-                        {
-                            for (String line: lines) {
-                                textArea.append(line);
-                                textArea.append("\n");
-                            }
-                            textArea.append(result);
-                        }
-                    }
-                }
-            });
-            JPanel contents = new JPanel();
-            contents.add(textArea);
-            contents.setLayout(new GridLayout(1, 1));
-            setContentPane(contents);
-            setSize(350, 200);
-            setLocationRelativeTo(null);
-            setVisible(true);
         }
     }
 }

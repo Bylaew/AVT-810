@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 public class BaceAICommon extends AbstractBaceAI {
     int N=500;
     boolean bool =false;
-    BaceAICommon(){}
 
     BaceAICommon(Habitat h) {
         super(h);
