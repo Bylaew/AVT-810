@@ -15,8 +15,8 @@ public class BeeMale extends Bee {
         super(x, y);
         try {
             img = ImageIO.read(new File("MaleBee.png"));
-        } catch (IOException e) {
-            //e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -24,4 +24,5 @@ public class BeeMale extends Bee {
     public Image getImage() {
         return img;
     }
+
 }

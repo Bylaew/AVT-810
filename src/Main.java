@@ -1,17 +1,13 @@
 import javax.swing.*;
 
-public class Main extends JFrame {
-    Main(int width, int height){
-        super("LR1VAR2");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(width,height);
-        setLayout(null);
-        setContentPane(new JPanel());
-        setVisible(true);
-    }
+public class Main {
+    final static int W_HEIGHT = 1000;
+    final static int W_WIDTH = 1400;
+    final static String W_NAME = "Bee's World";
 
-    public static void main(String[] args){
-        Habitat habitat = new Habitat(1024,768,1,1,30,80);
-        habitat.init();
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            MainGUI window = new MainGUI(W_NAME, W_HEIGHT, W_WIDTH);
+        });
     }
 }

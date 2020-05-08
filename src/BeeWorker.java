@@ -15,8 +15,8 @@ public class BeeWorker extends Bee {
         super(x, y);
         try {
             img = ImageIO.read(new File("WorkerBee.png"));
-        } catch (IOException e) {
-            //e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
