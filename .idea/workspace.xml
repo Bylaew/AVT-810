@@ -15,6 +15,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1aj7jtB8br3Jo7SOaOqICDVrk2Z" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -23,6 +26,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -63,22 +68,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="690" y="303" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588940618750" />
-    <state width="1877" height="279" key="GridCell.Tab.0.bottom" timestamp="1588939798146">
+    <state x="614" y="114" key="CommitChangelistDialog2" timestamp="1589047666667">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588939798146" />
-    <state width="1877" height="279" key="GridCell.Tab.0.center" timestamp="1588939798146">
+    <state x="614" y="114" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1589047666667" />
+    <state width="1877" height="279" key="GridCell.Tab.0.bottom" timestamp="1589047649500">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588939798146" />
-    <state width="1877" height="279" key="GridCell.Tab.0.left" timestamp="1588939798145">
+    <state width="1877" height="279" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589047649500" />
+    <state width="1877" height="279" key="GridCell.Tab.0.center" timestamp="1589047649500">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588939798145" />
-    <state width="1877" height="279" key="GridCell.Tab.0.right" timestamp="1588939798146">
+    <state width="1877" height="279" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589047649500" />
+    <state width="1877" height="279" key="GridCell.Tab.0.left" timestamp="1589047649499">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588939798146" />
+    <state width="1877" height="279" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589047649499" />
+    <state width="1877" height="279" key="GridCell.Tab.0.right" timestamp="1589047649500">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="279" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589047649500" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1588940648844">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -87,10 +96,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="656" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588923196900" />
-    <state x="342" y="140" key="new project wizard" timestamp="1588924871877">
+    <state x="342" y="140" key="new project wizard" timestamp="1589047599565">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="342" y="140" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1588924871877" />
+    <state x="342" y="140" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1589047599565" />
     <state x="666" y="148" key="refactoring.ChangeSignatureDialog" timestamp="1588935153472">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
