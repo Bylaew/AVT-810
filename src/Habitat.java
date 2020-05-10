@@ -52,7 +52,7 @@ public class Habitat extends JPanel {
         }
     }
 
-    public void killTransportList() {
+    public void killBeesList() {
         Singleton.INSTANCE.removeAll();
     }
 
