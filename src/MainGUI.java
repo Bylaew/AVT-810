@@ -125,17 +125,17 @@ public class MainGUI {
         checkboxFloor.add(chekboxLabel);
         checkboxFloor.add(checkBox);
 
-        JPanel setPeriodL = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel spawnLCarLabel = new JLabel("Male period");
+        JPanel setPeriodMale = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel spawnMaleLabel = new JLabel("Male period");
         malePeriodField = new JTextField(3);
-        setPeriodL.add(spawnLCarLabel);
-        setPeriodL.add(malePeriodField);
+        setPeriodMale.add(spawnMaleLabel);
+        setPeriodMale.add(malePeriodField);
 
-        JPanel setPeriodH = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel spawnHCarLabel = new JLabel("Worker period");
+        JPanel setPeriodWorker = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel spawnWorkerLabel = new JLabel("Worker period");
         workerPeriodField = new JTextField(3);
-        setPeriodH.add(spawnHCarLabel);
-        setPeriodH.add(workerPeriodField);
+        setPeriodWorker.add(spawnWorkerLabel);
+        setPeriodWorker.add(workerPeriodField);
 
         sub_section1.add(radioFloor);
         sub_section1.add(checkboxFloor);
