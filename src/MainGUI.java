@@ -244,7 +244,7 @@ public class MainGUI {
         JButton cancelButton = new JButton("Cancel");
         okButton.addActionListener(e -> {
             modalPane.setVisible(false);
-            action.killTransportList();
+            action.killBeesList();
             action.setVisible(false);
             controlPanel.setVisible(false);
             mainMenu.setVisible(false);
@@ -507,7 +507,7 @@ public class MainGUI {
                 case KeyEvent.VK_E: {
                     if (action.getCountOfTicks() == 0) return;
                     stopTimer();
-                    action.killTransportList();
+                    action.killBeesList();
                     action.setVisible(false);
                     controlPanel.setVisible(false);
                     mainMenu.setVisible(false);
