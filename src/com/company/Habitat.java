@@ -39,15 +39,15 @@ class Singleton {
         array = arr;
     }
 
-    public HashSet<Integer> getIndef() {
+    public synchronized HashSet<Integer> getIndef() {
         return indef;
     }
 
-    public TreeMap<Integer, Integer> getTreeTime() {
+    public synchronized TreeMap<Integer, Integer> getTreeTime() {
         return treeTime;
     }
 
-    public Vector<Ant> getArray() {
+    public synchronized Vector<Ant> getArray() {
         return array;
     }
 
@@ -55,9 +55,11 @@ class Singleton {
 
 public class Habitat {
     BufferedImage backGround;
+    JPanel mainPanel = new JPanel();
+
     private int widht;
     private int height;
-    private Singleton mas = Singleton.getInstance();
+    private  Singleton mas = Singleton.getInstance();
     private Timer startTime;
     private int warriorCount, workerCount;
     private long timeFromStart = 0;
@@ -65,6 +67,13 @@ public class Habitat {
     private AntFactory antFactory;
     private boolean firstTimeRun = false;
     boolean isVisibleSettings = false;
+    boolean isGoing = false;
+
+    WarrAI warrAI = new WarrAI();
+    WorkAI workAI = new WorkAI();
+
+    int V = 60;
+    int R = 60;
 
     int lifeWarr;
     int lifeWork;
@@ -81,9 +90,15 @@ public class Habitat {
         return height;
     }
 
+    public long getTimeFromStart() {
+        return timeFromStart;
+    }
+
     public int getWidht() {
         return widht;
     }
+
+    public synchronized Singleton getMas(){return mas;}
 
 
     Habitat(int widht, int height) {
@@ -105,6 +120,8 @@ public class Habitat {
     }
 
     public void init() {
+        warrAI.setHabitat(this);
+
         JFrame window = new JFrame("Muravei)");
         String[] a = {"10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"};
         JComboBox p1 = new JComboBox(a);
@@ -129,7 +146,6 @@ public class Habitat {
         Checkbox showInfo = new Checkbox("Показывать информацию", true);
 
         JToolBar toolBar = new JToolBar();
-        JPanel mainPanel = new JPanel();
         MenuBar menu = new MenuBar();
         Menu mSim = new Menu("Simulation");
         MenuItem mStart = new MenuItem("Start");
@@ -139,7 +155,6 @@ public class Habitat {
 
         CheckboxMenuItem statisticCheckBox = new CheckboxMenuItem("Show statistic", true);
         CheckboxMenuItem timeCheckBox = new CheckboxMenuItem("Show time", true);
-
 
         JButton toolStart = new JButton("1");
 
@@ -220,8 +235,8 @@ public class Habitat {
 
         labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
         labelTime.setFont(new Font("TimesRoman", Font.ITALIC, 40));
-        labelTime.setBounds(1000, 100, 100, 40);
-        labelTime.setForeground(Color.blue);
+        labelTime.setBounds(1100, 50, 100, 40);
+        labelTime.setForeground(Color.black);
         labelTime.setVisible(true);
 
         showTime.setBounds(825, 20, 200, 20);
@@ -287,7 +302,7 @@ public class Habitat {
         mainPanel.setBackground(Color.DARK_GRAY);
         mainPanel.setBounds(0, 40, widht, height - 250);
         mainPanel.setLayout(null);
-        mainPanel.add(labelTime);
+        buttonPanel.add(labelTime);
 
         window.add(mainPanel).requestFocus();
         window.add(buttonPanel).requestFocus();
@@ -414,11 +429,11 @@ public class Habitat {
             }
         });
 
-        startTime = new Timer(1000, new ActionListener() {
+        startTime = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeFromStart++;
-                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
+                labelTime.setText(timeFromStart / 600 + ":" + ((timeFromStart/10 % 60 < 10) ? "0" : "") + timeFromStart / 10 % 60);
                 update(timeFromStart, mainPanel);
             }
         });
@@ -474,6 +489,10 @@ public class Habitat {
                     labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
                     firstTimeRun = false;
                     mas.setArray(null);
+                    warrAI.setGoing(false);
+                    workAI.setGoing(false);
+
+
                 } else {
                     startTime.start();
 
@@ -679,48 +698,58 @@ public class Habitat {
 
     private void start(JFrame window) {
         System.out.println("Start");
+        isGoing = true;
         mas.setArray(new Vector<>());
         mas.setIndef(new HashSet<>());
         mas.setTreeTime(new TreeMap<>());
         startTime.start();
-        System.out.println(java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner());
+        warrAI.start();
+        workAI.start();
+        warrAI.setGoing(true);
+        workAI.setGoing(true);
+
     }
 
     private int statistic(JFrame window) {
         return JOptionPane.showConfirmDialog(window, new String[]{"Warriors: " + warriorCount, "Workers:" + workerCount, "Sum: " + (warriorCount + workerCount), "Work Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60}, "Statistic", JOptionPane.OK_CANCEL_OPTION);
     }
 
-    private void update(float time, JComponent g) {
+    private  void update(float time, JComponent g) {
 
         for (int i = 0; i < mas.getArray().size(); i++) {
-            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= (int) time) {
+            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= (int) time/10) {
+
                 mas.getIndef().remove(mas.getArray().get(i).getIndef());
                 mas.getTreeTime().remove(mas.getArray().get(i).getIndef());
-
                 mas.getArray().remove(i);
                 System.out.println("NUUU");
 
             }
         }
-
-        if (time % N1 == 0) {
+        if (time % (N1*10) == 0) {
             if (Math.random() < P1) {
-                mas.getArray().add(antFactory.createWarrior((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWarr, (int) time, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWarrior((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWarr, (int) time/10, warriorCount + workerCount));
                 mas.getIndef().add(mas.getArray().get(mas.getArray().size() - 1).getIndef());
                 mas.getTreeTime().put(mas.getArray().get(mas.getArray().size() - 1).getIndef(), mas.getArray().get(mas.getArray().size() - 1).getBornTime());
                 System.out.println("WarriorCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
                 warriorCount++;
             }
         }
-        if (time % N2 == 0) {
+        if (time % (N2*10) == 0) {
             if (Math.random() < P2) {
-                mas.getArray().add(antFactory.createWorker((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWork, (int) time, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWorker((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWork, (int) time/10, warriorCount + workerCount));
                 mas.getIndef().add(mas.getArray().get(mas.getArray().size() - 1).getIndef());
                 mas.getTreeTime().put(mas.getArray().get(mas.getArray().size() - 1).getIndef(), mas.getArray().get(mas.getArray().size() - 1).getBornTime());
                 System.out.println("WorkerCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
                 workerCount++;
             }
         }
+
+        draw(g);
+
+    }
+
+    public synchronized void draw(JComponent g){
 
         int w = g.getWidth(), h = g.getHeight();
         BufferedImage fieldImage;

@@ -3,6 +3,8 @@ package com.company;
 public abstract class Ant implements IBehaviour {
     private float x;
     private float y;
+    private int orientationX;
+    private int orientationY;
 
     private int indef;
     private int bornTime;
@@ -30,6 +32,22 @@ public abstract class Ant implements IBehaviour {
     }
     public int getLifeTime() {
         return lifeTime;
+    }
+
+    public int getOrientationX() {
+        return orientationX;
+    }
+
+    public void setOrientationX(int orientationX) {
+        this.orientationX = orientationX;
+    }
+
+    public int getOrientationY() {
+        return orientationY;
+    }
+
+    public void setOrientationY(int orientationY) {
+        this.orientationY = orientationY;
     }
 
     public int getIndef() {
