@@ -44,8 +44,8 @@ public class WoodAI extends BaseAI {
         if(col_pos.size()>0){
             while(iter.hasNext()){
                 temp = (House)iter.next();
-                try{
                 if (!temp.goal && temp.getType()=="Wood"){
+                    try{
                     x_fin=(col_pos.get(temp.getID())).getX();
                     y_fin=(col_pos.get(temp.getID())).getY();
                     if (temp.getX()!=x_fin || temp.getY()!=y_fin){
@@ -61,8 +61,9 @@ public class WoodAI extends BaseAI {
                     }
                     if (temp.getX()==x_fin && temp.getY()==y_fin)
                         temp.setGoal(true);
+                }catch (NullPointerException e){e.printStackTrace();};
                 }
-            }catch (NullPointerException e){e.printStackTrace();}
+
             }
             frame.repaint();}
     }

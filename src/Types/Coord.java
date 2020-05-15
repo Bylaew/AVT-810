@@ -2,7 +2,9 @@ package Types;
 
 import LabObjects.IBehaviour;
 
-public class Coord implements IBehaviour {
+import java.io.Serializable;
+
+public class Coord implements IBehaviour, Serializable {
         protected int x;
         protected int y;
         public Coord(int x, int y){

@@ -5,8 +5,7 @@ import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.Timer;
 
@@ -14,6 +13,8 @@ import LabObjects.ConcreteFactory;
 import LabObjects.House;
 import LabObjects.KapAI;
 import LabObjects.WoodAI;
+import com.sun.corba.se.pept.transport.ListenerThread;
+import javafx.scene.layout.HBox;
 
 import javax.sound.sampled.*;
 
@@ -21,8 +22,8 @@ import static java.awt.event.KeyEvent.*;
 
 
 public class Habitat extends JFrame {
-    private int N1=1;
-    private int N2=2;
+    protected int N1=1;
+    protected int N2=2;
     private int width = 1080;
     private int height = 720;
     private Timer m_timer;
@@ -46,6 +47,11 @@ public class Habitat extends JFrame {
     private JButton start_kapAI = new JButton("Запуск");
     private JButton stop_woodAI = new JButton("Остановка");
     private JButton stop_kapAI = new JButton("Остановка");
+    private JButton console = new JButton("Консоль");
+    private JButton save = new JButton("Сохранить объекты");
+    private JButton load = new JButton("Загрузить объекты");
+    private JButton save_cfg = new JButton("Сохранить параметры");
+    private JButton load_cfg = new JButton("Загрузить параметры");
     private boolean sim_active = false;
     private int work_area_w=(width*3/4);
     private int work_area_h=height*3/4;
@@ -60,23 +66,32 @@ public class Habitat extends JFrame {
     private JMenuItem m_stop = new JMenuItem("Завершить эксперимент");
     private JCheckBoxMenuItem m_view = new JCheckBoxMenuItem("Показать статистику");
     private long time_stop = 0, time_wait;
-    private boolean info_view=false;
+    protected boolean info_view=false;
     private JTextField period_wood = new JTextField();
     private JTextField period_kap = new JTextField();
     private JComboBox posib_wood = new JComboBox();
     private JComboBox posib_kap = new JComboBox();
     private JComboBox wood_priority = new JComboBox();
-    private JComboBox kap_proirity = new JComboBox();
-    private double P1=0.1;
-    private double P2=0.2;
-    private int life_time_wood = 2;
-    private int life_time_kap = 5;
-    private boolean woodAI_work=true;
-    private boolean kapAI_work=true;
+    private JComboBox kap_priority = new JComboBox();
+    protected double P1=0.1;
+    protected double P2=0.2;
+    protected int life_time_wood = 2;
+    protected int life_time_kap = 5;
+    protected boolean woodAI_work=true;
+    protected boolean kapAI_work=true;
+    protected boolean console_op=false;
     private JTextField edit_life_wood = new JTextField();
     private JTextField edit_life_kap = new JTextField();
     private KapAI intel_kap = new KapAI(this);
     private WoodAI intel_wood = new WoodAI(this);
+
+    private Thread proc;
+    private static Collect temp2=Collect.getInstance();
+    private static  Config temp3 = Config.getInstance();
+    protected boolean view_time=true;
+    protected int wood_prior=5;
+    protected int kap_prior=5;
+
 
 
 
@@ -87,9 +102,8 @@ public class Habitat extends JFrame {
         @Override
         public synchronized void paintComponent(Graphics g) {
             super.paintComponent(g);
-            House temp;
-            for (int i = 0; i < Collect.getInstance().size_obj(); i++) {
-                g.drawImage(Collect.getInstance().get_obj(i).getImage(), Collect.getInstance().get_obj(i).getX(), Collect.getInstance().get_obj(i).getY(),null);
+            for (int i = 0; i < temp2.size_obj(); i++) {
+                g.drawImage(temp2.get_obj(i).getImage(), temp2.get_obj(i).getX(), temp2.get_obj(i).getY(),null);
             }
             Graphics2D info_area = (Graphics2D) g;
             info_area.setColor(new Color(221, 5, 0));
@@ -103,6 +117,8 @@ public class Habitat extends JFrame {
     private void stop_sim(){
         time_stop = System.currentTimeMillis();
         if(sim_active){
+            intel_kap.stop();
+            intel_wood.stop();
             m_stop.setEnabled(false);
             m_start.setEnabled(true);
             m_timer.cancel();
@@ -115,13 +131,21 @@ public class Habitat extends JFrame {
                 m_timer.cancel();
             }
             setVisible(true);}
+        temp2.clear();
     }
 
    private void start_sim(){
             m_start.setEnabled(false);
         m_stop.setEnabled(true);
         if(!sim_active){
-            Collect.getInstance().clear();
+            if(woodAI_work){
+                intel_wood.resume();
+            }
+            else{intel_wood.stop();}
+            if(kapAI_work){
+                intel_kap.resume();
+            }
+            else{intel_kap.stop();}
             sim_active = true;
             t_start = System.currentTimeMillis();
             m_timer = new Timer();
@@ -134,8 +158,57 @@ public class Habitat extends JFrame {
         }
     }
 
+    protected void savecfg() throws IOException{
+        temp3.setH(this);
+        FileOutputStream outputStream = new FileOutputStream("./menu.cfg");
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+        objectOutputStream.writeObject(temp3);
+        objectOutputStream.close();
+    }
 
 
+    protected void loadcfg() throws IOException, ClassNotFoundException{
+        FileInputStream fileInputStream = new FileInputStream("./menu.cfg");
+        ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        temp3 = (Config) objectInputStream.readObject();
+        objectInputStream.close();
+        N1=temp3.N1;
+        N2=temp3.N2;
+        life_time_kap=temp3.life_time_kap;
+        life_time_wood=temp3.life_time_wood;
+        P1=temp3.P1;
+        P2=temp3.P2;
+        posib_wood.setSelectedIndex((int)(P1*10));
+        posib_kap.setSelectedIndex((int)(P2*10));
+        info_view=temp3.view_info;
+        info.setSelected(info_view);
+        view_time=temp3.view_time;
+        if(view_time)
+            time_view.setSelected(time_visible.getModel(),true);
+        else
+            time_view.setSelected(time_invisible.getModel(),true);
+        woodAI_work=temp3.woodAI_work;
+        kapAI_work=temp3.kapAI_work;
+        if(woodAI_work){
+            intel_wood.resume();
+        }
+        else{intel_wood.stop();}
+        if(kapAI_work){
+            intel_kap.resume();
+        }
+        else{intel_kap.stop();}
+        wood_prior=temp3.woodAI_prior;
+        kap_prior=temp3.kapAI_prior;
+        intel_wood.setPriority(wood_prior);
+        intel_kap.setPriority(kap_prior);
+        wood_priority.setSelectedIndex(wood_prior-1);
+        kap_priority.setSelectedIndex(kap_prior-1);
+    }
+
+
+    public void setConsole_op(boolean bool){
+        console_op=bool;
+    }
 
 
     public Habitat() {
@@ -144,6 +217,29 @@ public class Habitat extends JFrame {
         setPreferredSize(new Dimension(width, height));
         CreateGUI();
         setVisible(true);
+    }
+
+    protected void serialization(){
+        try{
+
+            FileOutputStream outputStream = new FileOutputStream("./save.ser");
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+            objectOutputStream.writeObject(temp2);
+            objectOutputStream.close();
+
+        }catch(IOException er){er.printStackTrace();}
+    }
+
+
+    protected void deserialization(){
+        try{
+            stop_sim();
+            FileInputStream fileInputStream = new FileInputStream("./save.ser");
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+            temp2 = (Collect) objectInputStream.readObject();
+            objectInputStream.close();
+
+        }catch (IOException | ClassNotFoundException e){e.printStackTrace();}
     }
 
 
@@ -156,15 +252,16 @@ public class Habitat extends JFrame {
             posib_wood.addItem(i/10.d);
             if(i!=0) {
                 wood_priority.addItem(i);
-                kap_proirity.addItem(i);
+                kap_priority.addItem(i);
             }
         }
+
         posib_kap.setFocusable(false);
         posib_wood.setFocusable(false);
         posib_wood.setSelectedIndex(1);
         posib_kap.setSelectedIndex(2);
         wood_priority.setSelectedIndex(4);
-        kap_proirity.setSelectedIndex(4);
+        kap_priority.setSelectedIndex(4);
         panel.add(posib_kap_text);
         panel.add(posib_wood_text);
         panel.add(posib_wood);
@@ -185,7 +282,12 @@ public class Habitat extends JFrame {
         panel.add(woodAI_lab);
         panel.add(kapAI_lab);
         panel.add(wood_priority);
-        panel.add(kap_proirity);
+        panel.add(kap_priority);
+        panel.add(console);
+        panel.add(save);
+        panel.add(load);
+        panel.add(save_cfg);
+        panel.add(load_cfg);
         ImageIcon icon = new ImageIcon("./resources/USSR.png");
         setIconImage(icon.getImage());
         sim.add(m_start);
@@ -223,7 +325,12 @@ public class Habitat extends JFrame {
         stop_woodAI.setBounds((int)(width*3/4)+10, 390,100,20);
         stop_kapAI.setBounds((int)(width*3/4)+130, 390,100,20);
         wood_priority.setBounds((int)(width*3/4)+10, 420,100,20);
-        kap_proirity.setBounds((int)(width*3/4)+130, 420,100,20);
+        kap_priority.setBounds((int)(width*3/4)+130, 420,100,20);
+        console.setBounds((int)(width*3/4)+10, 450,200,20);
+        save.setBounds((int)(width*3/4)+10, 480,200,20);
+        load.setBounds((int)(width*3/4)+10, 510,200,20);
+        save_cfg.setBounds((int)(width*3/4)+10, 540,200,20);
+        load_cfg.setBounds((int)(width*3/4)+10, 570,200,20);
         panel.add(s_time);
         panel.add(WoodCount);
         panel.add(KapCount);
@@ -244,8 +351,90 @@ public class Habitat extends JFrame {
         pack();
         setFocusable(true);
         intel_kap.start();
+        intel_kap.stop();
         intel_wood.start();
+        intel_wood.stop();
 
+
+
+
+
+
+
+        console.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!console_op){
+                    PipedReader pr = new PipedReader();
+                    PipedWriter pw = new PipedWriter();
+                    Console cons = new Console(Habitat.this, pr, pw);
+                    console_op=true;
+                    Thread proc2 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while(true) {
+                                if (console_op){
+                                try {
+                                    pw.write((int) (P2 * 10));
+                                } catch (IOException io2) {
+                                    console_op=false;
+                                }
+                            }
+
+                            }
+                        }
+                    });
+                    proc2.start();
+                    Thread proc = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            while(true){
+                                if(console_op){
+                                try{
+                                    Integer tempint=pr.read();
+                                    System.out.println(tempint);
+                                    P2=tempint/10.0d;
+                                } catch (IOException io){
+                                    console_op=false;
+                                }
+                            }
+                            }
+                        }
+                    });
+                    proc.start();
+                    cons.setVisible(true);
+                }
+            }
+        });
+
+        save.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                serialization();
+            }
+        });
+
+        load.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                deserialization();
+            }
+        });
+
+        save_cfg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{
+                savecfg();} catch (IOException er){er.printStackTrace();}
+            }
+        });
+
+        load_cfg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try{loadcfg();}catch (IOException | ClassNotFoundException er2){er2.printStackTrace();}
+            }
+        });
 
         stop_woodAI.addActionListener(new ActionListener() {
             @Override
@@ -409,15 +598,17 @@ N1 = 1;
         wood_priority.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
+                wood_prior=wood_priority.getSelectedIndex()+1;
                 intel_wood.setPriority(wood_priority.getSelectedIndex()+1);
                 requestFocusInWindow();
             }
         });
 
-        kap_proirity.addItemListener(new ItemListener() {
+        kap_priority.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                intel_kap.setPriority(kap_proirity.getSelectedIndex()+1);
+                kap_prior=kap_priority.getSelectedIndex()+1;
+                intel_kap.setPriority(kap_priority.getSelectedIndex()+1);
                 requestFocusInWindow();
             }
         });
@@ -453,6 +644,7 @@ N1 = 1;
         time_invisible.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
+                view_time=false;
                 s_time.setVisible(false);
                 requestFocusInWindow();
             }
@@ -461,6 +653,7 @@ N1 = 1;
         time_visible.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent itemEvent) {
+                view_time=true;
                 s_time.setVisible(true);
                 requestFocusInWindow();
             }
@@ -532,19 +725,19 @@ N1 = 1;
         if (Math.random() < P1 && time%N1==0) {
             do{
                 temp_ID = (int)(Math.random()*10000);
-            }while(!Collect.getInstance().add_ID(temp_ID));
-            Collect.getInstance().add_obj(factory.createWood(work_area_h, work_area_w,temp_ID),time, this);
+            }while(!temp2.add_ID(temp_ID));
+            temp2.add_obj(factory.createWood(work_area_h, work_area_w,temp_ID),time, this);
         }
         if (Math.random() < P2 && time % N2 == 0) {
             do{
                 temp_ID = (int)(Math.random()*10000);
-            }while(!Collect.getInstance().add_ID(temp_ID));
-            Collect.getInstance().add_obj(factory.createKap(work_area_h, work_area_w,temp_ID), time, this);
+            }while(!temp2.add_ID(temp_ID));
+            temp2.add_obj(factory.createKap(work_area_h, work_area_w,temp_ID), time, this);
         }
-        Collect.getInstance().round(time, life_time_wood, life_time_kap);
+        temp2.round(time, life_time_wood, life_time_kap);
         s_time.setText("Время:" + time);
-        WoodCount.setText("Деревенные дома:"+Collect.getInstance().Wood_count());
-        KapCount.setText("Капитальные дома:"+Collect.getInstance().Kap_count());
+        WoodCount.setText("Деревенные дома:"+temp2.Wood_count());
+        KapCount.setText("Капитальные дома:"+temp2.Kap_count());
         repaint();
     }
 
@@ -567,7 +760,7 @@ N1 = 1;
             buttons.add(ok);
             buttons.add(stop);
             text.add(info, BorderLayout.CENTER);
-            info.setText("Капитальные дома:"+Collect.getInstance().Kap_count()+"\n Деревянные дома:"+Collect.getInstance().Wood_count()+"\n Время:"+(System.currentTimeMillis() - time_wait - t_start)/1000.d);
+            info.setText("Капитальные дома:"+temp2.Kap_count()+"\n Деревянные дома:"+temp2.Wood_count()+"\n Время:"+(System.currentTimeMillis() - time_wait - t_start)/1000.d);
             info.setVisible(true);
             info.setSize(100,100);
             stop.addActionListener(new ActionListener() {
@@ -618,7 +811,7 @@ N1 = 1;
             buttons.add(ok);
             live_panel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             live_objects.setEditable(false);
-            Collection live = (Collect.getInstance().comeback()).entrySet();
+            Collection live = (temp2.comeback()).entrySet();
             Iterator it = live.iterator();
             while(it.hasNext()){
                 Map.Entry me = (Map.Entry)it.next();
@@ -670,6 +863,89 @@ N1 = 1;
 
         }
     }
+}
+
+class Console extends JDialog {
+    private JTextArea cons = new JTextArea(300,300);
+    private int width = 400, height = 300;
+    private PipedWriter pw;
+    private PipedReader pr;
+    private double temp=-1;
+    private int temp2, temp3;
+    String[] fields;
+    String[] last_str;
+    String command;
+    private Thread check = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while(true){
+            try{temp3 = pr.read();}catch (IOException io2){System.out.println("Хуй");}
+            }
+        }
+    });
+    public Console(JFrame parent, PipedReader pr, PipedWriter pw){
+        super(parent, "Консоль", false);
+        try{
+        this.pw = new PipedWriter(pr);}
+        catch (IOException e){System.out.println("Не вышло");}
+        try{this.pr=new PipedReader(pw);}catch (IOException e2){e2.printStackTrace();}
+        check.start();
+        initComponents();
+        setSize(width,height);
+        cons.setBackground(Color.gray);
+        add(cons);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                try{
+                pw.close();
+                pr.close();} catch (IOException io){}
+            }
+        });
+
+    }
+    private void initComponents(){
+        cons.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                super.keyPressed(e);
+                if(e.getKeyCode()==VK_ENTER){
+                    command="";
+                    fields=cons.getText().split("\n");
+                    if(fields[fields.length-1].equals("Получить вероятность генерации капитальных домов")){
+                        cons.append("\n"+temp3/10.d);
+                    }
+                    else {
+                        last_str=fields[fields.length-1].split(" ");
+                        if (last_str.length==6){
+                            for (int i=0; i<5;i++)
+                                command=command+last_str[i]+" ";
+                            if (command.equals("Установить вероятность генерации капитальных домов ")){
+                                try{
+                                    temp=Double.parseDouble(last_str[5]);
+                                }catch (NumberFormatException nfe){
+                                    cons.append("\nВведена некорректная команда");
+                                }
+                                if (!(temp<0 || temp>1)) {
+                                    temp2 = (int) (temp * 10);
+                                    try {
+                                        pw.write(temp2);
+                                    }catch (IOException io){io.printStackTrace();}
+                                }
+                            }else cons.append("\nВведена некорректная команда");
+                        }else cons.append("\nВведена некорректная команда");
+                    }
+
+                }
+            }
+        });
+
+    }
+
+
+
 }
 
 

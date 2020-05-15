@@ -2,18 +2,26 @@ package Environment;
 
 import LabObjects.House;
 import Types.Coord;
+
+import java.io.*;
 import java.util.*;
 
-public class Collect {
-    private Vector<House> container = new Vector();
-    private HashSet id_container = new HashSet();
-    private TreeMap life_container = new TreeMap();
-    private TreeMap pos_obj = new TreeMap();
-    private int countWood=0, countKap=0;
-    private static volatile Collect instance;
+public class Collect implements Serializable {
+    private Vector<House> container;
+    private HashSet id_container;
+    private TreeMap life_container;
+    private TreeMap pos_obj;
+    private int countWood, countKap;
+    private static final long serialVersionUID=1L;
+
 
     private Collect(){
-
+        container=new Vector<>();
+        id_container= new HashSet();
+        life_container= new TreeMap();
+        pos_obj= new TreeMap();
+        countWood=0;
+        countKap=0;
     }
 
     public static class CollHolder{
@@ -62,6 +70,9 @@ public class Collect {
         container.clear();
         id_container.clear();
         life_container.clear();
+        pos_obj.clear();
+        countWood=0;
+        countKap=0;
     }
 
     public boolean add_ID(int ID){
@@ -77,6 +88,10 @@ public class Collect {
         Iterator it_vec = container.iterator();
         while(it_vec.hasNext()){
             House temp = (House)it_vec.next();
+            if (life_container.get(temp.getID())==null){
+                life_container.put(temp.getID(), time);
+            }
+            else{
             if(temp.getType()=="Wood" && (int)(time-(long)life_container.get(temp.getID()))>=life_time_wood)
             {
                 id_container.remove(temp.getID());
@@ -92,6 +107,7 @@ public class Collect {
                 pos_obj.remove(temp.getID());
                 it_vec.remove();
                 countKap--;
+            }
             }
         }
         }
@@ -109,14 +125,8 @@ public class Collect {
         return (TreeMap)pos_obj.clone();
     }
 
-    public static Collect getInstance(){
-        if (instance==null){
-            synchronized (Collect.class){
-                if (instance==null)
-                    instance=new Collect();
-            }
-        }
-        return instance;
+    public static Collect getInstance() {
+        return CollHolder.Hold_Collect_INSTANCE;
     }
 
     public int Wood_count(){
@@ -126,6 +136,26 @@ public class Collect {
     public int Kap_count(){
         return countKap;
     }
+
+    public Object readResolve() {
+        getInstance().clear();
+        getInstance().container=this.container;
+        getInstance().life_container=this.life_container;
+        Collection live = life_container.entrySet();
+        Iterator it = live.iterator();
+        while(it.hasNext()){
+            Map.Entry me= (Map.Entry)it.next();
+            me.setValue(null);
+        }
+        getInstance().pos_obj=this.pos_obj;
+        getInstance().id_container=this.id_container;
+        getInstance().countKap=this.countKap;
+        getInstance().countWood=this.countWood;
+        return getInstance();
+    }
+
+
+
 
 
 

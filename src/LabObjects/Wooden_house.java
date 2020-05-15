@@ -4,8 +4,11 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class Wooden_house extends House{
+public class Wooden_house extends House implements Serializable {
+    private static final long serialVersionUID=2L;
+
     Wooden_house(int height, int width, int ID){
         this.ID=ID;
         setX(x = (int) (Math.random()*(width-image.getInstance().wood_image.getWidth())));
@@ -26,4 +29,6 @@ public class Wooden_house extends House{
     public int getY(){return y;}
     @Override
     public String getType(){return "Wood";}
+
+
 }

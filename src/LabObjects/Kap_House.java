@@ -2,9 +2,12 @@ package LabObjects;
 
 
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 
-public class Kap_House extends House {
+public class Kap_House extends House implements Serializable {
+    private static final long serialVersionUID=3L;
+
     Kap_House(int height, int width, int ID){
         this.ID=ID;
         setX(x = (int) (Math.random()*(width-image.getInstance().kap_image.getWidth())));
