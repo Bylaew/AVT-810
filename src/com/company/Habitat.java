@@ -4,10 +4,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.net.Socket;
 import java.util.*;
 import java.util.Timer;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.xml.crypto.Data;
+
 ///Консоль будет запускать одельный поток в пайпет один поток в мейн а другой в читающий
 //Id x и y в 4 пункте передачи
 public class Habitat {
@@ -17,17 +20,17 @@ public class Habitat {
     private Timer mTimer = new Timer();
     private int NumberAlbino;
     private int CommonRabbit;
-    private boolean ShowTime=false;
+     boolean ShowTime=false;
     private boolean simulate=false;
     private boolean JustStart=true;
     public long currentTime;
     private JPanel panel,panelTwo;
-    public double N1=400;
-    private double N2=500;
-    private int lifeTimeRabbit=1000;
-    private int lifeTimeAlbino=10000;
-    private float k= (float) 0.1;
-    private double P1=0.3;
+     double N1=400;
+     double N2=500;
+     int lifeTimeRabbit=1000;
+     int lifeTimeAlbino=10000;
+     float k= (float) 0.1;
+     double P1=0.3;
     private long to=0;//используется для resume обновление времни
     private boolean bol=false;
     private boolean go=false;//не дает книпоке currentObj продолжить после остановления симуляции
@@ -40,10 +43,16 @@ public class Habitat {
     public boolean starts=true;
     private ConsoleDialog cd;
     private Accepts acc=new Accepts(this);
+    private Socket client;
+    private DataInputStream inputStream;
+    //private boolean close=false;
+    JComboBox TCPbox=new JComboBox();
+    private Connection connection;
 
     public Habitat() {
 
         Panel();
+        broadcast();
         panelTwo.setLayout(null);
         frame=new JFrame("Window");
         frame.add(panel,BorderLayout.CENTER);
@@ -56,6 +65,14 @@ public class Habitat {
                 super.windowClosing(e);
                 try {
                     FileOut();
+                    if(connection.running) {
+                        connection.CloseConnection();
+                        //client.close();
+//                        inputStream.close();
+                        //data.close();
+                        //close=false;
+                        connection.running=false;
+                    }
                 } catch (IOException ex) {
                     System.out.println("IOException"+ex);
                 }
@@ -152,6 +169,7 @@ public class Habitat {
 
         panelTwo=new JPanel();
         Buttons();
+
         chekBox();
         listertr();
         KomboBox();
@@ -411,7 +429,8 @@ public class Habitat {
                 System.out.println(P1);
             }
         });
-        cbProbability.setRequestFocusEnabled(false);
+        cbProbability.setFocusable(false);
+       // cbProbability.setRequestFocusEnabled(false);
         JLabel labelCb=new JLabel("Probability rabbit");
         labelCb.setBounds(70,110,100,20);
         cbProbability.setBounds(70,130,80,30);
@@ -477,7 +496,7 @@ public class Habitat {
                 {
                     try {
                         N1=Integer.parseInt(text.getText());
-                        System.out.println(N1);
+                       // System.out.println(N1);
                     }
                     catch (NumberFormatException eg) {
                         getWindowText();
@@ -573,7 +592,7 @@ public class Habitat {
         LifeTextAlbino.setBounds(70,300,120,20);
     }
 
-    public void Meniu()//////////////////////////////////////////////////////////////////////////////////////////////////
+    public void Meniu()
     {
         JMenu Menu=new JMenu("Menu");
         JMenuItem StopMenu=new JMenuItem("Stop");
@@ -984,5 +1003,27 @@ public class Habitat {
             else
                 break;
         }
+    }
+
+    public void broadcast(){
+        TCPbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent itemEvent) {
+                if(TCPbox.getSelectedIndex()>0){
+                    connection.broadcastTread();
+                    System.out.println(N1);
+                }
+            }
+        });
+                TCPbox.setFocusable(false);
+                TCPbox.setFocusTraversalPolicyProvider(false);
+                JLabel TCPlable = new JLabel("Clients");
+                TCPbox.setBounds(5, 500, 120, 25);
+                TCPlable.setBounds(10, 480, 80, 25);
+                panelTwo.add(TCPlable);
+                panelTwo.add(TCPbox);
+
+                connection=new Connection(this);
+                new Thread(connection).start();
     }
 }

@@ -28,7 +28,6 @@ public class Accepts implements Runnable {
         while (true) {
             int ch;
             String com = "";
-
             try {
                 int len = pr.read();
                 for (int i = 0;i < len; i++) {
