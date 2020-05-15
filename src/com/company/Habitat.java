@@ -59,7 +59,7 @@ public class Habitat {
 
     private int widht;
     private int height;
-    private  Singleton mas = Singleton.getInstance();
+    private Singleton mas = Singleton.getInstance();
     private Timer startTime;
     private int warriorCount, workerCount;
     private long timeFromStart = 0;
@@ -69,8 +69,8 @@ public class Habitat {
     boolean isVisibleSettings = false;
     boolean isGoing = false;
 
-    WarrAI warrAI = new WarrAI();
-    WorkAI workAI = new WorkAI();
+    WarrAI warrAI;
+    WorkAI workAI;
 
     int V = 60;
     int R = 60;
@@ -98,7 +98,9 @@ public class Habitat {
         return widht;
     }
 
-    public synchronized Singleton getMas(){return mas;}
+    public synchronized Singleton getMas() {
+        return mas;
+    }
 
 
     Habitat(int widht, int height) {
@@ -120,12 +122,17 @@ public class Habitat {
     }
 
     public void init() {
-        warrAI.setHabitat(this);
+
 
         JFrame window = new JFrame("Muravei)");
         String[] a = {"10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%"};
         JComboBox p1 = new JComboBox(a);
         JComboBox p2 = new JComboBox(a);
+
+
+        JComboBox warrPriority = new JComboBox(new String[]{"1","2","3","4","5","6","7","8","9","10"});
+        JComboBox workPriority = new JComboBox(new String[]{"1","2","3","4","5","6","7","8","9","10"});
+
         TextField n1 = new TextField("2");
         TextField n2 = new TextField("3");
         TextField t1 = new TextField("10");
@@ -139,6 +146,8 @@ public class Habitat {
         JButton showButton = new JButton("Show current Ant");
 
         JLabel labelTime = new JLabel();
+        JLabel warrPriopityLabel = new JLabel("Warrior AI Priority");
+        JLabel workPriopityLabel = new JLabel("Worker AI Priority");
 
         CheckboxGroup infoGroup = new CheckboxGroup();
         Checkbox showTime = new Checkbox("Показывать время симуляции", infoGroup, true);
@@ -158,6 +167,12 @@ public class Habitat {
 
         JButton toolStart = new JButton("1");
 
+        JButton startWarrAiButton = new JButton("Start Warrior Ai");
+        JButton stopWarrAiButton = new JButton("Stop Warrior Ai");
+
+        JButton startWorkAiButton = new JButton("Start Worker Ai");
+        JButton stopWorkAiButton = new JButton("Stop Worker Ai");
+
         JButton toolStop = new JButton("2");
 
         JButton toolSettings = new JButton("3");
@@ -172,17 +187,8 @@ public class Habitat {
                         if (!firstTimeRun) {
                             System.out.println(checkStr(n1.getText()));
                             if (checkStr(n1.getText()) && checkStr(n2.getText()) && checkStr(t1.getText()) && checkStr(t2.getText())) {
-                                stopButton.setEnabled(true);
-                                startButton.setEnabled(false);
-                                showButton.setEnabled(true);
-                                N1 = Float.parseFloat(n1.getText());
-                                N2 = Float.parseFloat(n2.getText());
-                                P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                                P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
-                                lifeWarr = Integer.parseInt(t1.getText());
-                                lifeWork = Integer.parseInt(t2.getText());
-                                firstTimeRun = true;
-                                start(window);
+                                start(window, stopButton, startButton, toolStart, toolStop, showButton, n1, n2, t1, t2, p1, p2);
+
                             } else {
                                 JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
                             }
@@ -190,28 +196,8 @@ public class Habitat {
                         break;
                     case KeyEvent.VK_E:
                         if (firstTimeRun) {
-                            startTime.stop();
-                            int result = 0;
-                            if (showInfo.getState())
-                                result = statistic(window);
-                            System.out.println(result);
-                            if (result == 0) {
-                                window.repaint();
-                                stopButton.setEnabled(false);
-                                startButton.setEnabled(true);
-                                toolStart.setEnabled(true);
-                                toolStop.setEnabled(false);
-                                showButton.setEnabled(false);
-                                workerCount = 0;
-                                warriorCount = 0;
-                                timeFromStart = 0;
-                                firstTimeRun = false;
-                                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                                mas.setArray(null);
-                            } else {
-                                startTime.start();
+                            stop(window, showInfo, stopButton, startButton, toolStart, showButton, toolStop, labelTime,stopWarrAiButton,stopWorkAiButton,startWarrAiButton,startWorkAiButton);
 
-                            }
                         }
                         break;
                     case KeyEvent.VK_T:
@@ -231,7 +217,7 @@ public class Habitat {
 
         buttonPanel.setLayout(null);
         buttonPanel.setBounds(0, height - 210, widht, 210);
-        buttonPanel.setBackground(Color.CYAN);
+        buttonPanel.setBackground(new Color(34, 139, 34));
 
         labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
         labelTime.setFont(new Font("TimesRoman", Font.ITALIC, 40));
@@ -279,6 +265,29 @@ public class Habitat {
         t1.setBounds(780, 100, 120, 30);
         t2.setBounds(950, 100, 120, 30);
 
+        warrPriopityLabel.setBounds(10,250,150,30);
+        warrPriopityLabel.setFont(new Font("Arial", Font.BOLD, 12));
+
+        warrPriority.setBounds(120,250,50,30);
+        warrPriority.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                warrAI.setPriority(warrPriority.getSelectedIndex()+1);
+                System.out.println(warrPriority.getSelectedIndex()+1);
+            }
+        });
+        workPriopityLabel.setBounds(10,290,150,30);
+        workPriopityLabel.setFont(new Font("Arial", Font.BOLD, 12));
+
+        workPriority.setBounds(120,290,50,30);
+        workPriority.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                workAI.setPriority(workPriority.getSelectedIndex()+1);
+                System.out.println(workPriority.getSelectedIndex()+1);
+            }
+        });
+
         n1.setVisible(false);
         n2.setVisible(false);
         p1.setVisible(false);
@@ -300,9 +309,14 @@ public class Habitat {
         buttonPanel.add(t2);
 
         mainPanel.setBackground(Color.DARK_GRAY);
-        mainPanel.setBounds(0, 40, widht, height - 250);
+        mainPanel.setBounds(0, 40, widht - 200, height - 250);
         mainPanel.setLayout(null);
         buttonPanel.add(labelTime);
+
+        JPanel buttonPanel2 = new JPanel();
+        buttonPanel2.setBounds(widht - 200, 40, 200, height - 250);
+        buttonPanel2.setBackground(new Color(34, 139, 34));
+
 
         window.add(mainPanel).requestFocus();
         window.add(buttonPanel).requestFocus();
@@ -313,18 +327,8 @@ public class Habitat {
                 if (!firstTimeRun) {
                     System.out.println(checkStr(n1.getText()));
                     if (checkStr(n1.getText()) && checkStr(n2.getText()) && checkStr(t1.getText()) && checkStr(t2.getText())) {
-                        stopButton.setEnabled(true);
-                        startButton.setEnabled(false);
-                        showButton.setEnabled(true);
-                        N1 = Float.parseFloat(n1.getText());
-                        N2 = Float.parseFloat(n2.getText());
-                        lifeWarr = Integer.parseInt(t1.getText());
-                        lifeWork = Integer.parseInt(t2.getText());
-                        P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                        P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
+                        start(window, stopButton, startButton, toolStart, toolStop, showButton, n1, n2, t1, t2, p1, p2);
 
-                        firstTimeRun = true;
-                        start(window);
                     } else {
                         JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
 
@@ -337,28 +341,8 @@ public class Habitat {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (firstTimeRun) {
-                    startTime.stop();
-                    int result = 0;
-                    if (showInfo.getState())
-                        result = statistic(window);
-                    System.out.println(result);
-                    if (result == 0) {
-                        window.repaint();
-                        stopButton.setEnabled(false);
-                        startButton.setEnabled(true);
-                        toolStart.setEnabled(true);
-                        toolStop.setEnabled(false);
-                        showButton.setEnabled(false);
-                        workerCount = 0;
-                        warriorCount = 0;
-                        timeFromStart = 0;
-                        firstTimeRun = false;
-                        labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                        mas.setArray(null);
-                    } else {
-                        startTime.start();
+                    stop(window, showInfo, stopButton, startButton, toolStart, showButton, toolStop, labelTime,stopWarrAiButton,stopWorkAiButton,startWarrAiButton,startWorkAiButton);
 
-                    }
                 }
             }
         });
@@ -429,11 +413,11 @@ public class Habitat {
             }
         });
 
-        startTime = new Timer(100, new ActionListener() {
+        startTime = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timeFromStart++;
-                labelTime.setText(timeFromStart / 600 + ":" + ((timeFromStart/10 % 60 < 10) ? "0" : "") + timeFromStart / 10 % 60);
+                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
                 update(timeFromStart, mainPanel);
             }
         });
@@ -446,20 +430,8 @@ public class Habitat {
             public void actionPerformed(ActionEvent e) {
                 System.out.println(checkStr(n1.getText()));
                 if (checkStr(n1.getText()) && checkStr(n2.getText()) && checkStr(t1.getText()) && checkStr(t2.getText())) {
-                    stopButton.setEnabled(true);
-                    startButton.setEnabled(false);
-                    toolStart.setEnabled(false);
-                    toolStop.setEnabled(true);
-                    showButton.setEnabled(true);
-                    N1 = Float.parseFloat(n1.getText());
-                    N2 = Float.parseFloat(n2.getText());
-                    P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                    P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
-                    lifeWarr = Integer.parseInt(t1.getText());
-                    lifeWork = Integer.parseInt(t2.getText());
+                    start(window, stopButton, startButton, toolStart, toolStop, showButton, n1, n2, t1, t2, p1, p2);
 
-                    firstTimeRun = true;
-                    start(window);
                 } else {
                     JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
 
@@ -471,32 +443,8 @@ public class Habitat {
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startTime.stop();
-                int result = 0;
-                if (showInfo.getState())
-                    result = statistic(window);
-                System.out.println(result);
-                if (result == 0) {
-                    window.repaint();
-                    stopButton.setEnabled(false);
-                    startButton.setEnabled(true);
-                    toolStart.setEnabled(true);
-                    toolStop.setEnabled(false);
-                    showButton.setEnabled(false);
-                    workerCount = 0;
-                    warriorCount = 0;
-                    timeFromStart = 0;
-                    labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                    firstTimeRun = false;
-                    mas.setArray(null);
-                    warrAI.setGoing(false);
-                    workAI.setGoing(false);
+                stop(window, showInfo, stopButton, startButton, toolStart, showButton, toolStop, labelTime,stopWarrAiButton,stopWorkAiButton,startWarrAiButton,startWorkAiButton);
 
-
-                } else {
-                    startTime.start();
-
-                }
             }
         });
         buttonPanel.add(stopButton);
@@ -505,43 +453,8 @@ public class Habitat {
         settingsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isVisibleSettings) {
-                    n1.setVisible(false);
-                    n2.setVisible(false);
-                    p1.setVisible(false);
-                    p2.setVisible(false);
-                    t1.setVisible(false);
-                    t2.setVisible(false);
-                    n1Label.setVisible(false);
-                    n2Label.setVisible(false);
-                    p1Label.setVisible(false);
-                    p2Label.setVisible(false);
-                    t1Label.setVisible(false);
-                    t2Label.setVisible(false);
-                    isVisibleSettings = false;
-                    n1.setFocusable(false);
-                    n2.setFocusable(false);
-                    p1.setFocusable(false);
-                    p2.setFocusable(false);
-                    t1.setFocusable(false);
-                    t2.setFocusable(false);
-                    window.requestFocus();
-                } else {
-                    n1.setVisible(true);
-                    n2.setVisible(true);
-                    p1.setVisible(true);
-                    p2.setVisible(true);
-                    t1.setVisible(true);
-                    t2.setVisible(true);
-                    n1Label.setVisible(true);
-                    n2Label.setVisible(true);
-                    p1Label.setVisible(true);
-                    p2Label.setVisible(true);
-                    t1Label.setVisible(true);
-                    t2Label.setVisible(true);
-                    isVisibleSettings = true;
-
-                }
+                setVisibleSettings(n1, n2, p1, p2, t1, t2, n1Label, t2Label, t1Label, n2Label, p1Label, p2Label);
+                window.requestFocus();
             }
         });
         buttonPanel.add(settingsButton);
@@ -551,6 +464,17 @@ public class Habitat {
         showButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    warrAI.stopAnimation();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+                try {
+                    workAI.stopAnimation();
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
                 startTime.stop();
 
                 String currentAnt = new String();
@@ -566,15 +490,75 @@ public class Habitat {
                                 ", deathTime:" + ((mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime()) / 60) + ":" + (((mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime()) % 60 < 10) ? "0" : "")
                                 + (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime()) % 60 + "\n";
                     }
-
                 }
-
                 JOptionPane.showMessageDialog(window, currentAnt, "Current Ant", JOptionPane.INFORMATION_MESSAGE);
                 startTime.start();
+                warrAI.resumeAnimation();
+                workAI.resumeAnimation();
             }
         });
 
         buttonPanel.add(showButton);
+
+        startWarrAiButton.setEnabled(false);
+        startWarrAiButton.setBounds(10, 120, 160, 30);
+        startWarrAiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                warrAI.resumeAnimation();
+                startWarrAiButton.setEnabled(false);
+                stopWarrAiButton.setEnabled(true);
+            }
+        });
+
+        stopWarrAiButton.setBounds(10, 160, 160, 30);
+        stopWarrAiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    try {
+                        warrAI.stopAnimation();
+                        startWarrAiButton.setEnabled(true);
+                        stopWarrAiButton.setEnabled(false);
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
+                    }
+            }
+        });
+
+        startWorkAiButton.setEnabled(false);
+        startWorkAiButton.setBounds(10, 10, 160, 30);
+        startWorkAiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               workAI.resumeAnimation();
+                startWorkAiButton.setEnabled(false);
+                stopWorkAiButton.setEnabled(true);
+            }
+        });
+
+        stopWorkAiButton.setEnabled(true);
+        stopWorkAiButton.setBounds(10, 50, 160, 30);
+        stopWorkAiButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    workAI.stopAnimation();
+                    startWorkAiButton.setEnabled(true);
+                    stopWorkAiButton.setEnabled(false);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        buttonPanel2.setLayout(null);
+        buttonPanel2.add(startWorkAiButton);
+        buttonPanel2.add(stopWorkAiButton);
+        buttonPanel2.add(startWarrAiButton);
+        buttonPanel2.add(stopWarrAiButton);
+        buttonPanel2.add(warrPriopityLabel);
+        buttonPanel2.add(workPriopityLabel);
+        buttonPanel2.add(warrPriority);
+        buttonPanel2.add(workPriority);
 
 
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -590,20 +574,7 @@ public class Habitat {
                 if (!firstTimeRun) {
                     System.out.println(checkStr(n1.getText()));
                     if (checkStr(n1.getText()) && checkStr(n2.getText()) && checkStr(t1.getText()) && checkStr(t2.getText())) {
-                        stopButton.setEnabled(true);
-                        startButton.setEnabled(false);
-                        toolStart.setEnabled(false);
-                        toolStop.setEnabled(true);
-                        showButton.setEnabled(true);
-                        N1 = Float.parseFloat(n1.getText());
-                        N2 = Float.parseFloat(n2.getText());
-                        lifeWarr = Integer.parseInt(t1.getText());
-                        lifeWork = Integer.parseInt(t2.getText());
-                        P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
-                        P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
-
-                        firstTimeRun = true;
-                        start(window);
+                        start(window, stopButton, startButton, toolStart, toolStop, showButton, n1, n2, t1, t2, p1, p2);
                     } else {
                         JOptionPane.showMessageDialog(null, "Ошибка ввода. Введие числа", "Error", JOptionPane.OK_OPTION);
 
@@ -614,68 +585,23 @@ public class Habitat {
         toolStop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                startTime.stop();
-                int result = 0;
-                if (showInfo.getState())
-                    result = statistic(window);
-                System.out.println(result);
-                if (result == 0) {
-                    window.repaint();
-                    stopButton.setEnabled(false);
-                    startButton.setEnabled(true);
-                    toolStart.setEnabled(true);
-                    toolStop.setEnabled(false);
-                    showButton.setEnabled(false);
-                    workerCount = 0;
-                    warriorCount = 0;
-                    timeFromStart = 0;
-                    firstTimeRun = false;
-                    labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                    mas.setArray(null);
-                } else {
-                    startTime.start();
-
-                }
+                stop(window, showInfo, stopButton, startButton, toolStart, showButton, toolStop, labelTime,stopWarrAiButton,stopWorkAiButton,startWarrAiButton,startWorkAiButton);
             }
         });
         toolSettings.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isVisibleSettings) {
-                    n1.setVisible(false);
-                    n2.setVisible(false);
-                    p1.setVisible(false);
-                    p2.setVisible(false);
-                    t1.setVisible(false);
-                    t2.setVisible(false);
-                    n1Label.setVisible(false);
-                    t1Label.setVisible(false);
-                    t2Label.setVisible(false);
-                    n2Label.setVisible(false);
-                    p1Label.setVisible(false);
-                    p2Label.setVisible(false);
-                    isVisibleSettings = false;
-                } else {
-                    n1.setVisible(true);
-                    t1.setVisible(true);
-                    t2.setVisible(true);
-                    n2.setVisible(true);
-                    p1.setVisible(true);
-                    p2.setVisible(true);
-                    n1Label.setVisible(true);
-                    t2Label.setVisible(true);
-                    n2Label.setVisible(true);
-                    p1Label.setVisible(true);
-                    p2Label.setVisible(true);
-                    isVisibleSettings = true;
-                }
+                setVisibleSettings(n1, n2, p1, p2, t1, t2, n1Label, t2Label, t1Label, n2Label, p1Label, p2Label);
+                window.requestFocus();
             }
         });
 
         toolBar.add(toolStart);
         toolBar.add(toolStop);
         toolBar.add(toolSettings);
-        toolBar.setBackground(Color.YELLOW);
+        window.add(buttonPanel2);
+
+        toolBar.setBackground(new Color(2, 112, 255));
         window.add(toolBar).requestFocus();
 
         System.out.println(window.isFocusable());
@@ -688,36 +614,112 @@ public class Habitat {
             @Override
             public void focusLost(FocusEvent e) {
                 super.focusLost(e);
-                if (n1.isFocusable() || n2.isFocusable() || p1.isFocusable() || p2.isFocusable() || show_Time.isFocusable() || showInfo.isFocusable() || showTime.isFocusable())
-                    ;
+                if (n1.isFocusable() || n2.isFocusable() || p1.isFocusable() || p2.isFocusable() || show_Time.isFocusable() || showInfo.isFocusable() || showTime.isFocusable()) ;
                 else
                     window.requestFocus();
             }
         });
     }
 
-    private void start(JFrame window) {
+    private void start(JFrame window, JComponent stopButton, JComponent startButton, JComponent toolStart, JComponent toolStop, JComponent showButton, TextField n1,
+                       TextField n2, TextField t1, TextField t2, JComboBox p1, JComboBox p2) {
         System.out.println("Start");
         isGoing = true;
         mas.setArray(new Vector<>());
         mas.setIndef(new HashSet<>());
         mas.setTreeTime(new TreeMap<>());
         startTime.start();
-        warrAI.start();
-        workAI.start();
-        warrAI.setGoing(true);
-        workAI.setGoing(true);
 
+
+        stopButton.setEnabled(true);
+        startButton.setEnabled(false);
+        toolStart.setEnabled(false);
+        toolStop.setEnabled(true);
+        showButton.setEnabled(true);
+        N1 = Float.parseFloat(n1.getText());
+        N2 = Float.parseFloat(n2.getText());
+        lifeWarr = Integer.parseInt(t1.getText());
+        lifeWork = Integer.parseInt(t2.getText());
+        P1 = ((float) (p1.getSelectedIndex() + 1)) / 10;
+        P2 = ((float) (p2.getSelectedIndex() + 1)) / 10;
+
+        if(workAI==null) {
+         warrAI = new WarrAI();
+         workAI = new WorkAI();
+         warrAI.setHabitat(this);
+         workAI.setHabitat(this);
+         warrAI.start();
+         workAI.start();
+         warrAI.setGoing(true);
+         workAI.setGoing(true);
+        }
+
+        firstTimeRun = true;
+    }
+
+    private void stop(JFrame window, Checkbox showInfo, JButton stopButton, JButton startButton, JButton toolStart, JButton showButton, JButton toolStop, JLabel labelTime, JButton stopWarrAiButton, JButton stopWorkAiButton,JButton startWarrAiButton, JButton startWorkAiButton) {
+        startTime.stop();
+        if (firstTimeRun) {
+            startTime.stop();
+            int result = 0;
+            if (showInfo.getState()) {
+                try {
+                    warrAI.stopAnimation();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            try {
+                workAI.stopAnimation();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            result = statistic(window);
+            }
+            if (result == 0) {
+                warrAI.setGoing(false);
+                workAI.setGoing(false);
+                window.repaint();
+                stopButton.setEnabled(false);
+                startButton.setEnabled(true);
+                toolStart.setEnabled(true);
+                toolStop.setEnabled(false);
+                showButton.setEnabled(false);
+                if(!stopWarrAiButton.isEnabled()){
+                    stopWarrAiButton.setEnabled(true);
+                    startWarrAiButton.setEnabled(false);
+                }
+                if(!stopWorkAiButton.isEnabled()){
+                    stopWorkAiButton.setEnabled(true);
+                    startWorkAiButton.setEnabled(false);
+                }
+
+                workerCount = 0;
+                warriorCount = 0;
+                timeFromStart = 0;
+                firstTimeRun = false;
+                labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
+                mas.setArray(null);
+                workAI=null;
+                warrAI=null;
+
+            } else {
+               if(startWarrAiButton.isEnabled()) warrAI.resumeAnimation();
+               if(startWorkAiButton.isEnabled()) workAI.resumeAnimation();
+                startTime.start();
+
+            }
+        }
     }
 
     private int statistic(JFrame window) {
         return JOptionPane.showConfirmDialog(window, new String[]{"Warriors: " + warriorCount, "Workers:" + workerCount, "Sum: " + (warriorCount + workerCount), "Work Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60}, "Statistic", JOptionPane.OK_CANCEL_OPTION);
     }
 
-    private  void update(float time, JComponent g) {
+    private void update(float time, JComponent g) {
 
         for (int i = 0; i < mas.getArray().size(); i++) {
-            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= (int) time/10) {
+            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= (int) time) {
 
                 mas.getIndef().remove(mas.getArray().get(i).getIndef());
                 mas.getTreeTime().remove(mas.getArray().get(i).getIndef());
@@ -726,30 +728,61 @@ public class Habitat {
 
             }
         }
-        if (time % (N1*10) == 0) {
+        if (time % N1 == 0) {
             if (Math.random() < P1) {
-                mas.getArray().add(antFactory.createWarrior((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWarr, (int) time/10, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWarrior((float) (Math.random() * (widht - 300 + 1)), (float) Math.random() * (height - 490) + 40, lifeWarr, (int) time, warriorCount + workerCount));
                 mas.getIndef().add(mas.getArray().get(mas.getArray().size() - 1).getIndef());
                 mas.getTreeTime().put(mas.getArray().get(mas.getArray().size() - 1).getIndef(), mas.getArray().get(mas.getArray().size() - 1).getBornTime());
                 System.out.println("WarriorCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
                 warriorCount++;
             }
         }
-        if (time % (N2*10) == 0) {
+        if (time % N2 == 0) {
             if (Math.random() < P2) {
-                mas.getArray().add(antFactory.createWorker((float) (Math.random() * (widht - 100 + 1)), (float) Math.random() * (height - 490) + 40, lifeWork, (int) time/10, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWorker((float) (Math.random() * (widht - 300 + 1)), (float) Math.random() * (height - 490) + 40, lifeWork, (int) time, warriorCount + workerCount));
                 mas.getIndef().add(mas.getArray().get(mas.getArray().size() - 1).getIndef());
                 mas.getTreeTime().put(mas.getArray().get(mas.getArray().size() - 1).getIndef(), mas.getArray().get(mas.getArray().size() - 1).getBornTime());
                 System.out.println("WorkerCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
                 workerCount++;
             }
         }
-
         draw(g);
+    }
+
+    private void setVisibleSettings(TextField n1, TextField n2, JComponent p1, JComponent p2, TextField t1, TextField t2, JComponent n1Label, JComponent t2Label,
+                                    JComponent t1Label, JComponent n2Label, JComponent p1Label, JComponent p2Label) {
+        if (isVisibleSettings) {
+            n1.setVisible(false);
+            n2.setVisible(false);
+            p1.setVisible(false);
+            p2.setVisible(false);
+            t1.setVisible(false);
+            t2.setVisible(false);
+            n1Label.setVisible(false);
+            t1Label.setVisible(false);
+            t2Label.setVisible(false);
+            n2Label.setVisible(false);
+            p1Label.setVisible(false);
+            p2Label.setVisible(false);
+            isVisibleSettings = false;
+        } else {
+            n1.setVisible(true);
+            t1.setVisible(true);
+            t2.setVisible(true);
+            n2.setVisible(true);
+            p1.setVisible(true);
+            p2.setVisible(true);
+            n1Label.setVisible(true);
+            t2Label.setVisible(true);
+            n2Label.setVisible(true);
+            p1Label.setVisible(true);
+            p2Label.setVisible(true);
+            isVisibleSettings = true;
+        }
 
     }
 
-    public synchronized void draw(JComponent g){
+    public synchronized void draw(JComponent g) {
 
         int w = g.getWidth(), h = g.getHeight();
         BufferedImage fieldImage;
@@ -762,6 +795,7 @@ public class Habitat {
         g.getGraphics().drawImage(fieldImage, 0, 0, w, h, null);
 
     }
+
 
     private boolean checkStr(String str) {
         char[] a = str.toCharArray();
