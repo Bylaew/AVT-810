@@ -6,7 +6,44 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05cb67ce-b30b-45c1-bea8-ae1a3a8d546f" name="Default Changelist" comment="" />
+    <list default="true" id="05cb67ce-b30b-45c1-bea8-ae1a3a8d546f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Collect$CollHolder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Collect$CollHolder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Collect.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Collect.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$10.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$11.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$12.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$12.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$13.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$13.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$14.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$14.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$15.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$15.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$16.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$16.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$17.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$17.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$18.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$18.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$5.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$5.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$6.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$6.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$7.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$7.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$8.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$8.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$9.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$Dialog_objects$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$Dialog_objects$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$Dialog_objects.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$Dialog_objects.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$1$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$1$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyDialog.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyError$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyError$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyError.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat$MyError.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/Environment/Habitat.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/LabObjects/House.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Lab1Proga/LabObjects/House.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Lab1Proga/META-INF/Lab1Proga.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Environment/Collect.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Environment/Collect.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Environment/Habitat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Environment/Habitat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/LabObjects/House.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/LabObjects/House.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,6 +57,9 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="1YSlARBnoCUajrlict6iWvEMAzu" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -28,7 +68,8 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -86,10 +127,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1586670122939" />
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1585296779474">
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser" timestamp="1588571445266">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585296779474" />
+    <state x="765" y="230" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1588571445266" />
     <state x="690" y="304" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1586670120573">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -98,46 +139,46 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="924" y="263" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1586623768007" />
-    <state width="1877" height="347" key="GridCell.Tab.0.bottom" timestamp="1588161305785">
+    <state width="1877" height="271" key="GridCell.Tab.0.bottom" timestamp="1589526590254">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305785" />
-    <state width="1877" height="347" key="GridCell.Tab.0.center" timestamp="1588161305785">
+    <state width="1877" height="271" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1589526590254" />
+    <state width="1877" height="271" key="GridCell.Tab.0.center" timestamp="1589526590254">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305785" />
-    <state width="1877" height="347" key="GridCell.Tab.0.left" timestamp="1588161305785">
+    <state width="1877" height="271" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1589526590254" />
+    <state width="1877" height="271" key="GridCell.Tab.0.left" timestamp="1589526590254">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305785" />
-    <state width="1877" height="347" key="GridCell.Tab.0.right" timestamp="1588161305785">
+    <state width="1877" height="271" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1589526590254" />
+    <state width="1877" height="271" key="GridCell.Tab.0.right" timestamp="1589526590254">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305785" />
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1588161305786">
+    <state width="1877" height="271" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1589526590254" />
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1588565629145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305786" />
-    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1588161305786">
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1588565629145" />
+    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1588565629145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305786" />
-    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1588161305785">
+    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1588565629145" />
+    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1588565629145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305785" />
-    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1588161305786">
+    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1588565629145" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1588565629145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588161305786" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1588565629145" />
     <state x="440" y="95" key="SettingsEditor" timestamp="1586623774821">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="440" y="95" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1586623774821" />
-    <state x="840" y="332" key="com.intellij.ide.util.TipDialog" timestamp="1588215609893">
+    <state x="840" y="332" key="com.intellij.ide.util.TipDialog" timestamp="1588841393817">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="840" y="332" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588215609893" />
+    <state x="840" y="332" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1588841393817" />
     <state x="656" y="118" width="607" height="804" key="find.popup" timestamp="1584605698004">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -146,9 +187,13 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="342" y="141" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1585632872164" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587748487087">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1588561069793">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1587748487087" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1588561069793" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1588663404328">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1588663404328" />
   </component>
 </project>

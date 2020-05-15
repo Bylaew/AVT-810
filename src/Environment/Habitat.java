@@ -5,11 +5,17 @@ import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 
 import LabObjects.ConcreteFactory;
 import LabObjects.House;
+import LabObjects.KapAI;
+import LabObjects.WoodAI;
+
+import javax.sound.sampled.*;
 
 import static java.awt.event.KeyEvent.*;
 
@@ -31,10 +37,15 @@ public class Habitat extends JFrame {
     private JLabel posib_wood_text = new JLabel("Вероятность деревянного");
     private JLabel edit_life_wood_text = new JLabel("Время жизни деревянного");
     private JLabel edit_life_kap_text = new JLabel("Время жизни капитального");
-    private int countWood = 0, countKap = 0;
+    private JLabel woodAI_lab = new JLabel("Интеллект дерева");
+    private JLabel kapAI_lab = new JLabel("Интеллект капитала");
     private JButton start = new JButton("Start");
     private JButton stop = new JButton("Stop");
     private JButton curr_obj = new JButton("Текущие объекты");
+    private JButton start_woodAI = new JButton("Запуск");
+    private JButton start_kapAI = new JButton("Запуск");
+    private JButton stop_woodAI = new JButton("Остановка");
+    private JButton stop_kapAI = new JButton("Остановка");
     private boolean sim_active = false;
     private int work_area_w=(width*3/4);
     private int work_area_h=height*3/4;
@@ -54,12 +65,19 @@ public class Habitat extends JFrame {
     private JTextField period_kap = new JTextField();
     private JComboBox posib_wood = new JComboBox();
     private JComboBox posib_kap = new JComboBox();
+    private JComboBox wood_priority = new JComboBox();
+    private JComboBox kap_proirity = new JComboBox();
     private double P1=0.1;
     private double P2=0.2;
     private int life_time_wood = 2;
     private int life_time_kap = 5;
+    private boolean woodAI_work=true;
+    private boolean kapAI_work=true;
     private JTextField edit_life_wood = new JTextField();
     private JTextField edit_life_kap = new JTextField();
+    private KapAI intel_kap = new KapAI(this);
+    private WoodAI intel_wood = new WoodAI(this);
+
 
 
 
@@ -67,16 +85,17 @@ public class Habitat extends JFrame {
 
     private JPanel panel = new JPanel() {
         @Override
-        public void paintComponent(Graphics g) {
-
+        public synchronized void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D info_area = (Graphics2D) g;
-            info_area.setColor(new Color(221, 5, 0));
-            info_area.fillRect((int)(width*3/4), 0, (int)(width/4), height);
             House temp;
             for (int i = 0; i < Collect.getInstance().size_obj(); i++) {
                 g.drawImage(Collect.getInstance().get_obj(i).getImage(), Collect.getInstance().get_obj(i).getX(), Collect.getInstance().get_obj(i).getY(),null);
             }
+            Graphics2D info_area = (Graphics2D) g;
+            info_area.setColor(new Color(221, 5, 0));
+            info_area.fillRect((int)(width*3/4), 0, (int)(width/4), height);
+            g.drawOval(getWidth()*3/8, getHeight()/2, 10,10);
+            g.setColor(Color.RED);
 
         }
     };
@@ -95,17 +114,14 @@ public class Habitat extends JFrame {
             else{
                 m_timer.cancel();
             }
-            repaint();
             setVisible(true);}
     }
 
-    private void start_sim(){
-        m_start.setEnabled(false);
+   private void start_sim(){
+            m_start.setEnabled(false);
         m_stop.setEnabled(true);
         if(!sim_active){
             Collect.getInstance().clear();
-            countWood=0;
-            countKap=0;
             sim_active = true;
             t_start = System.currentTimeMillis();
             m_timer = new Timer();
@@ -138,11 +154,17 @@ public class Habitat extends JFrame {
         for (int i=0; i<11;i++){
             posib_kap.addItem(i/10.d);
             posib_wood.addItem(i/10.d);
+            if(i!=0) {
+                wood_priority.addItem(i);
+                kap_proirity.addItem(i);
+            }
         }
         posib_kap.setFocusable(false);
         posib_wood.setFocusable(false);
         posib_wood.setSelectedIndex(1);
         posib_kap.setSelectedIndex(2);
+        wood_priority.setSelectedIndex(4);
+        kap_proirity.setSelectedIndex(4);
         panel.add(posib_kap_text);
         panel.add(posib_wood_text);
         panel.add(posib_wood);
@@ -156,6 +178,14 @@ public class Habitat extends JFrame {
         panel.add(edit_life_wood);
         panel.add(edit_life_wood_text);
         panel.add(curr_obj);
+        panel.add(start_woodAI);
+        panel.add(start_kapAI);
+        panel.add(stop_woodAI);
+        panel.add(stop_kapAI);
+        panel.add(woodAI_lab);
+        panel.add(kapAI_lab);
+        panel.add(wood_priority);
+        panel.add(kap_proirity);
         ImageIcon icon = new ImageIcon("./resources/USSR.png");
         setIconImage(icon.getImage());
         sim.add(m_start);
@@ -186,6 +216,14 @@ public class Habitat extends JFrame {
         edit_life_wood_text.setBounds((int)(width*3/4)+10,305,200,15);
         edit_life_kap.setBounds((int)(width*3/4)+170, 280,70,20);
         edit_life_wood.setBounds((int)(width*3/4)+170, 305,70,20);
+        woodAI_lab.setBounds((int)(width*3/4)+10, 330,120,20);
+        kapAI_lab.setBounds((int)(width*3/4)+130, 330,120,20);
+        start_woodAI.setBounds((int)(width*3/4)+10, 360,100,20);
+        start_kapAI.setBounds((int)(width*3/4)+130, 360,100,20);
+        stop_woodAI.setBounds((int)(width*3/4)+10, 390,100,20);
+        stop_kapAI.setBounds((int)(width*3/4)+130, 390,100,20);
+        wood_priority.setBounds((int)(width*3/4)+10, 420,100,20);
+        kap_proirity.setBounds((int)(width*3/4)+130, 420,100,20);
         panel.add(s_time);
         panel.add(WoodCount);
         panel.add(KapCount);
@@ -204,9 +242,55 @@ public class Habitat extends JFrame {
         m_view.setState(true);
         time_view.setSelected(time_visible.getModel(), true);
         pack();
-       setFocusable(true);
+        setFocusable(true);
+        intel_kap.start();
+        intel_wood.start();
 
 
+        stop_woodAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (woodAI_work){
+                    intel_wood.stop();
+                    woodAI_work=false;
+                    requestFocusInWindow();
+                }
+            }
+        });
+
+
+        stop_kapAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (kapAI_work){
+                    intel_kap.stop();
+                    kapAI_work=false;
+                    requestFocusInWindow();
+                }
+            }
+        });
+
+        start_woodAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!woodAI_work){
+                    intel_wood.resume();
+                    woodAI_work=true;
+                    requestFocusInWindow();
+                }
+            }
+        });
+
+        start_kapAI.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!kapAI_work){
+                    intel_kap.resume();
+                    kapAI_work=true;
+                    requestFocusInWindow();
+                }
+            }
+        });
 
 
         m_start.addActionListener(new ActionListener() {
@@ -253,6 +337,8 @@ N1 = 1;
                 requestFocusInWindow();
             }
         });
+
+
 
         period_kap.addActionListener(new ActionListener() {
             @Override
@@ -316,6 +402,22 @@ N1 = 1;
             @Override
             public void itemStateChanged(ItemEvent e) {
                 P1=posib_wood.getSelectedIndex()/10.d;
+                requestFocusInWindow();
+            }
+        });
+
+        wood_priority.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                intel_wood.setPriority(wood_priority.getSelectedIndex()+1);
+                requestFocusInWindow();
+            }
+        });
+
+        kap_proirity.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                intel_kap.setPriority(kap_proirity.getSelectedIndex()+1);
                 requestFocusInWindow();
             }
         });
@@ -425,26 +527,24 @@ N1 = 1;
 
     }
 
-    public void Update(long time) {
+    public synchronized void Update(long time) {
         int temp_ID;
         if (Math.random() < P1 && time%N1==0) {
             do{
                 temp_ID = (int)(Math.random()*10000);
             }while(!Collect.getInstance().add_ID(temp_ID));
-            Collect.getInstance().add_obj(factory.createWood(work_area_h, work_area_w,temp_ID),time);
-            countWood++;
+            Collect.getInstance().add_obj(factory.createWood(work_area_h, work_area_w,temp_ID),time, this);
         }
         if (Math.random() < P2 && time % N2 == 0) {
             do{
                 temp_ID = (int)(Math.random()*10000);
             }while(!Collect.getInstance().add_ID(temp_ID));
-            Collect.getInstance().add_obj(factory.createKap(work_area_h, work_area_w,temp_ID), time);
-            countKap++;
+            Collect.getInstance().add_obj(factory.createKap(work_area_h, work_area_w,temp_ID), time, this);
         }
         Collect.getInstance().round(time, life_time_wood, life_time_kap);
         s_time.setText("Время:" + time);
-        WoodCount.setText("Деревенные дома:"+countWood);
-        KapCount.setText("Капитальные дома:"+countKap);
+        WoodCount.setText("Деревенные дома:"+Collect.getInstance().Wood_count());
+        KapCount.setText("Капитальные дома:"+Collect.getInstance().Kap_count());
         repaint();
     }
 
@@ -467,7 +567,7 @@ N1 = 1;
             buttons.add(ok);
             buttons.add(stop);
             text.add(info, BorderLayout.CENTER);
-            info.setText("Капитальные дома:"+countKap+"\n Деревянные дома:"+countWood+"\n Время:"+(System.currentTimeMillis() - time_wait - t_start)/1000.d);
+            info.setText("Капитальные дома:"+Collect.getInstance().Kap_count()+"\n Деревянные дома:"+Collect.getInstance().Wood_count()+"\n Время:"+(System.currentTimeMillis() - time_wait - t_start)/1000.d);
             info.setVisible(true);
             info.setSize(100,100);
             stop.addActionListener(new ActionListener() {
