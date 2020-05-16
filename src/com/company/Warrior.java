@@ -2,10 +2,11 @@ package com.company;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
-public class Warrior extends Ant {
+public class Warrior extends Ant implements Serializable {
     private static int count;
-    private Image img;
+    private static transient Image img = new ImageIcon("src/res/Worker.jpg").getImage();
     private float oldX;
     private float oldY;
     private boolean isStopX = false;
@@ -47,8 +48,7 @@ public class Warrior extends Ant {
         return isStopY;
     }
 
-    @Override
-    public Image getImage() {
+    public  Image getImage() {
         return img;
     }
 

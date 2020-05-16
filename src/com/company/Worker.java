@@ -3,10 +3,11 @@ package com.company;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 
-public class Worker extends Ant{
+public class Worker extends Ant implements Serializable {
     private static int count;
-    private Image img;
+    private static transient Image img =new ImageIcon("src/res/Worker.jpg").getImage(); ;
     Worker(){
         count++;
     };
@@ -17,8 +18,8 @@ public class Worker extends Ant{
 
     }
 
-    @Override
-    public Image getImage() {
+
+    public  Image getImage() {
         return img;
     }
 }

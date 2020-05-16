@@ -1,6 +1,8 @@
 package com.company;
 
-public abstract class Ant implements IBehaviour {
+import java.io.Serializable;
+
+public abstract class Ant implements IBehaviour, Serializable {
     private float x;
     private float y;
     private int orientationX;
