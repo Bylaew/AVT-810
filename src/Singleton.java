@@ -1,15 +1,16 @@
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.Vector;
 
-public class Singleton
+public class Singleton implements Serializable
 {
     private Singleton(){}
 
     private static Singleton instance;
-    public Vector<House> houseList = new Vector<>(1000);
-    public HashSet<Integer> idList = new HashSet<>(1000);
+    public Vector<House> houseList = new Vector<>(100);
+    public HashSet<Integer> idList = new HashSet<>(100);
     public TreeMap<Integer, Long> mapList = new TreeMap<>();
     public static Singleton getInstance()
     {
@@ -31,6 +32,11 @@ public class Singleton
         houseList.clear();
         idList.clear();
         mapList.clear();
+    }
+    public void saveObj() throws IOException {
+        FileOutputStream outFile =new FileOutputStream("Obj.out");
+        ObjectOutputStream outStream = new ObjectOutputStream(outFile);
+        outStream.writeObject(this);
     }
 
 }

@@ -24,6 +24,7 @@ public class UserInterface
     JToggleButton start_button = new JToggleButton("Start simulation");
     JToggleButton stop_button = new JToggleButton("Stop simulation");
     JButton aliveButton = new JButton("Show alive");
+    JButton consoleButton = new JButton("Show console");
 
     ButtonGroup stoneAi = new ButtonGroup();
     ButtonGroup woodAi = new ButtonGroup();
@@ -31,6 +32,15 @@ public class UserInterface
     JToggleButton sleepWoodAi = new JToggleButton("WoodAi sleep");
     JToggleButton wakeStoneAi = new JToggleButton("StoneAi wake");
     JToggleButton wakeWoodAi = new JToggleButton("WoodAi wake");
+
+    //Сохранение и загрузка объектов
+    JPanel saveLoadObj_panel = new JPanel();
+    JButton saveObjButton = new JButton("Save Objects");
+    JButton loadObjButton = new JButton("Load Objects");
+    //Сохранение и загрузка параметров
+    JPanel saveLoadConfig_panel = new JPanel();
+    JButton saveConfigButton = new JButton("Save Config");
+    JButton loadConfigButton = new JButton("Load Config");
     //чекбокс
     JCheckBox showDialogBox = new JCheckBox("Show dialog");
     //связанные переключатели
@@ -109,7 +119,7 @@ public class UserInterface
             cmbPriority2.addItem(i);
         }
         //добавление элементов к панели настроек
-        settings_panel.setLayout(new GridLayout(20,1,0,0));
+        settings_panel.setLayout(new GridLayout(23,1,0,0));
         settings_panel.add(onPanel);
         settings_panel.add(showDialogBox);
 
@@ -142,6 +152,16 @@ public class UserInterface
         priority_panel.add(cmbPriority1);
         priority_panel.add(cmbPriority2);
         settings_panel.add(priority_panel);
+
+        settings_panel.add(saveLoadObj_panel);
+        saveLoadObj_panel.add(saveObjButton);
+        saveLoadObj_panel.add(loadObjButton);
+
+        settings_panel.add(saveLoadConfig_panel);
+        saveLoadConfig_panel.add(saveConfigButton);
+        saveLoadConfig_panel.add(loadConfigButton);
+
+        settings_panel.add(consoleButton);
 
         simulation_panel.setVisible(true);
         settings_panel.setVisible(true);};

@@ -1,6 +1,7 @@
 import java.awt.*;
+import java.io.Serializable;
 
-public abstract class House implements IBehaviour //все домики
+public abstract class House implements IBehaviour, Serializable //все домики
 {
     public double x; //координаты
     public double y;

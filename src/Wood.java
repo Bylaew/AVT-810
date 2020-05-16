@@ -6,7 +6,7 @@ import java.io.IOException;
 public class Wood extends House //деревянные домики
 {
     static int counter;
-    private Image image;
+    transient private Image image;
     public Wood()
     {
      setX(0);
