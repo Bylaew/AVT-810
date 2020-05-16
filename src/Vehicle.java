@@ -1,4 +1,5 @@
 public abstract class Vehicle implements IBehavior{
+
     private float x, y;
     private int id;
     private long birthTime;
@@ -35,6 +36,15 @@ public abstract class Vehicle implements IBehavior{
     public float getY() {
         return y;
     }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
 
     public long getLifeTime(){return lifeTime;}
 }

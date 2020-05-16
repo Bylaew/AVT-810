@@ -1,14 +1,11 @@
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
 public class Habitat {
-    Singleton singleton = Singleton.getInstance();
+    final Singleton singleton = Singleton.getInstance();
     SideMenu sideMenu;
     MenuBar mainMenu;
     JFrame frame;
@@ -23,16 +20,23 @@ public class Habitat {
     private boolean isStatsAllowed;
     private boolean isTimeAllowed;
     private JLabel labelTime;
-    private long carLifetime = 15, motoLifetime = 5;
+    private long carLifetime = 1500, motoLifetime = 500;
+    CarAI carAI = new CarAI(this);
+    MotoAI motoAI = new MotoAI(this);
 
     public void init(float N1, float N2, float P1, float P2) {
+
         concreteFactory = new ConcreteFactory();
-        this.N1 = N1;
-        this.N2 = N2;
+        carAI.start();
+        motoAI.start();
+
+        this.N1 = N1*100;
+        this.N2 = N2*100;
         this.P1 = P1;
         this.P2 = P2;
 
         frame = new JFrame("Lab 3");
+
 
         window = new ImagePanel();
         frame.add(window, BorderLayout.CENTER);
@@ -46,7 +50,7 @@ public class Habitat {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double w = screenSize.getWidth();
         double h = screenSize.getHeight();
-        frame.setPreferredSize(new Dimension((int)(w/1.5), (int)(h/1.5)));
+        window.setPreferredSize(new Dimension((int)(w/2), (int)(h/2)));
 
 
         labelTime = new JLabel();
@@ -60,7 +64,8 @@ public class Habitat {
         frame.setResizable(true);
         frame.pack();
 
-        startTime = new Timer(1000, e -> {
+
+        startTime = new Timer(10, e -> {
             timeFromStart++;
             labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
             update(timeFromStart, window);
@@ -110,6 +115,7 @@ public class Habitat {
                 window.requestFocus();
             }
         });
+
         frame.setVisible(true);
         window.requestFocus();
         width = window.getWidth();
@@ -135,6 +141,7 @@ public class Habitat {
 
 
     private void update(float time, ImagePanel window) {
+        synchronized (singleton){
         if (time % N1 == 0) {
             if (Math.random() < P1) {
                 int id = singleton.generateId();
@@ -163,7 +170,7 @@ public class Habitat {
                 singleton.vehicles.remove(i);
 
             }
-        }
+        }}
 
 
         BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -181,6 +188,8 @@ public class Habitat {
 
 
     class SideMenu extends JPanel {
+        JPanel left = new JPanel();
+        JPanel right = new JPanel();
         JButton start = new JButton("Старт");
         JButton stop = new JButton("Стоп");
         JCheckBox show_info;
@@ -189,7 +198,9 @@ public class Habitat {
 
 
         SideMenu() {
-            setLayout(new GridLayout(16, 1));
+
+            // ----------------- LEFT SIDE -----------\\
+            left.setLayout(new GridLayout(16, 1));
             show_info = new JCheckBox("Показывать статистику");
             show_info.setFocusable(false);
             stop.setEnabled(false);
@@ -219,40 +230,93 @@ public class Habitat {
             auto_period.setEnabled(true);
             TextField moto_period = new TextField("", 10);
             moto_period.setEnabled(true);
-            var comboBox = new JComboBox();
+            JComboBox<Float> comboBox = new JComboBox<>();
             for (int i = 10; i <= 100; i += 10)
                 comboBox.addItem((float) i / 100.0f);
             comboBox.setSelectedItem(P1);
 
+
             JLabel txt4 = new JLabel("Время жизни автомобилей");
-            JSlider slider = new JSlider(0, 50, (int)carLifetime);
+            JSlider slider = new JSlider(0, 50, (int)carLifetime/100);
             slider.setMajorTickSpacing(10);
             slider.setMajorTickSpacing(5);
             slider.setPaintLabels(true);
             slider.setPaintTicks(true);
+            slider.setSnapToTicks(true);
 
             JLabel txt5 = new JLabel("Время жизни мотоциклов");
             TextField motolifefield = new TextField("", 10);
-            motolifefield.setText(""+motoLifetime);
+            motolifefield.setText(""+motoLifetime/100);
+
+            left.add(start);
+            left.add(stop);
+            left.add(show_info);
+            left.add(show);
+            left.add(hide);
+            left.add(timeText);
+            left.add(txt1);
+            left.add(auto_period);
+            left.add(txt2);
+            left.add(moto_period);
+            left.add(txt3);
+            left.add(comboBox);
+            left.add(txt4);
+            left.add(slider);
+            left.add(txt5);
+            left.add(motolifefield);
+            // ----------------------------\\
 
 
 
-            add(start);
-            add(stop);
-            add(show_info);
-            add(show);
-            add(hide);
-            add(timeText);
-            add(txt1);
-            add(auto_period);
-            add(txt2);
-            add(moto_period);
-            add(txt3);
-            add(comboBox);
-            add(txt4);
-            add(slider);
-            add(txt5);
-            add(motolifefield);
+            // ----------------- RIGHT SIDE -----------\\
+            right.setLayout(new GridLayout(16, 1));
+            JButton CarStopButton = new JButton("Остановить автомобили");
+            JButton CarResumeButton = new JButton("Разбудить автомобили");
+            JButton MotoStopButton = new JButton("Остановить мотоциклы");
+            JButton MotoResumeButton = new JButton("Разбудить мотоцилы");
+            CarResumeButton.setEnabled(false);
+            MotoResumeButton.setEnabled(false);
+            JComboBox<Integer> CarPriority = new JComboBox<>();
+            JComboBox<Integer> MotoPriority  = new JComboBox<>();
+            CarPriority.setEditable(false);
+            MotoPriority.setEditable(false);
+            right.add(CarResumeButton);
+            right.add(CarStopButton);
+            right.add(MotoResumeButton);
+            right.add(MotoStopButton);
+            CarResumeButton.addActionListener(e -> {
+                carAI.resumeAI();
+                CarResumeButton.setEnabled(false);
+                CarStopButton.setEnabled(true);
+            });
+            CarStopButton.addActionListener( e-> {carAI.pauseAI();
+                CarResumeButton.setEnabled(true);
+                CarStopButton.setEnabled(false);});
+            MotoResumeButton.addActionListener(e -> {motoAI.resumeAI();
+                MotoResumeButton.setEnabled(false);
+                MotoStopButton.setEnabled(true);
+            });
+            MotoStopButton.addActionListener(e -> { motoAI.pauseAI();
+                MotoResumeButton.setEnabled(true);
+                MotoStopButton.setEnabled(false);});
+
+            for (int i = 1; i <= 2; i++){
+                CarPriority.addItem(i);
+                MotoPriority.addItem(i);
+            }
+            CarPriority.addItemListener(e -> carAI.setPriority((int)CarPriority.getSelectedItem()));
+            MotoPriority.addItemListener(e -> carAI.setPriority((int)CarPriority.getSelectedItem()));
+            right.add(new JLabel("Приоритет потока автомобилей"));
+            right.add(CarPriority);
+            right.add(new JLabel("Приоритет потока Мотоциклов"));
+            right.add(MotoPriority);
+            // ----------------------------\\
+
+            setLayout(new BoxLayout( this ,BoxLayout.X_AXIS));
+            add(left);
+            add(right);
+
+
 
             comboBox.addActionListener(e -> {
                 P1 = (float) comboBox.getSelectedItem();
@@ -260,14 +324,14 @@ public class Habitat {
             });
 
 
-            slider.addChangeListener(e -> carLifetime = ((JSlider)e.getSource()).getValue());
+            slider.addChangeListener(e -> carLifetime = ((JSlider)e.getSource()).getValue()*100);
 
             motolifefield.addActionListener(e -> {
             int a;
             try {
                 a = Integer.parseInt(motolifefield.getText());
                 if (a >= 0)
-                    motoLifetime = a;
+                    motoLifetime = a*100;
                 else throw new NumberFormatException();
             } catch (NumberFormatException nfe) {
                 JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
@@ -307,12 +371,12 @@ public class Habitat {
                 try {
                     a = Integer.parseInt(auto_period.getText());
                     if (a > 0)
-                        N1 = a;
+                        N1 = a*100;
                     else throw new NumberFormatException();
                 } catch (NumberFormatException nfe) {
-                    N1 = 2;
+                    N1 = 2*100;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
-                    auto_period.setText(" ");
+                    auto_period.setText("");
                 }
                 window.requestFocus();
             });
@@ -321,12 +385,12 @@ public class Habitat {
                 try {
                     a = Integer.parseInt(moto_period.getText());
                     if (a > 0)
-                        N2 = a;
+                        N2 = a*100;
                     else throw new NumberFormatException();
                 } catch (NumberFormatException nfe) {
-                    N2 = 3;
+                    N2 = 3*100;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
-                    moto_period.setText(" ");
+                    moto_period.setText("");
                 }
                 window.requestFocus();
             });

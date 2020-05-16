@@ -26,7 +26,7 @@ public class Singleton {
     public int generateId(){
         int id;
         do {
-            id = (int)(Math.random()*100);
+            id = (int)(Math.random()*1000);
         } while (idSet.contains(id));
         return id;
     }
