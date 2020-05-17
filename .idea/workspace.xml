@@ -24,15 +24,23 @@
     <findStrings>
       <find>toString</find>
       <find>resumeGuppies</find>
+      <find>close</find>
+      <find>element</find>
+      <find>Element</find>
+      <find>Entitys</find>
+      <find>entitys</find>
+      <find>save</find>
     </findStrings>
     <replaceStrings>
       <replace>activateGuppies</replace>
+      <replace>entity</replace>
+      <replace>Entity</replace>
+      <replace>Entities</replace>
+      <replace>entities</replace>
     </replaceStrings>
-  </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-4" />
-    <option name="width" value="1382" />
-    <option name="height" value="735" />
+    <dirStrings>
+      <dir>C:\Users\scara\IdeaProjects\TP_1\src\nstu\javaprog</dir>
+    </dirStrings>
   </component>
   <component name="ProjectId" id="1Y1IEy89Z4by8oTjIFbNext3a0B" />
   <component name="ProjectViewState">
@@ -48,6 +56,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -113,11 +122,11 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="275" y="26" key="#Notifications/0.0.1366.728@0.0.1366.728" timestamp="1582367540855" />
-    <state x="309" y="29" key="#Project_Structure" timestamp="1587883414895">
+    <state x="309" y="29" key="#Project_Structure" timestamp="1589692813232">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="275" y="26" key="#Project_Structure/0.0.1366.728@0.0.1366.728" timestamp="1582305231974" />
-    <state x="309" y="29" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1587883414895" />
+    <state x="309" y="29" key="#Project_Structure/0.0.1536.824@0.0.1536.824" timestamp="1589692813232" />
     <state x="488" y="74" key="#com.intellij.ide.util.MemberChooser" timestamp="1582274073771">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

@@ -1,6 +1,11 @@
 package nstu.javaprog.model;
 
-public abstract class Fish implements Drawable, Movable {
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+public abstract class Fish implements Drawable, Movable, Serializable {
+    private static final long serialVersionUID = 1L;
     private final long id;
     private final int lifetime;
     protected int x, y;
@@ -13,6 +18,18 @@ public abstract class Fish implements Drawable, Movable {
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
         this.lifetime = lifetime;
+        validate();
+    }
+
+    private void validate() {
+        if (id < 0)
+            throw new IllegalArgumentException("id < 0");
+        if (x < 0)
+            throw new IllegalArgumentException("x < 0");
+        if (y < 0)
+            throw new IllegalArgumentException("y < 0");
+        if (lifetime <= 0)
+            throw new IllegalArgumentException("lifetime <= 0");
     }
 
     protected final void normalize(int xMax, int yMax, int picWidth, int picHeight) {
@@ -37,11 +54,17 @@ public abstract class Fish implements Drawable, Movable {
         y = centredY - picHeight / 2;
     }
 
-    final long getId() {
+    public final long getId() {
         return id;
     }
 
-    final int getLifetime() {
+    public final int getLifetime() {
         return lifetime;
+    }
+
+    private void readObject(ObjectInputStream inputStream)
+            throws IOException, ClassNotFoundException {
+        inputStream.defaultReadObject();
+        validate();
     }
 }

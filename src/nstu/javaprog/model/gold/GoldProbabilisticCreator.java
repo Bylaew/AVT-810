@@ -11,12 +11,12 @@ public final class GoldProbabilisticCreator extends ProbabilisticCreator {
     }
 
     @Override
-    public Gold createElement() {
-        Gold newElement = null;
+    public Gold createEntity() {
+        Gold newEntity = null;
         if (Float.compare((float) Math.random(), properties.getChance()) <= 0
                 && habitat.getTime() % properties.getDelay() == 0) {
             Coordinates coordinates = ViewContainer.getRandomCoordinates();
-            newElement = new Gold(
+            newEntity = new Gold(
                     getNextId(),
                     coordinates.getX(),
                     coordinates.getY(),
@@ -26,8 +26,8 @@ public final class GoldProbabilisticCreator extends ProbabilisticCreator {
                             + properties.getMinSpeed(),
                     properties.getLifetime()
             );
-            elementCounter.incrementAndGet();
+            entityCounter.incrementAndGet();
         }
-        return newElement;
+        return newEntity;
     }
 }

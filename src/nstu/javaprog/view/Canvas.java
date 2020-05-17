@@ -4,8 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,6 +14,7 @@ final class Canvas extends JPanel {
     private static final BufferedImage BACKGROUND_IMAGE = readImage("./resources/background.png");
     private final TextArea statistic = new TextArea(4, 30);
     private final TextField currentTime = new TextField(5);
+    private final JProgressBar progressBar = new JProgressBar();
     private final CanvasUpdater canvasUpdater = new CanvasUpdater();
     private ViewContainer container = null;
 
@@ -33,8 +32,12 @@ final class Canvas extends JPanel {
         currentTime.setFocusable(false);
         currentTime.setFont(new Font(null, Font.BOLD, 10));
 
+        progressBar.setIndeterminate(true);
+        progressBar.setVisible(false);
+
         add(currentTime);
         add(statistic);
+        add(progressBar);
 
         configureListeners();
     }
@@ -50,11 +53,11 @@ final class Canvas extends JPanel {
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_B:
-                        if (container.isGenerationActivated())
+                        if (!container.isGenerationActivated())
                             container.activateGeneration();
                         break;
                     case KeyEvent.VK_E:
-                        if (!container.isGenerationActivated())
+                        if (container.isGenerationActivated())
                             container.deactivateGeneration();
                         break;
                     case KeyEvent.VK_T:
@@ -66,14 +69,10 @@ final class Canvas extends JPanel {
                             container.showTime();
                         }
                         break;
+                    case KeyEvent.VK_C:
+                        container.changeConsoleView();
+                        break;
                 }
-            }
-        });
-
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                requestFocus();
             }
         });
     }
@@ -82,29 +81,36 @@ final class Canvas extends JPanel {
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         graphics.drawImage(BACKGROUND_IMAGE, 0, 0, getWidth(), getHeight(), null);
-        container.doForEachElement(element -> {
-            element.normalize(getWidth(), getHeight());
-            element.draw(graphics);
+        container.doForEachEntity(entity -> {
+            entity.normalize(getWidth(), getHeight());
+            entity.draw(graphics);
         });
     }
 
     void activateGeneration() {
         activateUpdater();
-        statistic.setVisible(false);
-        revalidate();
     }
 
     void deactivateGeneration() {
         deactivateUpdater();
-        statistic.setVisible(true);
-        statistic.setText(container.getStatistic());
         currentTime.setText(container.getCurrentTime());
         revalidate();
         repaint();
     }
 
+    void showStatistic() {
+        statistic.setVisible(true);
+    }
+
+    void hideStatistic() {
+        statistic.setVisible(false);
+    }
+
+    void updateStatistic() {
+        statistic.setText(container.getStatistic());
+    }
+
     void showTime() {
-        currentTime.setText(container.getCurrentTime());
         currentTime.setVisible(true);
         revalidate();
     }
@@ -112,6 +118,10 @@ final class Canvas extends JPanel {
     void hideTime() {
         currentTime.setVisible(false);
         revalidate();
+    }
+
+    void updateTime() {
+        currentTime.setText(container.getCurrentTime());
     }
 
     boolean isUpdaterActivated() {
@@ -126,6 +136,16 @@ final class Canvas extends JPanel {
         canvasUpdater.deactivate();
     }
 
+    void activateProgressBar() {
+        progressBar.setVisible(true);
+        revalidate();
+    }
+
+    void deactivateProgressBar() {
+        progressBar.setVisible(false);
+        revalidate();
+    }
+
     private class CanvasUpdater {
         private volatile boolean isSuspended = true;
 
@@ -133,21 +153,15 @@ final class Canvas extends JPanel {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    if (!isSuspended)
-                        SwingUtilities.invokeLater(Canvas.this::repaint);
+                    if (!isSuspended) {
+                        SwingUtilities.invokeLater(() -> {
+                            repaint();
+                            if (currentTime.isVisible())
+                                updateTime();
+                        });
+                    }
                 }
             }, 0, 33);
-
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (!isSuspended)
-                        SwingUtilities.invokeLater(() -> {
-                            if (currentTime.isVisible())
-                                currentTime.setText(container.getCurrentTime());
-                        });
-                }
-            }, 0, 1000);
         }
 
         void activate() {

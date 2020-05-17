@@ -11,12 +11,12 @@ public final class GuppyProbabilisticCreator extends ProbabilisticCreator {
     }
 
     @Override
-    public Guppy createElement() {
-        Guppy newElement = null;
+    public Guppy createEntity() {
+        Guppy newEntity = null;
         if (Float.compare((float) Math.random(), properties.getChance()) <= 0
                 && habitat.getTime() % properties.getDelay() == 0) {
             Coordinates coordinates = ViewContainer.getRandomCoordinates();
-            newElement = new Guppy(
+            newEntity = new Guppy(
                     getNextId(),
                     coordinates.getX(),
                     coordinates.getY(),
@@ -26,8 +26,8 @@ public final class GuppyProbabilisticCreator extends ProbabilisticCreator {
                             + properties.getMinSpeed(),
                     properties.getLifetime()
             );
-            elementCounter.incrementAndGet();
+            entityCounter.incrementAndGet();
         }
-        return newElement;
+        return newEntity;
     }
 }

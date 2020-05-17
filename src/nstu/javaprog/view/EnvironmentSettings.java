@@ -1,5 +1,6 @@
 package nstu.javaprog.view;
 
+import nstu.javaprog.exception.IllegalPropertiesException;
 import nstu.javaprog.util.Properties;
 
 import javax.swing.*;
@@ -44,9 +45,9 @@ final class EnvironmentSettings extends JDialog {
     private final JComboBox<String> priority = new JComboBox<>(PRIORITY_VALUES);
     private final JButton accept = new JButton("Accept");
 
-    EnvironmentSettings(Frame frame, Properties properties, Consumer<Properties> consumer) {
-        super(frame, "Settings", true);
-        setLocationRelativeTo(frame);
+    EnvironmentSettings(Frame parent, Properties properties, Consumer<Properties> consumer) {
+        super(parent, "Settings", true);
+        setLocationRelativeTo(parent);
         setResizable(false);
         setLayout(new GridLayout(7, 2, 2, 1));
 
@@ -70,13 +71,17 @@ final class EnvironmentSettings extends JDialog {
         pack();
     }
 
+    void activate() {
+        setVisible(true);
+    }
+
     private void configureListeners(Consumer<Properties> consumer) {
         accept.addActionListener(event -> {
             try {
                 validateData();
                 consumer.accept(getProperties());
                 dispose();
-            } catch (IllegalArgumentException exception) {
+            } catch (IllegalPropertiesException exception) {
                 JOptionPane.showMessageDialog(
                         this,
                         exception.getMessage(),
@@ -120,8 +125,8 @@ final class EnvironmentSettings extends JDialog {
             );
     }
 
-    private Properties getProperties() {
-        return new Properties(
+    private Properties getProperties() throws IllegalPropertiesException {
+        return Properties.buildPropertiesWithCheckedException(
                 (float) chance.getSelectedIndex() / 10.f,
                 Integer.parseInt(delay.getText()),
                 Integer.parseInt(minSpeed.getText()),
@@ -133,7 +138,7 @@ final class EnvironmentSettings extends JDialog {
 
     private void setProperties(Properties properties) {
         delay.setText(Integer.toString(properties.getDelay()));
-        chance.setSelectedIndex((int) (properties.getChance() * 10.f) % chance.getItemCount());
+        chance.setSelectedIndex(Math.round(properties.getChance() * 10.f));
         priority.setSelectedIndex(properties.getPriority() - 1);
         minSpeed.setText(Integer.toString(properties.getMinSpeed()));
         maxSpeed.setText(Integer.toString(properties.getMaxSpeed()));

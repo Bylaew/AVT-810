@@ -16,7 +16,9 @@ public final class Launcher {
 
         SwingUtilities.invokeLater(() -> {
             ViewContainer viewContainer = new ViewContainer("Aquarium");
+            ViewContainer.setDefaultLookAndFeelDecorated(true);
             viewContainer.prepare(windowController);
+            viewContainer.setVisible(true);
         });
     }
 }

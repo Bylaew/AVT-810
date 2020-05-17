@@ -9,9 +9,9 @@ public final class GoldBehavior extends Behavior {
 
     @Override
     public void act() {
-        habitat.doForEachElement(element -> {
-            if (element instanceof Gold)
-                element.move();
+        habitat.doForEachEntity(entity -> {
+            if (entity instanceof Gold)
+                entity.move();
         });
     }
 }

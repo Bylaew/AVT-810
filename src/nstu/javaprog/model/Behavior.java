@@ -3,6 +3,7 @@ package nstu.javaprog.model;
 import java.util.concurrent.TimeUnit;
 
 public abstract class Behavior {
+    private final Object mutex = new Object();
     private final Thread thread;
     protected Habitat habitat = null;
     private volatile boolean isSuspended = true;
@@ -18,9 +19,11 @@ public abstract class Behavior {
 
     public abstract void act();
 
-    final synchronized void activate() {
+    final void activate() {
         isSuspended = false;
-        notify();
+        synchronized (mutex) {
+            mutex.notify();
+        }
     }
 
     final void deactivate() {
@@ -44,13 +47,13 @@ public abstract class Behavior {
 
         @Override
         public void run() {
-            while (!thread.isInterrupted()) {
-                synchronized (Behavior.this) {
+            while (!Thread.currentThread().isInterrupted()) {
+                synchronized (mutex) {
                     while (isSuspended) {
                         try {
-                            Behavior.this.wait();
+                            mutex.wait();
                         } catch (InterruptedException exception) {
-                            thread.interrupt();
+                            Thread.currentThread().interrupt();
                         }
                     }
                 }
@@ -60,7 +63,7 @@ public abstract class Behavior {
                 try {
                     TimeUnit.MILLISECONDS.sleep(period);
                 } catch (InterruptedException exception) {
-                    thread.interrupt();
+                    Thread.currentThread().interrupt();
                 }
             }
         }

@@ -14,7 +14,7 @@ final class Menu extends JPanel {
     private final JCheckBox showTime = new JCheckBox("Show the time");
     private final JCheckBox hideTime = new JCheckBox("Hide the time");
     private final JCheckBox statisticAsDialog = new JCheckBox("Statistic as dialog");
-    private final JButton aliveElements = new JButton("Show alive elements");
+    private final JButton aliveEntities = new JButton("Show alive entities");
     private final JButton goldSettings = new JButton("Gold settings");
     private final JButton guppySettings = new JButton("Guppy settings");
     private ViewContainer container = null;
@@ -39,9 +39,22 @@ final class Menu extends JPanel {
         showTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         hideTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         statisticAsDialog.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        aliveElements.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        aliveEntities.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         goldSettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         guppySettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+
+        activate.setFocusable(false);
+        deactivate.setFocusable(false);
+        deactivateGolds.setFocusable(false);
+        activateGolds.setFocusable(false);
+        deactivateGuppies.setFocusable(false);
+        activateGuppies.setFocusable(false);
+        showTime.setFocusable(false);
+        hideTime.setFocusable(false);
+        statisticAsDialog.setFocusable(false);
+        aliveEntities.setFocusable(false);
+        goldSettings.setFocusable(false);
+        guppySettings.setFocusable(false);
 
         LineBorder border = new LineBorder(Color.BLACK);
         JPanel top = new JPanel();
@@ -68,7 +81,7 @@ final class Menu extends JPanel {
         middle.add(new JSeparator(JSeparator.HORIZONTAL));
         middle.add(statisticAsDialog);
         middle.add(new JSeparator(JSeparator.HORIZONTAL));
-        middle.add(aliveElements);
+        middle.add(aliveEntities);
         add(middle);
 
         bot.setBorder(border);
@@ -102,7 +115,7 @@ final class Menu extends JPanel {
 
         statisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
 
-        aliveElements.addActionListener(event -> container.showAliveElements());
+        aliveEntities.addActionListener(event -> container.showAliveEntities());
 
         goldSettings.addActionListener(event -> container.changeGoldSettings());
 

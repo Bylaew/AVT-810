@@ -5,10 +5,14 @@ import nstu.javaprog.model.Fish;
 import nstu.javaprog.model.Habitat;
 import nstu.javaprog.util.Properties;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public final class WindowController {
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private Habitat habitat = null;
 
     public final void prepare(Habitat habitat) {
@@ -55,6 +59,30 @@ public final class WindowController {
         habitat.reset();
     }
 
+    public void open(File file, Consumer<Exception> callback) {
+        executorService.submit(() -> {
+            Exception exception = null;
+            try {
+                habitat.reestablish(file);
+            } catch (Exception e) {
+                exception = e;
+            }
+            callback.accept(exception);
+        });
+    }
+
+    public void save(File file, Consumer<Exception> callback) {
+        executorService.submit(() -> {
+            Exception exception = null;
+            try {
+                habitat.save(file);
+            } catch (Exception e) {
+                exception = e;
+            }
+            callback.accept(exception);
+        });
+    }
+
     public Properties getGoldProperties() {
         return habitat.getGoldProperties();
     }
@@ -71,8 +99,8 @@ public final class WindowController {
         habitat.setGuppyProperties(properties);
     }
 
-    public List<Pair<Long, Integer>> getAliveElements() {
-        return habitat.getAliveElements();
+    public List<Pair<Long, Integer>> getAliveEntities() {
+        return habitat.getAliveEntities();
     }
 
     public int getCurrentTime() {
@@ -83,7 +111,11 @@ public final class WindowController {
         return habitat.getStatistic();
     }
 
-    public void doForEachElement(Consumer<? super Fish> consumer) {
-        habitat.doForEachElement(consumer);
+    public void saveGenerationSettings() {
+        habitat.saveGenerationSettings();
+    }
+
+    public void doForEachEntity(Consumer<Fish> consumer) {
+        habitat.doForEachEntity(consumer);
     }
 }

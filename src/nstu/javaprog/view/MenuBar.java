@@ -3,6 +3,8 @@ package nstu.javaprog.view;
 import javax.swing.*;
 
 final class MenuBar extends JMenuBar {
+    private final JMenuItem open = new JMenuItem("Open");
+    private final JMenuItem save = new JMenuItem("Save");
     private final JMenuItem activate = new JMenuItem("Activate");
     private final JMenuItem deactivate = new JMenuItem("Deactivate");
     private final JMenuItem deactivateGolds = new JMenuItem("Pause golds");
@@ -21,9 +23,14 @@ final class MenuBar extends JMenuBar {
         deactivateGuppies.setEnabled(false);
         activateGuppies.setVisible(false);
 
+        JMenu file = new JMenu("File");
         JMenu control = new JMenu("Control");
         JMenu time = new JMenu("Time");
         JMenu statistic = new JMenu("Statistic");
+
+        file.add(open);
+        file.add(save);
+        add(file);
 
         control.add(activate);
         control.add(deactivate);
@@ -49,6 +56,10 @@ final class MenuBar extends JMenuBar {
     }
 
     private void configureListeners() {
+        open.addActionListener(event -> container.open());
+
+        save.addActionListener(event -> container.save());
+
         activate.addActionListener(event -> container.activateGeneration());
 
         deactivate.addActionListener(event -> container.deactivateGeneration());

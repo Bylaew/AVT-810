@@ -9,9 +9,9 @@ public final class GuppyBehavior extends Behavior {
 
     @Override
     public void act() {
-        habitat.doForEachElement(element -> {
-            if (element instanceof Guppy)
-                element.move();
+        habitat.doForEachEntity(entity -> {
+            if (entity instanceof Guppy)
+                entity.move();
         });
     }
 }

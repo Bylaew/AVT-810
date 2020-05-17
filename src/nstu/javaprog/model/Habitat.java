@@ -1,15 +1,16 @@
 package nstu.javaprog.model;
 
 import javafx.util.Pair;
+import nstu.javaprog.exception.IllegalPropertiesException;
 import nstu.javaprog.model.gold.GoldBehavior;
 import nstu.javaprog.model.gold.GoldProbabilisticCreator;
 import nstu.javaprog.model.guppy.GuppyBehavior;
 import nstu.javaprog.model.guppy.GuppyProbabilisticCreator;
+import nstu.javaprog.model.repository.InMemoryRepository;
 import nstu.javaprog.util.Properties;
 
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.io.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -21,25 +22,49 @@ public final class Habitat {
     private Behavior guppyBehavior = null;
 
     public final void prepare() {
-        goldCreator = new GoldProbabilisticCreator(new Properties(
-                1.0f,
-                1,
-                1,
-                1,
-                5,
-                Thread.NORM_PRIORITY
-        ));
-        goldCreator.prepare(this);
+        try (Scanner scanner = new Scanner(new File("./resources/habitat.cfg"))) {
+            scanner.useLocale(Locale.US);
+            goldCreator = new GoldProbabilisticCreator(Properties.buildPropertiesWithCheckedException(
+                    scanner.nextFloat(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt()
+            ));
 
-        guppyCreator = new GuppyProbabilisticCreator(new Properties(
-                1.0f,
-                1,
-                1,
-                1,
-                5,
-                Thread.NORM_PRIORITY
-        ));
+            guppyCreator = new GuppyProbabilisticCreator(Properties.buildPropertiesWithCheckedException(
+                    scanner.nextFloat(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt(),
+                    scanner.nextInt()
+            ));
+        } catch (FileNotFoundException | IllegalPropertiesException
+                | NoSuchElementException exception) {
+
+            System.err.println("Couldn't load habitat.cfg");
+            goldCreator = new GoldProbabilisticCreator(Properties.buildPropertiesWithUncheckedException(
+                    1.0f,
+                    1,
+                    1,
+                    1,
+                    5,
+                    Thread.NORM_PRIORITY
+            ));
+
+            guppyCreator = new GuppyProbabilisticCreator(Properties.buildPropertiesWithUncheckedException(
+                    1.0f,
+                    1,
+                    1,
+                    1,
+                    5,
+                    Thread.NORM_PRIORITY
+            ));
+        }
         guppyCreator.prepare(this);
+        goldCreator.prepare(this);
 
         goldBehavior = new GoldBehavior(33);
         goldBehavior.prepare(this);
@@ -50,8 +75,8 @@ public final class Habitat {
         generator.schedule();
     }
 
-    public void doForEachElement(Consumer<? super Fish> consumer) {
-        ElementsKeeper.INSTANCE.doForEachElement(consumer);
+    public void doForEachEntity(Consumer<Fish> consumer) {
+        InMemoryRepository.INSTANCE.doForEachEntity(consumer);
     }
 
     public int getTime() {
@@ -59,9 +84,9 @@ public final class Habitat {
     }
 
     public String getStatistic() {
-        return "Current: " + ElementsKeeper.INSTANCE.getSize() + '\n' +
-                "Total golds: " + goldCreator.getElementsNumber() + '\n' +
-                "Total guppies: " + guppyCreator.getElementsNumber() + '\n' +
+        return "Current: " + InMemoryRepository.INSTANCE.getEntitiesNumber() + '\n' +
+                "Total golds: " + goldCreator.getEntitiesNumber() + '\n' +
+                "Total guppies: " + guppyCreator.getEntitiesNumber() + '\n' +
                 "Time: " + getTime();
     }
 
@@ -107,8 +132,16 @@ public final class Habitat {
         guppyBehavior.deactivate();
     }
 
-    public List<Pair<Long, Integer>> getAliveElements() {
-        return ElementsKeeper.INSTANCE.getAliveElements();
+    public List<Pair<Long, Integer>> getAliveEntities() {
+        return InMemoryRepository.INSTANCE.getAliveEntities();
+    }
+
+    public void reset() {
+        generator.time.set(0);
+        goldCreator.resetEntitiesNumber();
+        guppyCreator.resetEntitiesNumber();
+        ProbabilisticCreator.resetIdPool();
+        InMemoryRepository.INSTANCE.removeAll();
     }
 
     public boolean isGenerationActivated() {
@@ -123,12 +156,48 @@ public final class Habitat {
         return guppyBehavior.isActivated();
     }
 
-    public void reset() {
-        generator.time.set(0);
-        goldCreator.resetCounter();
-        guppyCreator.resetCounter();
-        ProbabilisticCreator.resetIdPool();
-        ElementsKeeper.INSTANCE.removeAll();
+    public void reestablish(File file) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream inputStream = new ObjectInputStream(
+                new BufferedInputStream(new FileInputStream(file)))) {
+
+            ProbabilisticCreator.setPrimaryId(inputStream.readLong());
+            goldCreator.setEntitiesNumber(inputStream.readInt());
+            guppyCreator.setEntitiesNumber(inputStream.readInt());
+            generator.setTime(inputStream.readInt());
+            InMemoryRepository.INSTANCE.deserialize(inputStream);
+        }
+    }
+
+    public void save(File file) throws IOException {
+        try (ObjectOutputStream outputStream = new ObjectOutputStream(
+                new BufferedOutputStream(new FileOutputStream(file)))) {
+
+            outputStream.writeLong(ProbabilisticCreator.getCurrentId());
+            outputStream.writeInt(goldCreator.getEntitiesNumber());
+            outputStream.writeInt(guppyCreator.getEntitiesNumber());
+            outputStream.writeInt(generator.getTime());
+            InMemoryRepository.INSTANCE.serialize(outputStream);
+        }
+    }
+
+    public void saveGenerationSettings() {
+        try (PrintWriter writer = new PrintWriter(new File("./resources/habitat.cfg"))) {
+            writer.println(goldCreator.getProperties().getChance());
+            writer.println(goldCreator.getProperties().getDelay());
+            writer.println(goldCreator.getProperties().getMinSpeed());
+            writer.println(goldCreator.getProperties().getMaxSpeed());
+            writer.println(goldCreator.getProperties().getLifetime());
+            writer.println(goldCreator.getProperties().getPriority());
+
+            writer.println(guppyCreator.getProperties().getChance());
+            writer.println(guppyCreator.getProperties().getDelay());
+            writer.println(guppyCreator.getProperties().getMinSpeed());
+            writer.println(guppyCreator.getProperties().getMaxSpeed());
+            writer.println(guppyCreator.getProperties().getLifetime());
+            writer.println(guppyCreator.getProperties().getPriority());
+        } catch (FileNotFoundException exception) {
+            System.err.println("Couldn't unload settings to habitat.cfg");
+        }
     }
 
     private class TickGenerator {
@@ -140,15 +209,15 @@ public final class Habitat {
                 @Override
                 public void run() {
                     if (!isSuspended) {
-                        Fish element;
+                        Fish entity;
 
-                        ElementsKeeper.INSTANCE.removeDeadElements(getTime());
+                        InMemoryRepository.INSTANCE.removeDeadEntities(getTime());
 
-                        if ((element = goldCreator.createElement()) != null)
-                            ElementsKeeper.INSTANCE.add(element, getTime());
+                        if ((entity = goldCreator.createEntity()) != null)
+                            InMemoryRepository.INSTANCE.add(entity, getTime());
 
-                        if ((element = guppyCreator.createElement()) != null)
-                            ElementsKeeper.INSTANCE.add(element, getTime());
+                        if ((entity = guppyCreator.createEntity()) != null)
+                            InMemoryRepository.INSTANCE.add(entity, getTime());
 
                         time.incrementAndGet();
                     }
@@ -158,6 +227,10 @@ public final class Habitat {
 
         int getTime() {
             return time.get();
+        }
+
+        void setTime(int value) {
+            time.set(value);
         }
 
         void activate() {
