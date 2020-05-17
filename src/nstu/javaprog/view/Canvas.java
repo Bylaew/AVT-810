@@ -12,18 +12,14 @@ import java.util.TimerTask;
 
 import static nstu.javaprog.util.ImageReader.readImage;
 
-final class Canvas extends JPanel implements Interdependent {
+final class Canvas extends JPanel {
     private static final BufferedImage BACKGROUND_IMAGE = readImage("./resources/background.png");
-
-    private final ViewContainer container;
     private final TextArea statistic = new TextArea(4, 30);
     private final TextField currentTime = new TextField(5);
     private final CanvasUpdater canvasUpdater = new CanvasUpdater();
-    private boolean isStatisticAsDialog = false;
-    private boolean isPaused = false;
+    private ViewContainer container = null;
 
-    Canvas(ViewContainer container) {
-        this.container = container;
+    Canvas() {
         setLayout(new FlowLayout(FlowLayout.RIGHT));
         setDoubleBuffered(true);
 
@@ -43,30 +39,31 @@ final class Canvas extends JPanel implements Interdependent {
         configureListeners();
     }
 
+    final void prepare(ViewContainer container) {
+        this.container = container;
+        canvasUpdater.schedule();
+    }
+
     private void configureListeners() {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_B:
-                        if (canvasUpdater.isSuspended && !isPaused) {
-                            activate();
-                            container.activate(Canvas.this);
-                        }
+                        if (container.isGenerationActivated())
+                            container.activateGeneration();
                         break;
                     case KeyEvent.VK_E:
-                        if (!canvasUpdater.isSuspended || isPaused) {
-                            deactivate();
-                            container.deactivate(Canvas.this);
-                        }
+                        if (!container.isGenerationActivated())
+                            container.deactivateGeneration();
                         break;
                     case KeyEvent.VK_T:
                         if (currentTime.isVisible()) {
                             hideTime();
-                            container.hideTime(Canvas.this);
+                            container.hideTime();
                         } else {
                             showTime();
-                            container.showTime(Canvas.this);
+                            container.showTime();
                         }
                         break;
                 }
@@ -81,96 +78,63 @@ final class Canvas extends JPanel implements Interdependent {
         });
     }
 
-    private void setDeactivatedScene() {
-        statistic.setVisible(true);
-        statistic.setText(container.getStatistic());
-        container.reset();
-        revalidate();
-        repaint();
-    }
-
     @Override
     protected void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         graphics.drawImage(BACKGROUND_IMAGE, 0, 0, getWidth(), getHeight(), null);
-        container.drawElements(graphics, getWidth(), getHeight());
+        container.doForEachElement(element -> {
+            element.normalize(getWidth(), getHeight());
+            element.draw(graphics);
+        });
     }
 
-    @Override
-    public void activate() {
-        canvasUpdater.activate();
+    void activateGeneration() {
+        activateUpdater();
         statistic.setVisible(false);
         revalidate();
     }
 
-    @Override
-    public void deactivate() {
-        canvasUpdater.deactivate();
-        if (isStatisticAsDialog) {
-            SwingUtilities.invokeLater(() -> {
-                int option = JOptionPane.showConfirmDialog(
-                        this,
-                        container.getStatistic(),
-                        "Deactivate generation",
-                        JOptionPane.OK_CANCEL_OPTION
-                );
-                if (option == JOptionPane.OK_OPTION)
-                    setDeactivatedScene();
-                else {
-                    activate();
-                    container.activate(this);
-                    if (isPaused) {
-                        pause();
-                        container.pause(this);
-                    }
-                }
-            });
-        } else
-            setDeactivatedScene();
+    void deactivateGeneration() {
+        deactivateUpdater();
+        statistic.setVisible(true);
+        statistic.setText(container.getStatistic());
+        currentTime.setText(container.getCurrentTime());
+        revalidate();
+        repaint();
     }
 
-    @Override
-    public void pause() {
-        isPaused = true;
-        canvasUpdater.deactivate();
-    }
-
-    @Override
-    public void resume() {
-        isPaused = false;
-        canvasUpdater.activate();
-    }
-
-    @Override
-    public void showTime() {
+    void showTime() {
         currentTime.setText(container.getCurrentTime());
         currentTime.setVisible(true);
         revalidate();
     }
 
-    @Override
-    public void hideTime() {
+    void hideTime() {
         currentTime.setVisible(false);
         revalidate();
     }
 
-    @Override
-    public void changeStatisticView() {
-        isStatisticAsDialog = !isStatisticAsDialog;
+    boolean isUpdaterActivated() {
+        return canvasUpdater.isActivated();
+    }
+
+    void activateUpdater() {
+        canvasUpdater.activate();
+    }
+
+    void deactivateUpdater() {
+        canvasUpdater.deactivate();
     }
 
     private class CanvasUpdater {
         private volatile boolean isSuspended = true;
 
-        CanvasUpdater() {
+        void schedule() {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if (!isSuspended)
-                        SwingUtilities.invokeLater(() -> {
-                            container.moveElements();
-                            repaint();
-                        });
+                        SwingUtilities.invokeLater(Canvas.this::repaint);
                 }
             }, 0, 33);
 
@@ -192,6 +156,10 @@ final class Canvas extends JPanel implements Interdependent {
 
         void deactivate() {
             isSuspended = true;
+        }
+
+        boolean isActivated() {
+            return !isSuspended;
         }
     }
 }

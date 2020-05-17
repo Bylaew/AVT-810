@@ -1,9 +1,13 @@
 package nstu.javaprog.model;
 
+import javafx.util.Pair;
+import nstu.javaprog.model.gold.GoldBehavior;
+import nstu.javaprog.model.gold.GoldProbabilisticCreator;
+import nstu.javaprog.model.guppy.GuppyBehavior;
+import nstu.javaprog.model.guppy.GuppyProbabilisticCreator;
 import nstu.javaprog.util.Properties;
-import nstu.javaprog.view.CanvasElement;
 
-import java.util.EventListener;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -11,29 +15,42 @@ import java.util.function.Consumer;
 
 public final class Habitat {
     private final TickGenerator generator = new TickGenerator();
-    private final ProbabilisticCreator goldCreator;
-    private final ProbabilisticCreator guppyCreator;
+    private ProbabilisticCreator goldCreator = null;
+    private ProbabilisticCreator guppyCreator = null;
+    private Behavior goldBehavior = null;
+    private Behavior guppyBehavior = null;
 
-    public Habitat() {
-        goldCreator = new GoldProbabilisticCreator(
+    public final void prepare() {
+        goldCreator = new GoldProbabilisticCreator(new Properties(
                 1.0f,
                 1,
                 1,
                 1,
                 5,
-                this
-        );
-        guppyCreator = new GuppyProbabilisticCreator(
+                Thread.NORM_PRIORITY
+        ));
+        goldCreator.prepare(this);
+
+        guppyCreator = new GuppyProbabilisticCreator(new Properties(
                 1.0f,
                 1,
                 1,
                 1,
                 5,
-                this
-        );
+                Thread.NORM_PRIORITY
+        ));
+        guppyCreator.prepare(this);
+
+        goldBehavior = new GoldBehavior(33);
+        goldBehavior.prepare(this);
+
+        guppyBehavior = new GuppyBehavior(33);
+        guppyBehavior.prepare(this);
+
+        generator.schedule();
     }
 
-    public void doForEachElement(Consumer<CanvasElement> consumer) {
+    public void doForEachElement(Consumer<? super Fish> consumer) {
         ElementsKeeper.INSTANCE.doForEachElement(consumer);
     }
 
@@ -43,8 +60,8 @@ public final class Habitat {
 
     public String getStatistic() {
         return "Current: " + ElementsKeeper.INSTANCE.getSize() + '\n' +
-                "Total golds: " + goldCreator.getObjectCounter() + '\n' +
-                "Total guppies: " + guppyCreator.getObjectCounter() + '\n' +
+                "Total golds: " + goldCreator.getElementsNumber() + '\n' +
+                "Total guppies: " + guppyCreator.getElementsNumber() + '\n' +
                 "Time: " + getTime();
     }
 
@@ -52,85 +69,87 @@ public final class Habitat {
         return goldCreator.getProperties();
     }
 
+    public void setGoldProperties(Properties properties) {
+        goldCreator.setProperties(properties);
+        goldBehavior.changePriority(properties.getPriority());
+    }
+
     public Properties getGuppyProperties() {
         return guppyCreator.getProperties();
     }
 
-    public void setGoldProperties(Properties properties) {
-        goldCreator.setProperties(validateData(properties));
-    }
-
     public void setGuppyProperties(Properties properties) {
-        guppyCreator.setProperties(validateData(properties));
+        guppyCreator.setProperties(properties);
+        guppyBehavior.changePriority(properties.getPriority());
     }
 
-    public void activate() {
+    public void activateGeneration() {
         generator.activate();
     }
 
-    public void deactivate() {
+    public void deactivateGeneration() {
         generator.deactivate();
     }
 
-    public Object[] getAliveElementsInfo() {
-        return ElementsKeeper.INSTANCE.getAliveElementsInfo();
+    public void activateGolds() {
+        goldBehavior.activate();
     }
 
-    public boolean isLaunched() {
-        return !generator.isSuspended;
+    public void deactivateGolds() {
+        goldBehavior.deactivate();
+    }
+
+    public void activateGuppies() {
+        guppyBehavior.activate();
+    }
+
+    public void deactivateGuppies() {
+        guppyBehavior.deactivate();
+    }
+
+    public List<Pair<Long, Integer>> getAliveElements() {
+        return ElementsKeeper.INSTANCE.getAliveElements();
+    }
+
+    public boolean isGenerationActivated() {
+        return generator.isActivated();
+    }
+
+    public boolean isGoldsActivated() {
+        return goldBehavior.isActivated();
+    }
+
+    public boolean isGuppiesActivated() {
+        return guppyBehavior.isActivated();
     }
 
     public void reset() {
         generator.time.set(0);
         goldCreator.resetCounter();
         guppyCreator.resetCounter();
+        ProbabilisticCreator.resetIdPool();
         ElementsKeeper.INSTANCE.removeAll();
-    }
-
-    private Properties validateData(Properties properties) {
-        if (properties.getMinSpeed() <= 0)
-            throw new IllegalArgumentException(
-                    "Invalid minimal speed format\n" +
-                            "Minimal speed must be > 0"
-            );
-        if (properties.getMaxSpeed() <= 0)
-            throw new IllegalArgumentException(
-                    "Invalid maximal speed format\n" +
-                            "Maximal speed must be > 0"
-            );
-        if (properties.getDelay() <= 0)
-            throw new IllegalArgumentException(
-                    "Invalid delay format\n" +
-                            "Delay must be > 0"
-            );
-        if (properties.getLifetime() <= 0)
-            throw new IllegalArgumentException(
-                    "Invalid lifetime format\n" +
-                            "Lifetime must be > 0"
-            );
-        if (properties.getMinSpeed() > properties.getMaxSpeed())
-            throw new IllegalArgumentException(
-                    "Invalid speed format\n" +
-                            "Minimal speed must be <= then maximal one"
-            );
-        return properties;
     }
 
     private class TickGenerator {
         private final AtomicInteger time = new AtomicInteger();
         private volatile boolean isSuspended = true;
 
-        TickGenerator() {
+        void schedule() {
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if (!isSuspended) {
                         Fish element;
+
                         ElementsKeeper.INSTANCE.removeDeadElements(getTime());
-                        if ((element = goldCreator.createCanvasElement()) != null)
+
+                        if ((element = goldCreator.createElement()) != null)
                             ElementsKeeper.INSTANCE.add(element, getTime());
-                        if ((element = guppyCreator.createCanvasElement()) != null)
+
+                        if ((element = guppyCreator.createElement()) != null)
                             ElementsKeeper.INSTANCE.add(element, getTime());
+
                         time.incrementAndGet();
                     }
                 }
@@ -147,6 +166,10 @@ public final class Habitat {
 
         void deactivate() {
             isSuspended = true;
+        }
+
+        boolean isActivated() {
+            return !isSuspended;
         }
     }
 }

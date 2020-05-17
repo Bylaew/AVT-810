@@ -4,33 +4,38 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 
-final class Menu extends JPanel implements Interdependent {
-    private final ViewContainer container;
+final class Menu extends JPanel {
     private final JButton activate = new JButton("Activate");
     private final JButton deactivate = new JButton("Deactivate");
-    private final JButton pause = new JButton("Pause");
-    private final JButton resume = new JButton("Resume");
+    private final JButton deactivateGolds = new JButton("Pause golds");
+    private final JButton activateGolds = new JButton("Resume golds");
+    private final JButton deactivateGuppies = new JButton("Pause guppies");
+    private final JButton activateGuppies = new JButton("Resume guppies");
     private final JCheckBox showTime = new JCheckBox("Show the time");
     private final JCheckBox hideTime = new JCheckBox("Hide the time");
     private final JCheckBox statisticAsDialog = new JCheckBox("Statistic as dialog");
     private final JButton aliveElements = new JButton("Show alive elements");
     private final JButton goldSettings = new JButton("Gold settings");
     private final JButton guppySettings = new JButton("Guppy settings");
+    private ViewContainer container = null;
 
-    Menu(ViewContainer container) {
-        this.container = container;
+    Menu() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBackground(Color.BLACK);
 
         deactivate.setEnabled(false);
-        pause.setEnabled(false);
-        resume.setVisible(false);
+        deactivateGolds.setEnabled(false);
+        activateGolds.setVisible(false);
+        deactivateGuppies.setEnabled(false);
+        activateGuppies.setVisible(false);
         hideTime.setSelected(true);
 
         activate.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         deactivate.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        pause.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        resume.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        deactivateGolds.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        activateGolds.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        deactivateGuppies.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        activateGuppies.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         showTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         hideTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         statisticAsDialog.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -51,8 +56,10 @@ final class Menu extends JPanel implements Interdependent {
         top.setBorder(border);
         top.add(activate);
         top.add(deactivate);
-        top.add(pause);
-        top.add(resume);
+        top.add(deactivateGolds);
+        top.add(activateGolds);
+        top.add(deactivateGuppies);
+        top.add(activateGuppies);
         add(top);
 
         middle.setBorder(border);
@@ -60,6 +67,7 @@ final class Menu extends JPanel implements Interdependent {
         middle.add(hideTime);
         middle.add(new JSeparator(JSeparator.HORIZONTAL));
         middle.add(statisticAsDialog);
+        middle.add(new JSeparator(JSeparator.HORIZONTAL));
         middle.add(aliveElements);
         add(middle);
 
@@ -71,36 +79,26 @@ final class Menu extends JPanel implements Interdependent {
         configureListeners();
     }
 
+    final void prepare(ViewContainer container) {
+        this.container = container;
+    }
+
     private void configureListeners() {
-        activate.addActionListener(event -> {
-            activate();
-            container.activate(this);
-        });
+        activate.addActionListener(event -> container.activateGeneration());
 
-        deactivate.addActionListener(event -> {
-            deactivate();
-            container.deactivate(this);
-        });
+        deactivate.addActionListener(event -> container.deactivateGeneration());
 
-        pause.addActionListener(event -> {
-            pause();
-            container.pause(this);
-        });
+        deactivateGolds.addActionListener(event -> container.deactivateGolds());
 
-        resume.addActionListener(event -> {
-            resume();
-            container.resume(this);
-        });
+        activateGolds.addActionListener(event -> container.activateGolds());
 
-        showTime.addActionListener(event -> {
-            showTime();
-            container.showTime(this);
-        });
+        deactivateGuppies.addActionListener(event -> container.deactivateGuppies());
 
-        hideTime.addActionListener(event -> {
-            hideTime();
-            container.hideTime(this);
-        });
+        activateGuppies.addActionListener(event -> container.activateGuppies());
+
+        showTime.addActionListener(event -> container.showTime());
+
+        hideTime.addActionListener(event -> container.hideTime());
 
         statisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
 
@@ -111,53 +109,65 @@ final class Menu extends JPanel implements Interdependent {
         guppySettings.addActionListener(event -> container.changeGuppySettings());
     }
 
-    @Override
-    public void activate() {
+    void activateGeneration() {
         activate.setEnabled(false);
         deactivate.setEnabled(true);
-        pause.setEnabled(true);
+        deactivateGolds.setEnabled(true);
+        activateGolds.setEnabled(true);
+        deactivateGuppies.setEnabled(true);
+        activateGuppies.setEnabled(true);
         revalidate();
     }
 
-    @Override
-    public void deactivate() {
+    void deactivateGeneration() {
         activate.setEnabled(true);
         deactivate.setEnabled(false);
-        pause.setEnabled(false);
-        resume();
+        deactivateGolds.setEnabled(false);
+        activateGolds.setEnabled(false);
+        deactivateGuppies.setEnabled(false);
+        activateGuppies.setEnabled(false);
+        activateGolds();
+        activateGuppies();
         revalidate();
     }
 
-    @Override
-    public void pause() {
-        pause.setVisible(false);
-        resume.setVisible(true);
+    void activateGolds() {
+        deactivateGolds.setVisible(true);
+        activateGolds.setVisible(false);
         revalidate();
     }
 
-    @Override
-    public void resume() {
-        pause.setVisible(true);
-        resume.setVisible(false);
+    void deactivateGolds() {
+        deactivateGolds.setVisible(false);
+        activateGolds.setVisible(true);
         revalidate();
     }
 
-    @Override
-    public void showTime() {
+    void activateGuppies() {
+        deactivateGuppies.setVisible(true);
+        activateGuppies.setVisible(false);
+        revalidate();
+    }
+
+    void deactivateGuppies() {
+        deactivateGuppies.setVisible(false);
+        activateGuppies.setVisible(true);
+        revalidate();
+    }
+
+    void showTime() {
         showTime.setSelected(true);
         hideTime.setSelected(false);
         revalidate();
     }
 
-    @Override
-    public void hideTime() {
+    void hideTime() {
         showTime.setSelected(false);
         hideTime.setSelected(true);
         revalidate();
     }
 
-    @Override
-    public void changeStatisticView() {
+    void changeStatisticView() {
         statisticAsDialog.setSelected(!statisticAsDialog.isSelected());
         revalidate();
     }

@@ -8,11 +8,15 @@ import javax.swing.*;
 
 public final class Launcher {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() ->
-                new ViewContainer(
-                        "Aquarium",
-                        new WindowController(new Habitat())
-                )
-        );
+        final Habitat habitat = new Habitat();
+        habitat.prepare();
+
+        final WindowController windowController = new WindowController();
+        windowController.prepare(habitat);
+
+        SwingUtilities.invokeLater(() -> {
+            ViewContainer viewContainer = new ViewContainer("Aquarium");
+            viewContainer.prepare(windowController);
+        });
     }
 }

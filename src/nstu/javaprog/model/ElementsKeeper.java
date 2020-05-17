@@ -1,6 +1,6 @@
 package nstu.javaprog.model;
 
-import nstu.javaprog.view.CanvasElement;
+import javafx.util.Pair;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -35,12 +35,10 @@ final class ElementsKeeper {
         }
     }
 
-    Object[] getAliveElementsInfo() {
-        List<String> info = new LinkedList<>();
-        generationTimes.forEach((key, value) -> info.add(
-                "Element id " + key + " was created at " + value + "\n"
-        ));
-        return info.toArray();
+    List<Pair<Long, Integer>> getAliveElements() {
+        List<Pair<Long, Integer>> aliveElements = new LinkedList<>();
+        generationTimes.forEach((key, value) -> aliveElements.add(new Pair<>(key, value)));
+        return aliveElements;
     }
 
     void removeAll() {
@@ -49,7 +47,7 @@ final class ElementsKeeper {
         ids.clear();
     }
 
-    void doForEachElement(Consumer<CanvasElement> consumer) {
+    void doForEachElement(Consumer<? super Fish> consumer) {
         elements.forEach(consumer);
     }
 

@@ -23,18 +23,32 @@ final class EnvironmentSettings extends JDialog {
             "100%"
     };
 
+    private static final String[] PRIORITY_VALUES = {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+    };
+
     private final TextField delay = new TextField(10);
     private final TextField minSpeed = new TextField(10);
     private final TextField maxSpeed = new TextField(10);
     private final TextField lifetime = new TextField(10);
     private final JComboBox<String> chance = new JComboBox<>(CHANCE_VALUES);
+    private final JComboBox<String> priority = new JComboBox<>(PRIORITY_VALUES);
     private final JButton accept = new JButton("Accept");
 
-    EnvironmentSettings(ViewContainer container, Properties properties, Consumer<Properties> consumer) {
-        super(container, "Settings", true);
-        setLocationRelativeTo(container);
+    EnvironmentSettings(Frame frame, Properties properties, Consumer<Properties> consumer) {
+        super(frame, "Settings", true);
+        setLocationRelativeTo(frame);
         setResizable(false);
-        setLayout(new GridLayout(6, 2, 2, 1));
+        setLayout(new GridLayout(7, 2, 2, 1));
 
         add(new JLabel("Delay"));
         add(delay);
@@ -46,6 +60,8 @@ final class EnvironmentSettings extends JDialog {
         add(maxSpeed);
         add(new JLabel("Lifetime"));
         add(lifetime);
+        add(new JLabel("Priority"));
+        add(priority);
         add(new JLabel());
         add(accept);
 
@@ -84,29 +100,24 @@ final class EnvironmentSettings extends JDialog {
                     "Invalid delay format\n" +
                             "Valid range from 1 to 99"
             );
+
         if (!minSpeed.getText().matches("\\d"))
             throw new IllegalArgumentException(
                     "Invalid minimal speed format\n" +
                             "Valid range from 1 to 9"
             );
+
         if (!maxSpeed.getText().matches("\\d"))
             throw new IllegalArgumentException(
                     "Invalid maximal speed format\n" +
                             "Valid range from 1 to 9"
             );
+
         if (!maxSpeed.getText().matches("\\d{1,2}"))
             throw new IllegalArgumentException(
                     "Invalid lifetime format\n" +
                             "Valid range from 1 to 99"
             );
-    }
-
-    private void setProperties(Properties properties) {
-        delay.setText(Integer.toString(properties.getDelay()));
-        chance.setSelectedIndex((int) (properties.getChance() * 10.f) % chance.getItemCount());
-        minSpeed.setText(Integer.toString(properties.getMinSpeed()));
-        maxSpeed.setText(Integer.toString(properties.getMaxSpeed()));
-        lifetime.setText(Integer.toString(properties.getLifetime()));
     }
 
     private Properties getProperties() {
@@ -115,7 +126,17 @@ final class EnvironmentSettings extends JDialog {
                 Integer.parseInt(delay.getText()),
                 Integer.parseInt(minSpeed.getText()),
                 Integer.parseInt(maxSpeed.getText()),
-                Integer.parseInt(lifetime.getText())
+                Integer.parseInt(lifetime.getText()),
+                priority.getSelectedIndex() + 1
         );
+    }
+
+    private void setProperties(Properties properties) {
+        delay.setText(Integer.toString(properties.getDelay()));
+        chance.setSelectedIndex((int) (properties.getChance() * 10.f) % chance.getItemCount());
+        priority.setSelectedIndex(properties.getPriority() - 1);
+        minSpeed.setText(Integer.toString(properties.getMinSpeed()));
+        maxSpeed.setText(Integer.toString(properties.getMaxSpeed()));
+        lifetime.setText(Integer.toString(properties.getLifetime()));
     }
 }

@@ -1,14 +1,12 @@
 package nstu.javaprog.model;
 
-import nstu.javaprog.view.CanvasElement;
-
-abstract class Fish implements CanvasElement {
+public abstract class Fish implements Drawable, Movable {
     private final long id;
     private final int lifetime;
-    int x, y;
-    int xSpeed, ySpeed;
+    protected int x, y;
+    protected int xSpeed, ySpeed;
 
-    Fish(long id, int x, int y, int xSpeed, int ySpeed, int lifetime) {
+    public Fish(long id, int x, int y, int xSpeed, int ySpeed, int lifetime) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -17,7 +15,7 @@ abstract class Fish implements CanvasElement {
         this.lifetime = lifetime;
     }
 
-    final void normalize(int xMax, int yMax, int picWidth, int picHeight) {
+    protected final void normalize(int xMax, int yMax, int picWidth, int picHeight) {
         int centredX = x + picWidth / 2;
         if (centredX < picWidth / 2 || centredX > xMax - picWidth / 2) {
             centredX = Math.abs(centredX - picWidth / 2) <

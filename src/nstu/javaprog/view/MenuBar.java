@@ -2,21 +2,24 @@ package nstu.javaprog.view;
 
 import javax.swing.*;
 
-final class MenuBar extends JMenuBar implements Interdependent {
-    private final ViewContainer container;
+final class MenuBar extends JMenuBar {
     private final JMenuItem activate = new JMenuItem("Activate");
     private final JMenuItem deactivate = new JMenuItem("Deactivate");
-    private final JMenuItem pause = new JMenuItem("Pause");
-    private final JMenuItem resume = new JMenuItem("Resume");
+    private final JMenuItem deactivateGolds = new JMenuItem("Pause golds");
+    private final JMenuItem activateGolds = new JMenuItem("Resume golds");
+    private final JMenuItem deactivateGuppies = new JMenuItem("Pause guppies");
+    private final JMenuItem activateGuppies = new JMenuItem("Resume guppies");
     private final JCheckBoxMenuItem showTime = new JCheckBoxMenuItem("Show the time");
     private final JCheckBoxMenuItem hideTime = new JCheckBoxMenuItem("Hide the time");
-    private final JCheckBoxMenuItem showStatisticAsDialog = new JCheckBoxMenuItem("Statistic as dialog");
+    private final JCheckBoxMenuItem statisticAsDialog = new JCheckBoxMenuItem("Statistic as dialog");
+    private ViewContainer container = null;
 
-    MenuBar(ViewContainer container) {
-        this.container = container;
+    MenuBar() {
         deactivate.setEnabled(false);
-        pause.setEnabled(false);
-        resume.setVisible(false);
+        deactivateGolds.setEnabled(false);
+        activateGolds.setVisible(false);
+        deactivateGuppies.setEnabled(false);
+        activateGuppies.setVisible(false);
 
         JMenu control = new JMenu("Control");
         JMenu time = new JMenu("Time");
@@ -24,8 +27,10 @@ final class MenuBar extends JMenuBar implements Interdependent {
 
         control.add(activate);
         control.add(deactivate);
-        control.add(pause);
-        control.add(resume);
+        control.add(deactivateGolds);
+        control.add(activateGolds);
+        control.add(deactivateGuppies);
+        control.add(activateGuppies);
         add(control);
 
         hideTime.setSelected(true);
@@ -33,94 +38,96 @@ final class MenuBar extends JMenuBar implements Interdependent {
         time.add(hideTime);
         add(time);
 
-        statistic.add(showStatisticAsDialog);
+        statistic.add(statisticAsDialog);
         add(statistic);
 
         configureListeners();
     }
 
-    private void configureListeners() {
-        activate.addActionListener(event -> {
-            activate();
-            container.activate(this);
-        });
-
-        deactivate.addActionListener(event -> {
-            deactivate();
-            container.deactivate(this);
-        });
-
-        pause.addActionListener(event -> {
-            pause();
-            container.pause(this);
-        });
-
-        resume.addActionListener(event -> {
-            resume();
-            container.resume(this);
-        });
-
-        showTime.addActionListener(event -> {
-            showTime();
-            container.showTime(this);
-        });
-
-        hideTime.addActionListener(event -> {
-            hideTime();
-            container.hideTime(this);
-        });
-
-        showStatisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
+    final void prepare(ViewContainer container) {
+        this.container = container;
     }
 
-    @Override
-    public void activate() {
+    private void configureListeners() {
+        activate.addActionListener(event -> container.activateGeneration());
+
+        deactivate.addActionListener(event -> container.deactivateGeneration());
+
+        deactivateGolds.addActionListener(event -> container.deactivateGolds());
+
+        activateGolds.addActionListener(event -> container.activateGolds());
+
+        deactivateGuppies.addActionListener(event -> container.deactivateGuppies());
+
+        activateGuppies.addActionListener(event -> container.activateGuppies());
+
+        showTime.addActionListener(event -> container.showTime());
+
+        hideTime.addActionListener(event -> container.hideTime());
+
+        statisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
+    }
+
+    void activateGeneration() {
         activate.setEnabled(false);
         deactivate.setEnabled(true);
-        pause.setEnabled(true);
+        deactivateGolds.setEnabled(true);
+        activateGolds.setEnabled(true);
+        deactivateGuppies.setEnabled(true);
+        activateGuppies.setEnabled(true);
         revalidate();
     }
 
-    @Override
-    public void deactivate() {
+    void deactivateGeneration() {
         activate.setEnabled(true);
         deactivate.setEnabled(false);
-        pause.setEnabled(false);
-        resume();
+        deactivateGolds.setEnabled(false);
+        activateGolds.setEnabled(false);
+        deactivateGuppies.setEnabled(false);
+        activateGuppies.setEnabled(false);
+        activateGolds();
+        activateGuppies();
         revalidate();
     }
 
-    @Override
-    public void pause() {
-        pause.setVisible(false);
-        resume.setVisible(true);
+    void activateGolds() {
+        deactivateGolds.setVisible(true);
+        activateGolds.setVisible(false);
         revalidate();
     }
 
-    @Override
-    public void resume() {
-        pause.setVisible(true);
-        resume.setVisible(false);
+    void deactivateGolds() {
+        deactivateGolds.setVisible(false);
+        activateGolds.setVisible(true);
         revalidate();
     }
 
-    @Override
-    public void showTime() {
+    void activateGuppies() {
+        deactivateGuppies.setVisible(true);
+        activateGuppies.setVisible(false);
+        revalidate();
+    }
+
+    void deactivateGuppies() {
+        deactivateGuppies.setVisible(false);
+        activateGuppies.setVisible(true);
+        revalidate();
+    }
+
+    void showTime() {
         showTime.setSelected(true);
         hideTime.setSelected(false);
         revalidate();
     }
 
-    @Override
-    public void hideTime() {
+    void hideTime() {
         showTime.setSelected(false);
         hideTime.setSelected(true);
         revalidate();
     }
 
-    @Override
-    public void changeStatisticView() {
-        showStatisticAsDialog.setSelected(!showStatisticAsDialog.isSelected());
+    void changeStatisticView() {
+        statisticAsDialog.setSelected(!statisticAsDialog.isSelected());
         revalidate();
     }
 }
