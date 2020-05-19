@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Lab1_Brikun:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Lab1_Brikun_jar</output-path>
+    <root id="archive" name="Lab1_Brikun.jar">
+      <element id="module-output" name="Lab1_Brikun" />
+    </root>
+  </artifact>
+</component>

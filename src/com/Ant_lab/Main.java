@@ -7,5 +7,4 @@ public class Main
         Habitat Habitat = new Habitat();
         Habitat.initialize(1,1,1,1);
     }
-
 }

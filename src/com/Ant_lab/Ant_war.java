@@ -1,7 +1,7 @@
 package com.Ant_lab;
 
-import javax.swing.*;
-import java.awt.*;
+        import javax.swing.*;
+        import java.awt.*;
 
 public class Ant_war extends Ant
 {

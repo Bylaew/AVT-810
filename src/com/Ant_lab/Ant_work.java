@@ -25,7 +25,6 @@ public class Ant_work extends Ant
         return image;
     }
 
-
     @Override
     public float getX() {
         return x;
@@ -35,5 +34,4 @@ public class Ant_work extends Ant
     public float getY() {
         return y;
     }
-
 }
