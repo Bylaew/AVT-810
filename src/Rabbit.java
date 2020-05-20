@@ -1,6 +1,7 @@
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
-public abstract class Rabbit implements IBehaviour
+public abstract class Rabbit implements IBehaviour, Serializable
 {
     int x;
     int y;

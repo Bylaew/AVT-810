@@ -71,7 +71,7 @@ public class OrdinaryAI extends BaseAI
                         }
                     }
                     prevtime = habitat.time / N;
-                    habitat.draw(habitat.field.getGraphics(), habitat.field);
+                    habitat.draw(habitat.field.getGraphics());
                 }
             }
         }
