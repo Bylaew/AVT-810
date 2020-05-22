@@ -9,11 +9,16 @@ public class Singleton {
     private static Singleton instance;
     public TreeSet IDs=new TreeSet();
     HashMap map=new HashMap();
+    SQLConnection connection;
     private Singleton(){}
 
     public Vector<AbstractRabbit> GetVector()
     {
      return arr;
+    }
+
+    public SQLConnection getConnection(){
+        return connection;
     }
 
     public void refreshVector() {
@@ -42,4 +47,5 @@ public class Singleton {
             instance=new Singleton();
         return instance;
     }
+
 }

@@ -1,15 +1,19 @@
 package com.company;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.sql.PreparedStatement;
+import java.util.Vector;
 
 public class Connection implements Runnable {
     private Habitat habitat;
     private Socket client;
     private DataInputStream inputStream;
-     Boolean running=true;
+    Boolean running=true;
     DataOutputStream data;
     Connection(Habitat h){
         habitat=h;
@@ -19,7 +23,7 @@ public class Connection implements Runnable {
             inputStream=new DataInputStream(client.getInputStream());
         } catch (IOException e) {
             running=false;
-           // e.printStackTrace();
+            // e.printStackTrace();
         }
     }
 
@@ -49,14 +53,17 @@ public class Connection implements Runnable {
                     habitat.k=inputStream.readFloat();
                     habitat.P1=inputStream.readDouble();
                     habitat.ShowTime=inputStream.readBoolean();
-                    System.out.println(habitat.N1);
-                    System.out.println(habitat.N2);
-                    System.out.println(habitat.lifeTimeRabbit);
-                    System.out.println(habitat.lifeTimeAlbino);
-                    System.out.println(habitat.k);
-                    System.out.println(habitat.P1);
-                    System.out.println(habitat.ShowTime);
-                    //inputStream.close();
+
+                    habitat.strN1=Double.toString(habitat.N1);
+                    habitat.strN2=Double.toString(habitat.N2);
+                    habitat.strLifeRabbit=Integer.toString(habitat.lifeTimeRabbit);
+                    habitat.strLifeAlbino=Integer.toString(habitat.lifeTimeAlbino);
+                    habitat.text.setText(habitat.strN1);
+                    habitat.textTwo.setText(habitat.strN2);
+                    habitat.LifeTextRabbit.setText(habitat.strLifeRabbit);
+                    habitat.LifeTextAlbino.setText(habitat.strLifeAlbino);
+                    habitat.Present.setSelectedIndex((int)(habitat.k*10));
+                    habitat.cbProbability.setSelectedIndex((int)(habitat.P1*10));
                 }
 
             } catch (IOException e) {
@@ -75,10 +82,10 @@ public class Connection implements Runnable {
     public void CloseConnection(){
 
         try {
-        data = new DataOutputStream(client.getOutputStream());
+            data = new DataOutputStream(client.getOutputStream());
             data.writeInt(-1);
         } catch (IOException e) {
-           // running=false;
+            // running=false;
             e.printStackTrace();
         }
     }
@@ -86,22 +93,22 @@ public class Connection implements Runnable {
     public void broadcastTread()
     {
         //while (running) {
-            try {
-                data = new DataOutputStream(client.getOutputStream());
-                data.writeInt(1);
-                data.writeInt((Integer) habitat.TCPbox.getSelectedItem());
-                data.writeDouble(habitat.N1);
-                data.writeDouble(habitat.N2);
-                data.writeInt(habitat.lifeTimeRabbit);
-                data.writeInt(habitat.lifeTimeAlbino);
-                data.writeFloat(habitat.k);
-                data.writeDouble(habitat.P1);
-                data.writeBoolean(habitat.ShowTime);
-            } catch (IOException e) {
+        try {
+            data = new DataOutputStream(client.getOutputStream());
+            data.writeInt(1);
+            data.writeInt((Integer) habitat.TCPbox.getSelectedItem());
+            data.writeDouble(habitat.N1);
+            data.writeDouble(habitat.N2);
+            data.writeInt(habitat.lifeTimeRabbit);
+            data.writeInt(habitat.lifeTimeAlbino);
+            data.writeFloat(habitat.k);
+            data.writeDouble(habitat.P1);
+            data.writeBoolean(habitat.ShowTime);
+        } catch (IOException e) {
 
-               // running=false;
-                e.printStackTrace();
-            }
+            // running=false;
+            e.printStackTrace();
+        }
         //}
     }
 }

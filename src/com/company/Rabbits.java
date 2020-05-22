@@ -10,7 +10,7 @@ public class Rabbits extends AbstractRabbit {
     private transient BufferedImage image;
     //int BirthTime;
 
-    Rabbits(int x, int y,long Birth,int ID) {
+    Rabbits(int x, int y,long Birth,int ID) {// в базу данных
         this.x=x;
         this.y=y;
         this.BirthTime=Birth;

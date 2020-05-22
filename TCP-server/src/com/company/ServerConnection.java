@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.sql.Connection;
 
 public class ServerConnection extends Thread {
     private Socket socket;
@@ -32,7 +33,6 @@ public class ServerConnection extends Thread {
     public void run(){//клиент закрывается если минус -1 то удалить из мап
 
            try {
-
                inStream = new DataInputStream(socket.getInputStream());
                while (running) {
                int close = inStream.readInt();
