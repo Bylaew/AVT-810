@@ -4,15 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.PipedReader;
 import java.io.PipedWriter;
 
 public class ConsoleDialog extends JDialog implements Runnable{
-    PipedWriter pw;
-    PipedReader pr;
+    PipedWriter pw=new PipedWriter();
+    PipedReader pr=new PipedReader();
+    int clause=0;
     PipedWriter getStream(){return pw;}
-    final JTextArea textArea = new JTextArea();
+    final TextArea textArea = new TextArea();
     void setPr(PipedWriter pw){
         try {
             pr=new PipedReader(pw);
@@ -41,11 +44,24 @@ public class ConsoleDialog extends JDialog implements Runnable{
         });
         JPanel contents = new JPanel();
         contents.add(textArea);
-        contents.setLayout(new GridLayout(1, 1));
+        //contents.setLayout(new GridLayout(1, 1));
         setContentPane(contents);
-        setSize(350, 200);
+        setSize(520, 200);
         setLocationRelativeTo(null);
         setVisible(true);
+        setDefaultCloseOperation(HIDE_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                try {
+                    pw.close();
+                    pr.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -69,7 +85,8 @@ public class ConsoleDialog extends JDialog implements Runnable{
                 else
                     textArea.setText(" ");
             } catch (IOException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
+                break;
             }
         }
     }

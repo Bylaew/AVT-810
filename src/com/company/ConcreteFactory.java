@@ -1,7 +1,5 @@
 package com.company;
 
-import javax.swing.*;
-
 public class ConcreteFactory implements abstractFactory {
     int IDRabbit=1;
     int IDAlbino=-1;

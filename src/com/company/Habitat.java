@@ -50,6 +50,7 @@ public class Habitat {
     private int Type=-1;
     String strN1,strN2,strLifeRabbit,strLifeAlbino;
     TextField text,textTwo,LifeTextRabbit,LifeTextAlbino;
+    Generic<Object>rabbitGeneric=new Generic<>();
 
     public Habitat(){
         Panel();
@@ -84,6 +85,7 @@ public class Habitat {
 
     public void Keys()
     {
+
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -94,11 +96,17 @@ public class Habitat {
                 }
                 if(e.getKeyCode()==KeyEvent.VK_E&&simulate)
                 {
+                    rabbitGeneric.addCollection(singleton.GetVector());
+                    //System.out.println();
                     Stop();
                 }
                 if(e.getKeyCode()==KeyEvent.VK_T)
                 {
                     if(ShowTime) {
+                        //System.out.println("11111 "+rabbitGeneric.delete());
+                        //singleton.GetVector().remove(rabbitGeneric.delete());
+                        //System.out.println("11111 "+singleton.GetVector());
+                        rabbitGeneric.mix(singleton.GetVector());/////////////////////////////////////////////
                         ShowTime=false;
                     }
                     else
@@ -657,15 +665,16 @@ public class Habitat {
                 frame.repaint();
             }
         });
+
         ConsoleMenu.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
                 cd = new ConsoleDialog();
                 acc.setPr(cd.getStream());
                 cd.setPr(acc.getStream());
                 new Thread(cd).start();
                 new Thread(acc).start();
-
             }
         });
         Menu.setFocusable(false);
@@ -1026,6 +1035,51 @@ public class Habitat {
                 return "Incorrect parameter for reduce albino command";
             }
             return "Albino number is reduced!";
+        }
+        if(parts.length==2 && parts[0].equals("get")&&parts[1].equals("ID")){/////////////////////////////////
+                return "ID " + singleton.GetMap().keySet();
+        }
+        if(parts.length==5 && parts[0].equals("add")&& parts[1].equals("rabbit")&& parts[2].equals("to")&& parts[3].equals("list"))
+        {
+            int num =Integer.parseInt(parts[4]);
+            boolean peremen =false;
+            //singleton.GetVector().get(reduce);
+            //System.out.println("vector "+ singleton.GetVector());
+            //for(AbstractRabbit rab:singleton.GetVector())
+                for(AbstractRabbit rabbit: singleton.GetVector()) {
+                    if(num==rabbit.getID()) {
+                        System.out.println("____ " + rabbit);
+                        rabbitGeneric.add(rabbit);
+                        peremen=true;
+                    }
+                }
+                if(peremen)
+                    return "rabbit added";
+                else
+                    return "wrong id or rabbit no longer";
+        }
+        if(parts.length==2 && parts[0].equals("remove") && parts[1].equals("rabbits"))//удаление последнего элемнта в списке
+        {
+            System.out.println(rabbitGeneric.delete());
+            return "remove last Element";
+        }
+        if(parts.length==4 && parts[0].equals("add")&& parts[1].equals("collection")&& parts[2].equals("to")&& parts[3].equals("list"))
+        {
+            rabbitGeneric.addCollection(singleton.GetVector());
+            return "Collection added";
+        }
+        if(parts.length==2 && parts[0].equals("show")&&parts[1].equals("list"))
+        {
+            return "Sheet displayed"+rabbitGeneric.show().toString();
+        }
+        if(parts.length==2 && parts[0].equals("shuffle")&&parts[1].equals("rabbits"))
+        {
+            return "shuffle rabbits performed"+rabbitGeneric.mix(rabbitGeneric.show());
+        }
+        if(parts.length==2 && parts[0].equals("remove")&& parts[1].equals("all"))
+        {
+            rabbitGeneric.removeAll();
+            return "list is cleared";
         }
         return "Unknown command";
     }

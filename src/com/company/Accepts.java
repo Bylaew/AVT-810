@@ -39,6 +39,13 @@ public class Accepts implements Runnable {
                 pw.write(result);
             } catch (IOException e) {
                 System.out.println("finished");
+                try {
+                    pr.close();
+                    pw.close();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+               break;
             }
         }
     }

@@ -22,6 +22,10 @@ public abstract class AbstractRabbit implements InBehavior, Serializable {
         this.dirY = newY;
     }
 
+    public String toString(){
+        return "rabbit: "+this.ID;
+    }
+
     public double getDirX() { return dirX; }
     public double getDirY() { return dirY; }
 
