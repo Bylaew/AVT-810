@@ -5,22 +5,16 @@ import java.awt.*;
 import java.io.Serializable;
 
 public class Warrior extends Ant implements Serializable {
-    private static int count;
     private static transient Image img = new ImageIcon("src/res/Worker.jpg").getImage();
-    private float oldX;
-    private float oldY;
+    private int oldX;
+    private int oldY;
     private boolean isStopX = false;
     private boolean isStopY = false;
-    Warrior() {
-        count++;
 
-    }
-
-    Warrior(float x, float y, int lifeTime, int bornTime,int ingef) {
+    Warrior(int x, int y, int lifeTime, int bornTime,int ingef) {
         super(x, y,bornTime,lifeTime,ingef);
         oldX = x;
         oldY = y;
-        count++;
             img = new ImageIcon("src/res/Warr.jpg").getImage();
 
     }
@@ -51,6 +45,13 @@ public class Warrior extends Ant implements Serializable {
     public  Image getImage() {
         return img;
     }
+
+    public int[] toMas() {
+        int a[] = new int[]{1,this.x, this.y, this.lifeTime, this.bornTime, this.indef, this.lifeTime};
+        System.out.println(a.toString());
+        return a;
+    }
+
 
 }
 

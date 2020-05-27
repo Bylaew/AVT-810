@@ -3,19 +3,21 @@ package com.company;
 import java.io.Serializable;
 
 public abstract class Ant implements IBehaviour, Serializable {
-    private float x;
-    private float y;
-    private int orientationX;
-    private int orientationY;
+    protected int x;
+    protected int y;
+    protected int orientationX;
+    protected int orientationY;
 
-    private int indef;
-    private int bornTime;
-    private int lifeTime;
-    Ant(){
-        x=0;
-        y=0;
+    protected int indef;
+    protected int bornTime;
+    protected int lifeTime;
+
+    Ant() {
+        x = 0;
+        y = 0;
     }
-    Ant(float x, float y, int bornTime, int lifeTime, int indef){
+
+    Ant(int x, int y, int bornTime, int lifeTime, int indef) {
         this.x = x;
         this.y = y;
         this.bornTime = bornTime;
@@ -26,12 +28,15 @@ public abstract class Ant implements IBehaviour, Serializable {
     public void setBornTime(int bornTime) {
         this.bornTime = bornTime;
     }
+
     public int getBornTime() {
         return bornTime;
     }
+
     public void setLifeTime(int lifeTime) {
         this.lifeTime = lifeTime;
     }
+
     public int getLifeTime() {
         return lifeTime;
     }
@@ -60,18 +65,20 @@ public abstract class Ant implements IBehaviour, Serializable {
         this.indef = indef;
     }
 
-    public void setX(float x){
+    public void setX(int x) {
         this.x = x;
     }
-    public void setY(float y){
+
+    public void setY(int y) {
         this.y = y;
     }
-    public float getX() {
+
+    public int getX() {
         return x;
     }
-    public float getY() {
+
+    public int getY() {
         return y;
     }
-
 
 }

@@ -18,56 +18,53 @@ public class WarrAI extends BaseAI {
     @Override
     public void run() {
         super.run();
-        System.out.println("123");
         while (isGoing) {
             synchronized (this) {
-                if (isStopped) {
+                while (isStopped) {
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                } else {
-                    for (int i = 0; i < habitat.getMas().getArray().size(); i++) {
-                        Ant currentAnt = habitat.getMas().getArray().get(i);
-                        if (currentAnt instanceof Warrior) {
-                            if (currentAnt.getX() > habitat.mainPanel.getWidth() / 2)
-                                currentAnt.setOrientationX(1);
+                }
+                for (int i = 0; i < habitat.getMas().getArray().size(); i++) {
+                    Ant currentAnt = habitat.getMas().getArray().get(i);
+                    if (currentAnt instanceof Warrior) {
+                        if (currentAnt.getX() > habitat.mainPanel.getWidth() / 2)
+                            currentAnt.setOrientationX(1);
+                        else
+                            currentAnt.setOrientationX(-1);
+
+                        if (currentAnt.getY() > habitat.mainPanel.getHeight() / 2)
+                            currentAnt.setOrientationY(1);
+                        else
+                            currentAnt.setOrientationY(-1);
+
+                        if (!((Warrior) currentAnt).getStopX() || !((Warrior) currentAnt).getStopY()) {
+                            if (currentAnt.getX() + speed * currentAnt.getOrientationY() < 0 || currentAnt.getX() + 100 > habitat.mainPanel.getWidth())
+                                ((Warrior) currentAnt).setStopX(true);
                             else
-                                currentAnt.setOrientationX(-1);
-
-                            if (currentAnt.getY() > habitat.mainPanel.getHeight() / 2)
-                                currentAnt.setOrientationY(1);
+                                currentAnt.setX(currentAnt.getX() + speed * currentAnt.getOrientationX());
+                            if (currentAnt.getY() + speed * currentAnt.getOrientationY() < 0 || currentAnt.getY() + 200 > habitat.mainPanel.getHeight())
+                                ((Warrior) currentAnt).setStopY(true);
                             else
-                                currentAnt.setOrientationY(-1);
+                                currentAnt.setY(currentAnt.getY() + speed * currentAnt.getOrientationY());
+                        } else {
+                            if (currentAnt.getX() == ((Warrior) currentAnt).getOldX()) ;
+                            else
+                                currentAnt.setX(currentAnt.getX() - speed * currentAnt.getOrientationX());
+                            if (currentAnt.getY() == ((Warrior) currentAnt).getOldY()) ;
+                            else
+                                currentAnt.setY(currentAnt.getY() - speed * currentAnt.getOrientationY());
 
-                            if (!((Warrior) currentAnt).getStopX() || !((Warrior) currentAnt).getStopY()) {
-                                if (currentAnt.getX() + speed * currentAnt.getOrientationY() < 0 || currentAnt.getX() + 100 > habitat.mainPanel.getWidth())
-                                    ((Warrior) currentAnt).setStopX(true);
-                                else
-                                    currentAnt.setX(currentAnt.getX() + speed * currentAnt.getOrientationX());
-                                if (currentAnt.getY() + speed * currentAnt.getOrientationY() < 0 || currentAnt.getY() + 200 > habitat.mainPanel.getHeight())
-                                    ((Warrior) currentAnt).setStopY(true);
-                                else
-                                    currentAnt.setY(currentAnt.getY() + speed * currentAnt.getOrientationY());
-                            }
-                            else {
-                                if (currentAnt.getX() == ((Warrior) currentAnt).getOldX()) ;
-                                else
-                                    currentAnt.setX(currentAnt.getX() - speed * currentAnt.getOrientationX());
-                                if (currentAnt.getY() == ((Warrior) currentAnt).getOldY()) ;
-                                else
-                                    currentAnt.setY(currentAnt.getY() - speed * currentAnt.getOrientationY());
-
-                            }
                         }
                     }
-                    habitat.draw(habitat.mainPanel);
-                    try {
-                        this.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                }
+                habitat.draw(habitat.mainPanel);
+                try {
+                    this.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
