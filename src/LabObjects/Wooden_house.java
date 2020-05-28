@@ -14,6 +14,8 @@ public class Wooden_house extends House implements Serializable {
         setY(y = (int) (Math.random()*(height-image.getInstance().wood_image.getHeight())));
         }
 
+    public Wooden_house(){}
+
     @Override
     public BufferedImage getImage(){
         return image.getInstance().wood_image;

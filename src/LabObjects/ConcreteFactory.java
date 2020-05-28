@@ -7,10 +7,10 @@ public class ConcreteFactory implements AbstractFactory {
     public House createWood(int height, int width){
         House wood = new Wooden_house(height, width);
         return wood;
-    };
+    }
     @Override
     public House createKap(int height, int width){
         House ussr = new Kap_House(height, width);
         return ussr;
-    };
+    }
 }

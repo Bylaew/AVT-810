@@ -1,5 +1,6 @@
 package Environment;
 
+import JDBC.HouseBD;
 import LabObjects.House;
 import Types.Coord;
 
@@ -28,6 +29,31 @@ public class Collect implements Serializable {
         public static final Collect Hold_Collect_INSTANCE = new Collect();
     }
 
+    public void addAll_to_DB(){
+        HouseBD.getInstance().insert((Vector)container.clone());
+    }
+
+    public void save_wood_to_DB(){
+        synchronized (Collect.class){
+            Vector <House> temp = new Vector<>();
+        for (int i=0; i<container.size();i++)
+            if (container.get(i).getType().equals("Wood"))
+                temp.add(container.get(i));
+            HouseBD.getInstance().insert(temp);
+        }
+    }
+
+    public void save_kap_to_DB(){
+        synchronized (Collect.class){
+            Vector <House> temp = new Vector<>();
+            for (int i=0; i<container.size();i++)
+                if (container.get(i).getType().equals("Kap"))
+                    temp.add(container.get(i));
+            HouseBD.getInstance().insert(temp);
+        }
+    }
+
+
     public void add_obj(House obj, long time_life, Habitat frame){
         synchronized(Collect.class){
             int temp_ID;
@@ -35,8 +61,8 @@ public class Collect implements Serializable {
                 temp_ID = (int)(Math.random()*10000);
             }while(!add_ID(temp_ID));
             obj.setID(temp_ID);
-        container.add(obj);
-        life_container.put(obj.getID(), time_life);
+            container.add(obj);
+            life_container.put(obj.getID(), time_life);
         if (obj.getType().equals("Kap")){
             countKap++;
             if (!(obj.getX()<(frame.getWidth()*3/8)-obj.getImage().getWidth()/2 && obj.getY()<frame.getHeight()/2-obj.getImage().getHeight()/2)){
@@ -93,7 +119,7 @@ public class Collect implements Serializable {
         Iterator it_vec = container.iterator();
         while(it_vec.hasNext()){
             House temp = (House)it_vec.next();
-            if (life_container.get(temp.getID())==null || (long)life_container.get(temp.getID())==-1){
+            if (life_container.get(temp.getID())==null){
                 life_container.put(temp.getID(), time);
             }
             else{

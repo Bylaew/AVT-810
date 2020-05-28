@@ -4,18 +4,19 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.Dimension;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.Socket;
 import java.util.*;
 import java.util.Timer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
+import JDBC.HouseBD;
 import LabObjects.ConcreteFactory;
 import LabObjects.House;
 import LabObjects.KapAI;
 import LabObjects.WoodAI;
-import Pack.Request;
+
+
+import javax.sound.sampled.*;
 
 import static java.awt.event.KeyEvent.*;
 
@@ -51,7 +52,11 @@ public class Habitat extends JFrame {
     private JButton load = new JButton("Загрузить объекты");
     private JButton save_cfg = new JButton("Сохранить параметры");
     private JButton load_cfg = new JButton("Загрузить параметры");
-    private JButton download_client = new JButton("Загрузить");
+    private  JButton delete_all = new JButton("Удалить всё из БД");
+    private JButton save_wood = new JButton("Сохр. дер.");
+    private JButton save_kap = new JButton("Сохр. кап.");
+    private JButton load_wood = new JButton("Загр. дер.");
+    private JButton load_kap = new JButton("Загр. кап.");
     private boolean sim_active = false;
     private int work_area_w=(width*3/4);
     private int work_area_h=height*3/4;
@@ -69,7 +74,6 @@ public class Habitat extends JFrame {
     protected boolean info_view=false;
     private JTextField period_wood = new JTextField();
     private JTextField period_kap = new JTextField();
-    private JTextField id_client = new JTextField();
     private JComboBox posib_wood = new JComboBox();
     private JComboBox posib_kap = new JComboBox();
     private JComboBox wood_priority = new JComboBox();
@@ -81,73 +85,21 @@ public class Habitat extends JFrame {
     protected boolean woodAI_work=true;
     protected boolean kapAI_work=true;
     protected boolean console_op=false;
-    private BlockingQueue<Request> que;
     private JTextField edit_life_wood = new JTextField();
     private JTextField edit_life_kap = new JTextField();
     private KapAI intel_kap = new KapAI(this);
     private WoodAI intel_wood = new WoodAI(this);
-    private static Collect temp2=Collect.getInstance();
-    private static  Config temp3 = Config.getInstance();
+    private HouseBD BD=HouseBD.getInstance();
+    private Collect temp2=Collect.getInstance();
+    private Config temp3 = Config.getInstance();
     protected boolean view_time=true;
     protected int wood_prior=5;
     protected int kap_prior=5;
-    static Socket socket;
-    private JTextArea connections = new JTextArea();
-    private Vector connects = new Vector();
-    private Runnable list_task=new Runnable() {
-        @Override
-        public void run() {
-            try{
-                ObjectInputStream in_obj = new ObjectInputStream(socket.getInputStream());
-                while(!socket.isClosed()){
-                    Request mess = (Request) in_obj.readObject();
-                    System.out.println(mess.getType());
-                    switch (mess.getType()){
-                        case 4:{
-                            mess.setData(temp2.get_all());
-                            mess.setType(3);
-                            send(mess);
-                            break;
-                        }
-                        case 5:{
-                            Vector<House> temp_vec = (Vector<House>)mess.getData();
-                            for (int i=0;i<temp_vec.size();i++){
-                                temp2.add_obj(temp_vec.get(i), -1, Habitat.this);
-                            }
-                            break;
-                        }
-                        case 6:{
-                            connects = (Vector)mess.getData();
-                            System.out.println("Хуй");
-                            break;
-                        }
-                    }
-                }
-            }catch (Exception e){e.printStackTrace();};
-        }
-    };
-    private Runnable talk_task = new Runnable() {
-        @Override
-        public void run() {
-            try{
-                ObjectOutputStream out_obj = new ObjectOutputStream(socket.getOutputStream());
-            while(!socket.isClosed()){
-                Request mess = que.take();
-                out_obj.writeObject(mess);
-            }
-            }catch (InterruptedException e){e.printStackTrace();}
-            catch (IOException e){e.printStackTrace();}
-        }
-    };
-    private Thread list_serv = new Thread(list_task);
-    private Thread talk_serv = new Thread (talk_task);
 
 
 
 
-    private void send(Request obj){
-        que.add(obj);
-    }
+
 
 
     private JPanel panel = new JPanel() {
@@ -267,14 +219,8 @@ public class Habitat extends JFrame {
         super("Коммунизм");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setPreferredSize(new Dimension(width, height));
-        que = new LinkedBlockingQueue<>();
-        try{
-            socket = new Socket("localhost",3345);
-            Thread.sleep(2000);
-        }catch (Exception e){e.printStackTrace();}
         CreateGUI();
         setVisible(true);
-
     }
 
     protected void serialization(){
@@ -346,10 +292,11 @@ public class Habitat extends JFrame {
         panel.add(load);
         panel.add(save_cfg);
         panel.add(load_cfg);
-        panel.add(connections);
-        panel.add(id_client);
-        panel.add(download_client);
-        connections.setEditable(false);
+        panel.add(delete_all);
+        panel.add(save_wood);
+        panel.add(save_kap);
+        panel.add(load_kap);
+        panel.add(load_wood);
         ImageIcon icon = new ImageIcon("./resources/USSR.png");
         setIconImage(icon.getImage());
         sim.add(m_start);
@@ -393,9 +340,11 @@ public class Habitat extends JFrame {
         load.setBounds((int)(width*3/4)+10, 510,200,20);
         save_cfg.setBounds((int)(width*3/4)+10, 540,200,20);
         load_cfg.setBounds((int)(width*3/4)+10, 570,200,20);
-        connections.setBounds((int)(width*3/4)+10, 600,200,100);
-        id_client.setBounds((int)(width*3/4)+10, 720,200,20);
-        download_client.setBounds((int)(width*3/4)+10, 750,200,20);
+        save_wood.setBounds((int)(width*3/4)+10, 600,100,20);
+        save_kap.setBounds((int)(width*3/4)+130, 600,100,20);
+        load_wood.setBounds((int)(width*3/4)+10, 630,100,20);
+        load_kap.setBounds((int)(width*3/4)+130, 630,100,20);
+        delete_all.setBounds((int)(width*3/4)+10, 660,200,20);
         panel.add(s_time);
         panel.add(WoodCount);
         panel.add(KapCount);
@@ -419,45 +368,9 @@ public class Habitat extends JFrame {
         intel_kap.stop();
         intel_wood.start();
         intel_wood.stop();
-        list_serv.start();
-        talk_serv.start();
 
 
 
-
-
-
-addWindowListener(new WindowAdapter() {
-    @Override
-    public void windowClosing(WindowEvent e) {
-        super.windowClosing(e);
-        Request mess = new Request(1);
-        que.add(mess);
-    }
-});
-
-download_client.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        boolean prov = true;
-        int id = 0;
-        String field1 = new String();
-        field1 = id_client.getText();
-        try{
-            id=Integer.parseInt(field1);
-        }catch(NumberFormatException nfe){
-            MyError error = new MyError(Habitat.this, "Ошибка", true);
-            error.setVisible(true);
-            prov = false;
-        }
-        if(prov){
-        Request mess = new Request(2);
-        mess.setDestination(id);
-        send(mess);
-        }
-            requestFocusInWindow();
-    }
-});
 
 
 
@@ -511,14 +424,50 @@ download_client.addActionListener(new ActionListener() {
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                serialization();
+                temp2.addAll_to_DB();
+            }
+        });
+
+        save_wood.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                temp2.save_wood_to_DB();
+            }
+        });
+
+        save_kap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                temp2.save_kap_to_DB();
             }
         });
 
         load.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                deserialization();
+                BD.load_all(Habitat.this);
+
+            }
+        });
+
+        load_wood.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BD.load_woodobj(Habitat.this);
+            }
+        });
+
+        load_kap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BD.load_kapobj(Habitat.this);
+            }
+        });
+
+        delete_all.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BD.delete_all();
             }
         });
 
@@ -829,11 +778,6 @@ N1 = 1;
             temp2.add_obj(factory.createKap(work_area_h, work_area_w), time, this);
         }
         temp2.round(time, life_time_wood, life_time_kap);
-        String str = new String();
-        for (int i=0; i<connects.size();i++){
-            str = str + connects.get(i).toString()+"\n";
-        }
-        connections.setText(str);
         s_time.setText("Время:" + time);
         WoodCount.setText("Деревенные дома:"+temp2.Wood_count());
         KapCount.setText("Капитальные дома:"+temp2.Kap_count());
@@ -978,7 +922,7 @@ class Console extends JDialog {
         @Override
         public void run() {
             while(true){
-            try{temp3 = pr.read();}catch (IOException io2){io2.printStackTrace();}
+            try{temp3 = pr.read();}catch (IOException io2){System.out.println("Хуй");}
             }
         }
     });

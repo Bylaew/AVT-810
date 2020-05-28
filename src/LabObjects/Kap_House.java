@@ -13,6 +13,8 @@ public class Kap_House extends House implements Serializable {
         setY(y = (int) (Math.random()*(height-image.getInstance().kap_image.getHeight())));
         }
 
+     public Kap_House(){}
+
     @Override
     public BufferedImage getImage() {
         return image.getInstance().kap_image;

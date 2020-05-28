@@ -14,5 +14,5 @@ abstract public class House implements IBehaviour, Serializable {
     abstract public BufferedImage getImage();
     public int getID(){return ID;}
     public void setGoal(boolean goal){this.goal=goal;}
-    public void setID(int ID){this.ID=ID;}
+    public void setID(int ID){this.ID = ID;}
 }
