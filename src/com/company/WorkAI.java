@@ -34,8 +34,8 @@ public class WorkAI extends BaseAI {
                     for (int i = 0; i < habitat.getMas().getArray().size(); i++) {
                         Ant currentAnt = habitat.getMas().getArray().get(i);
                         if (currentAnt instanceof Worker) {
-                            currentAnt.setX((int) (currentAnt.getX() + r * Math.cos((time * speed / 100))));
-                            currentAnt.setY((int) (currentAnt.getY() + r * Math.sin((time * speed / 100))));
+                            currentAnt.setX( currentAnt.getX() + (int) (r * Math.cos((time * speed / 100))));
+                            currentAnt.setY( currentAnt.getY() + (int) (r * Math.sin((time * speed / 100))));
 
                         }
                     }

@@ -11,10 +11,13 @@ public class Warrior extends Ant implements Serializable {
     private boolean isStopX = false;
     private boolean isStopY = false;
 
-    Warrior(int x, int y, int lifeTime, int bornTime,int ingef) {
+    public static int count = 0;
+
+    Warrior(int x, int y, int bornTime, int lifeTime ,int ingef) {
         super(x, y,bornTime,lifeTime,ingef);
         oldX = x;
         oldY = y;
+        count++;
             img = new ImageIcon("src/res/Warr.jpg").getImage();
 
     }

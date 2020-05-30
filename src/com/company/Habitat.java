@@ -18,13 +18,14 @@ public class Habitat {
     private int height;
     private Singleton mas = new Singleton();
     private Timer startTime;
-    private int warriorCount, workerCount;
     private long timeFromStart = 0;
     private float N1, N2, P1, P2;
     private AntFactory antFactory;
     private boolean firstTimeRun = false;
     private boolean isConsoleRunning = false;
     boolean isVisibleSettings = false;
+    boolean isConnection = false;
+
     Client client = null;
 
     WarrAI warrAI;
@@ -32,6 +33,7 @@ public class Habitat {
 
     int V = 60;
     int R = 60;
+    AntDB antDB = null;
 
     int lifeWarr;
     int lifeWork;
@@ -69,9 +71,14 @@ public class Habitat {
     }
 
     Habitat() {
+        antDB = new AntDB();
+
+
         try {
             client = new Client(this);
+            isConnection = true;
         } catch (IOException e) {
+            client = null;
             e.printStackTrace();
         }
 
@@ -115,7 +122,8 @@ public class Habitat {
         JLabel labelTime = new JLabel();
         JLabel warrPriopityLabel = new JLabel("Warrior AI Priority");
         JLabel workPriopityLabel = new JLabel("Worker AI Priority");
-        JLabel ipUser = new JLabel("ip: " + client.clientSocket.getInetAddress().getHostName());
+        JLabel ipUser = null;
+        if (isConnection) ipUser = new JLabel("ip: " + client.clientSocket.getInetAddress().getHostName());
 
         CheckboxGroup infoGroup = new CheckboxGroup();
         Checkbox showTime = new Checkbox("Показывать время симуляции", infoGroup, true);
@@ -132,6 +140,14 @@ public class Habitat {
         MenuItem mStop = new MenuItem("Stop");
         Menu mSettings = new Menu("Settings");
         Menu mHelp = new Menu("Help");
+
+        Menu mDataBase = new Menu("Data Base");
+        MenuItem mSaveAll = new MenuItem("Save all object");
+        MenuItem mSaveWarr = new MenuItem("Save all warriors");
+        MenuItem mSaveWork = new MenuItem("Save all workers");
+        MenuItem mLoadAll = new MenuItem("Load all object");
+        MenuItem mLoadWarr = new MenuItem("Load all warriors");
+        MenuItem mLoadWork = new MenuItem("Load all workers");
 
         CheckboxMenuItem statisticCheckBox = new CheckboxMenuItem("Show statistic", true);
         CheckboxMenuItem timeCheckBox = new CheckboxMenuItem("Show time", true);
@@ -188,14 +204,14 @@ public class Habitat {
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                if(firstTimeRun){
+                if (firstTimeRun) {
                     showInfo.setState(false);
                     stop(window, showInfo, stopButton, startButton, toolStart, showButton, toolStop, labelTime, stopWarrAiButton, stopWorkAiButton, startWarrAiButton, startWorkAiButton);
-                    if(Client.countUsers==1){
+                    if (Client.countUsers == 1) {
                         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                     }
                 }
-                client.exit();
+                if (isConnection) client.exit();
                 FileWriter fos = null;
                 try {
                     fos = new FileWriter("src/res/config.txt");
@@ -485,9 +501,118 @@ public class Habitat {
         mSim.add(mConsole);
         mSim.add(mSave);
         mSim.add(mLoad);
+
+        mSaveAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("askkaskadk");
+                if (firstTimeRun) {
+                    antDB.insertObj(mas.getArray());
+                } else {
+                    System.out.println("Error");
+                }
+            }
+        });
+
+        mSaveWarr.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (firstTimeRun) {
+                    Vector<Ant> vector = new Vector<>();
+                    for (int i = 0; i < mas.getArray().size(); i++) {
+                        if (mas.getArray().get(i) instanceof Warrior) {
+                            vector.add(mas.getArray().get(i));
+                        }
+                    }
+
+                    if (vector.size() == 0) {
+                        System.out.println("Nullpointer");
+                    } else
+                        antDB.insertWarr(vector);
+
+                } else {
+                    System.out.println("Error");
+                }
+            }
+        });
+
+        mSaveWork.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (firstTimeRun) {
+                    Vector<Ant> vector = new Vector<>();
+                    for (int i = 0; i < mas.getArray().size(); i++) {
+                        if (mas.getArray().get(i) instanceof Worker) {
+                            vector.add(mas.getArray().get(i));
+                        }
+                    }
+
+                    if (vector.size() == 0) {
+                        System.out.println("Nullpointer");
+                    } else
+                        antDB.insertWork(vector);
+
+                } else {
+                    System.out.println("Error");
+                }
+            }
+        });
+
+        mLoadAll.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<Ant> vector = antDB.loadAllObjects();
+                if (!firstTimeRun) {
+                    mas.setArray(vector);
+                } else {
+                    for (int i = 0; i < vector.size(); i++) {
+                        mas.getArray().add(vector.get(i));
+                    }
+                }
+            }
+        });
+
+        mLoadWarr.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<Ant> vector = antDB.loadWarroirs();
+                if (!firstTimeRun) {
+                    mas.setArray(vector);
+                } else {
+                    for (int i = 0; i < vector.size(); i++) {
+                        mas.getArray().add(vector.get(i));
+                    }
+                }
+            }
+        });
+
+        mLoadWork.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<Ant> vector = antDB.loadWorkers();
+                if (!firstTimeRun) {
+                    mas.setArray(vector);
+                } else {
+                    for (int i = 0; i < vector.size(); i++) {
+                        mas.getArray().add(vector.get(i));
+                    }
+                }
+            }
+        });
+
+        mDataBase.add(mSaveAll);
+        mDataBase.add(mSaveWarr);
+        mDataBase.add(mSaveWork);
+        mDataBase.add(mLoadAll);
+        mDataBase.add(mLoadWork);
+        mDataBase.add(mLoadWarr);
+
+
+        menu.add(mDataBase);
         menu.add(mSim);
         menu.add(mSettings);
         menu.setHelpMenu(mHelp);
+
 
         timeCheckBox.addItemListener(new ItemListener() {
             @Override
@@ -529,7 +654,7 @@ public class Habitat {
             public void actionPerformed(ActionEvent e) {
                 timeFromStart++;
                 labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
-                update(timeFromStart, mainPanel);
+                update((int)timeFromStart, mainPanel);
             }
         });
 
@@ -574,7 +699,6 @@ public class Habitat {
         showButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new Habitat().init();
                 try {
                     warrAI.stopAnimation();
                 } catch (InterruptedException ex) {
@@ -666,16 +790,18 @@ public class Habitat {
         showConnectUsers.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(client.clientSocket.getInetAddress().getHostName());
+                if (isConnection) {
+                    System.out.println(client.clientSocket.getInetAddress().getHostName());
 
-                String users = new String();
+                    String users = new String();
 
-                String[] qwe = client.showUsers();
-                System.out.println(Client.currentCountUsers);
-                for (int i = 0; i < Client.currentCountUsers; i++) {
-                    users += qwe[i] + '\n';
+                    String[] qwe = client.showUsers();
+                    System.out.println(Client.currentCountUsers);
+                    for (int i = 0; i < Client.currentCountUsers; i++) {
+                        users += qwe[i] + '\n';
+                    }
+                    JOptionPane.showMessageDialog(null, users, "Users", JOptionPane.OK_OPTION);
                 }
-                JOptionPane.showMessageDialog(null, users, "Users", JOptionPane.OK_OPTION);
             }
         });
 
@@ -683,58 +809,60 @@ public class Habitat {
         sendObjButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    warrAI.stopAnimation();
-                    workAI.stopAnimation();
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
-                startTime.stop();
-
-                JDialog dialog = new JDialog(window, "Title");
-                JTextArea textArea = new JTextArea();
-                textArea.append("Enter the user id and object interval (0 1 7) ");
-                dialog.add(textArea);
-                final String[] str = {new String()};
-                dialog.setBounds(200, 200, 450, 150);
-                textArea.setBounds(200, 200, 450, 300);
-                textArea.setFont(new Font("Arail", Font.BOLD, 18));
-                textArea.addKeyListener(new KeyAdapter() {
-                    @Override
-                    public void keyPressed(KeyEvent e) {
-                        super.keyTyped(e);
-                        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                            System.out.println("bomj");
-                            str[0] = textArea.getText();
-                            str[0] = str[0].replace("Enter the user id and object interval (0 1 7) ", "");
-                            System.out.println(str[0]);
-
-                            String[] str1 = str[0].split(" ");
-                            int id = Integer.parseInt(str1[0]);
-                            int a = Integer.parseInt(str1[1]);
-                            int b = Integer.parseInt(str1[2]);
-                            Ant[] ant = new Ant[b - a];
-                            for (int i = a, j = 0; i < b; j++, i++) {
-                                ant[j] = mas.getArray().get(i);
-                            }
-                            try {
-                                client.sendObj(id, ant);
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                            dialog.setVisible(false);
-
-                            warrAI.resumeAnimation();
-                            workAI.resumeAnimation();
-                            startTime.start();
-
-                        }
+                if (isConnection) {
+                    try {
+                        warrAI.stopAnimation();
+                        workAI.stopAnimation();
+                    } catch (InterruptedException ex) {
+                        ex.printStackTrace();
                     }
-                });
+                    startTime.stop();
 
-                dialog.setVisible(true);
+                    JDialog dialog = new JDialog(window, "Title");
+                    JTextArea textArea = new JTextArea();
+                    textArea.append("Enter the user id and object interval (0 1 7) ");
+                    dialog.add(textArea);
+                    final String[] str = {new String()};
+                    dialog.setBounds(200, 200, 450, 150);
+                    textArea.setBounds(200, 200, 450, 300);
+                    textArea.setFont(new Font("Arail", Font.BOLD, 18));
+                    textArea.addKeyListener(new KeyAdapter() {
+                        @Override
+                        public void keyPressed(KeyEvent e) {
+                            super.keyTyped(e);
+                            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                                System.out.println("bomj");
+                                str[0] = textArea.getText();
+                                str[0] = str[0].replace("Enter the user id and object interval (0 1 7) ", "");
+                                System.out.println(str[0]);
+
+                                String[] str1 = str[0].split(" ");
+                                int id = Integer.parseInt(str1[0]);
+                                int a = Integer.parseInt(str1[1]);
+                                int b = Integer.parseInt(str1[2]);
+                                Ant[] ant = new Ant[b - a];
+                                for (int i = a, j = 0; i < b; j++, i++) {
+                                    ant[j] = mas.getArray().get(i);
+                                }
+                                try {
+                                    client.sendObj(id, ant);
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
+                                dialog.setVisible(false);
+
+                                warrAI.resumeAnimation();
+                                workAI.resumeAnimation();
+                                startTime.start();
+
+                            }
+                        }
+                    });
+
+                    dialog.setVisible(true);
 
 
+                }
             }
         });
         newUserButton.setBounds(10, 500, 160, 30);
@@ -746,12 +874,11 @@ public class Habitat {
         });
 
 
-
-        ipUser.setBounds(10, 550, 160, 30);
-        ipUser.setFont(new Font("Arial",Font.BOLD,18));
+        if (isConnection) ipUser.setBounds(10, 550, 160, 30);
+        if (isConnection) ipUser.setFont(new Font("Arial", Font.BOLD, 18));
 
         buttonPanel2.add(newUserButton);
-        buttonPanel2.add(ipUser);
+        if (isConnection) buttonPanel2.add(ipUser);
         buttonPanel2.setLayout(null);
         buttonPanel2.add(sendObjButton);
         buttonPanel2.add(showConnectUsers);
@@ -897,8 +1024,8 @@ public class Habitat {
                     startWorkAiButton.setEnabled(false);
                 }
 
-                workerCount = 0;
-                warriorCount = 0;
+                Warrior.count = 0;
+                Worker.count = 0;
                 timeFromStart = 0;
                 firstTimeRun = false;
                 labelTime.setText(timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60);
@@ -916,13 +1043,13 @@ public class Habitat {
     }
 
     private int statistic(JFrame window) {
-        return JOptionPane.showConfirmDialog(window, new String[]{"Warriors: " + warriorCount, "Workers:" + workerCount, "Sum: " + (warriorCount + workerCount), "Work Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60}, "Statistic", JOptionPane.OK_CANCEL_OPTION);
+        return JOptionPane.showConfirmDialog(window, new String[]{"Warriors: " + Warrior.count, "Workers:" + Worker.count, "Sum: " + (Warrior.count + Worker.count), "Work Time: " + timeFromStart / 60 + ":" + ((timeFromStart % 60 < 10) ? "0" : "") + timeFromStart % 60}, "Statistic", JOptionPane.OK_CANCEL_OPTION);
     }
 
-    private void update(float time, JComponent g) {
+    private void update(int time, JComponent g) {
 
         for (int i = 0; i < mas.getArray().size(); i++) {
-            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= (int) time) {
+            if (mas.getArray().get(i).getBornTime() + mas.getArray().get(i).getLifeTime() <= time) {
 
                 mas.getArray().remove(i);
 
@@ -930,16 +1057,14 @@ public class Habitat {
         }
         if (time % N1 == 0) {
             if (Math.random() < P1) {
-                mas.getArray().add(antFactory.createWarrior((int) (Math.random() * (widht - 300 + 1)), (int) Math.random() * (height - 490) + 40, lifeWarr, (int) time, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWarrior((int) (Math.random() * (widht - 300 + 1)), (int) (Math.random() * (height - 490) + 40), lifeWarr, (int) time, (int)(Math.random()*1000)));
                 System.out.println("WarriorCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
-                warriorCount++;
             }
         }
         if (time % N2 == 0) {
             if (Math.random() < P2) {
-                mas.getArray().add(antFactory.createWorker((int) (Math.random() * (widht - 300 + 1)), (int) Math.random() * (height - 490) + 40, lifeWork, (int) time, warriorCount + workerCount));
+                mas.getArray().add(antFactory.createWorker((int) (Math.random() * (widht - 300 + 1)), (int) (Math.random() * (height - 490) + 40), lifeWork, (int) time, (int)(Math.random()*1000)));
                 System.out.println("WorkerCreate(" + mas.getArray().get(mas.getArray().size() - 1).getX() + "," + mas.getArray().get(mas.getArray().size() - 1).getY() + ")");
-                workerCount++;
             }
         }
         draw(g);
@@ -986,7 +1111,6 @@ public class Habitat {
         fieldImageGraphics.drawImage(backGround, 0, 0, null);
         for (int i = 0; i < mas.getArray().size(); i++)
             fieldImageGraphics.drawImage(mas.getArray().get(i).getImage(), (int) mas.getArray().get(i).getX(), (int) mas.getArray().get(i).getY(), 100, 200, null);
-
         g.getGraphics().drawImage(fieldImage, 0, 0, w, h, null);
 
     }

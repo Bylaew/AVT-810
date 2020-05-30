@@ -7,11 +7,12 @@ import java.io.Serializable;
 
 public class Worker extends Ant implements Serializable {
     private static transient Image img = new ImageIcon("src/res/Worker.jpg").getImage();
-    ;
+    public static int count = 0;
 
     Worker(int x, int y, int bornTime, int lifeTime, int indef) {
         super(x, y, bornTime, lifeTime, indef);
         img = new ImageIcon("src/res/Worker.jpg").getImage();
+        count++;
 
     }
 

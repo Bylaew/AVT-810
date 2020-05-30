@@ -1,7 +1,7 @@
 package com.company;
 
-import java.io.Serializable;
-import java.util.Vector;
+        import java.io.Serializable;
+        import java.util.Vector;
 
 class Singleton implements Serializable {
 
