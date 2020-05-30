@@ -1,10 +1,11 @@
-import java.util.ArrayList;
+import java.io.*;
 import java.util.HashSet;
 import java.util.TreeMap;
+import java.util.Vector;
 
-public class Singleton {
+public class Singleton implements Serializable {
     private static Singleton instance;
-    public ArrayList<Vehicle> vehicles = new ArrayList<>(1000);
+    public  Vector<Vehicle> vehicles = new Vector<>(1000);
     public HashSet<Integer> idSet = new HashSet<>(1000);
     public TreeMap<Integer, Long> Map = new TreeMap<>();
 
@@ -29,5 +30,11 @@ public class Singleton {
             id = (int)(Math.random()*1000);
         } while (idSet.contains(id));
         return id;
+    }
+
+    public void saveObj(File file) throws IOException {
+        FileOutputStream outFile =new FileOutputStream(file);
+        ObjectOutputStream outStream = new ObjectOutputStream(outFile);
+        outStream.writeObject(this);
     }
 }

@@ -1,4 +1,6 @@
-public abstract class Vehicle implements IBehavior{
+import java.io.Serializable;
+
+public abstract class Vehicle implements IBehavior, Serializable {
 
     private float x, y;
     private int id;

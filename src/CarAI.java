@@ -6,17 +6,16 @@ public class CarAI extends BaseAI {
         h=habitat;
     }
 
-    public void run() {
-        float speed = 8;
-        while (true) {
-            if (working) {
-                for (int i = 0; i < h.singleton.vehicles.size() - 1; i++) {
-                    if (h.singleton.vehicles.get(i) instanceof Car) {
-                        float x1 = h.singleton.vehicles.get(i).getX();
+    public synchronized void run() {
+        float speed = 6;
+        while (true){
+            while (working) {
+                for (Vehicle current : h.singleton.vehicles) {
+                    if (current instanceof Car) {
+                        float x1 = current.getX();
                         float x2 = x1 - speed;
-                        if(x2 <-150) x2 = h.window.getWidth()+150;
-                        h.singleton.vehicles.get(i).setX(x2);
-                        System.out.println("Car " + i + " Moved");
+                        if (x2 < -150) x2 = h.window.getWidth();
+                        current.setX(x2);
                     }
                 }
                 try {
@@ -24,20 +23,17 @@ public class CarAI extends BaseAI {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            }
 
-            }
-            else
-            {
-                synchronized (this) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            synchronized (this) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
-        }
+            } }
     }
+
     public void pauseAI()
     {
         working=false;

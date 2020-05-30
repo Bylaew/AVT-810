@@ -2,10 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Habitat {
-    final Singleton singleton = Singleton.getInstance();
+    Singleton singleton = Singleton.getInstance();
     SideMenu sideMenu;
     MenuBar mainMenu;
     JFrame frame;
@@ -26,6 +29,7 @@ public class Habitat {
 
     public void init(float N1, float N2, float P1, float P2) {
 
+
         concreteFactory = new ConcreteFactory();
         carAI.start();
         motoAI.start();
@@ -35,7 +39,9 @@ public class Habitat {
         this.P1 = P1;
         this.P2 = P2;
 
-        frame = new JFrame("Lab 3");
+        readConfig();
+
+        frame = new JFrame("Lab 4");
 
 
         window = new ImagePanel();
@@ -116,6 +122,17 @@ public class Habitat {
             }
         });
 
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                saveConfig();
+                super.windowClosing(e);
+            }
+        });
+
+        sideMenu.UpdateButtons();
+        mainMenu.UpdateButtons();
+
         frame.setVisible(true);
         window.requestFocus();
         width = window.getWidth();
@@ -140,8 +157,7 @@ public class Habitat {
     }
 
 
-    private void update(float time, ImagePanel window) {
-        synchronized (singleton){
+    private synchronized void update(float time, ImagePanel window) {
         if (time % N1 == 0) {
             if (Math.random() < P1) {
                 int id = singleton.generateId();
@@ -163,6 +179,7 @@ public class Habitat {
             }
         }
 
+        /*
         for (int i = 0; i < singleton.vehicles.size(); i++) {
             if (singleton.vehicles.get(i).getLifeTime() + singleton.vehicles.get(i).getBirthTime() <= timeFromStart) {
                 singleton.Map.remove(singleton.vehicles.get(i).getId());
@@ -170,9 +187,22 @@ public class Habitat {
                 singleton.vehicles.remove(i);
 
             }
-        }}
+        }*/
+            Vehicle cur;
+            Iterator<Vehicle> iter = singleton.vehicles.iterator();
+            synchronized (iter){
+            while (iter.hasNext()){
+                cur = iter.next();
+                if (cur.getLifeTime() + cur.getBirthTime() <= timeFromStart ){
+                    singleton.Map.remove(cur.getId());
+                    singleton.idSet.remove(cur.getId());
+                    iter.remove();
+                }
+            }}
+        redraw();
+    }
 
-
+    private void redraw(){
         BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics offscreenGraphics = buffer.getGraphics();
         offscreenGraphics.setColor(window.getBackground());
@@ -186,6 +216,55 @@ public class Habitat {
         window.repaint();
     }
 
+    private void saveConfig(){
+        try (FileWriter fw = new FileWriter("config.txt")) {
+            fw.write(N1 +"\n"+ P1 +"\n"+ N2 +"\n");
+            fw.write((isStatsAllowed)+"\n");
+            fw.write((isTimeAllowed)+"\n");
+            fw.write((carLifetime)+"\n");
+            fw.write((motoLifetime)+"\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void readConfig(){
+        try (FileReader fw = new FileReader("config.txt")) {
+            Scanner scanner = new Scanner(fw);
+            if (scanner.hasNextLine()) N1 = Float.parseFloat(scanner.nextLine());
+            if (scanner.hasNextLine()) P1 = Float.parseFloat(scanner.nextLine());
+            if (scanner.hasNextLine()) N2 = Float.parseFloat(scanner.nextLine());
+            if (scanner.hasNextLine()) isStatsAllowed = Boolean.parseBoolean(scanner.nextLine());
+            if (scanner.hasNextLine()) isTimeAllowed = Boolean.parseBoolean(scanner.nextLine());
+            if (scanner.hasNextLine()) carLifetime = Long.parseLong(scanner.nextLine());
+            if (scanner.hasNextLine()) motoLifetime = Long.parseLong(scanner.nextLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reduceMoto(int percent){
+        int count = 0;
+        for (Vehicle moto: singleton.vehicles){
+            if ( moto instanceof Moto){
+                count++;
+            }
+        }
+        System.out.println("Количество мотоциклов: " + count);
+        int removenumber = (count * percent)/100;
+        System.out.println("Подлежит удалению: "+removenumber);
+
+        Iterator<Vehicle> iter = singleton.vehicles.iterator();
+
+        while(iter.hasNext() & removenumber > 0) {
+            Vehicle current = iter.next();
+            if (current instanceof Moto) {
+                iter.remove();
+                removenumber--;
+            }
+        }
+        redraw();
+    }
 
     class SideMenu extends JPanel {
         JPanel left = new JPanel();
@@ -195,6 +274,7 @@ public class Habitat {
         JCheckBox show_info;
         JRadioButton show, hide;
         JTextArea timeText;
+        JComboBox<Float> comboBox = new JComboBox<>();
 
 
         SideMenu() {
@@ -228,12 +308,15 @@ public class Habitat {
             txt3.setFocusable(false);
             TextField auto_period = new TextField("", 10);
             auto_period.setEnabled(true);
+            auto_period.setText(String.valueOf((int)N1/100));
             TextField moto_period = new TextField("", 10);
             moto_period.setEnabled(true);
-            JComboBox<Float> comboBox = new JComboBox<>();
+            moto_period.setText(String.valueOf((int)N2/100));
+
             for (int i = 10; i <= 100; i += 10)
                 comboBox.addItem((float) i / 100.0f);
             comboBox.setSelectedItem(P1);
+
 
 
             JLabel txt4 = new JLabel("Время жизни автомобилей");
@@ -345,6 +428,7 @@ public class Habitat {
                 isTimeAllowed = true;
                 mainMenu.UpdateButtons();
             });
+
             hide.addActionListener(e -> {
                 labelTime.setVisible(false);
                 isTimeAllowed = false;
@@ -404,15 +488,15 @@ public class Habitat {
                 start.setEnabled(true);
                 stop.setEnabled(false);
             }
-            if (isStatsAllowed) {
-                show_info.setSelected(true);
-            } else {
-                show_info.setSelected(false);
+            if (isStatsAllowed & !show_info.isSelected()) {
+                show_info.doClick();
+            } else if (!isStatsAllowed & show_info.isSelected()){
+                show_info.doClick();
             }
             if (isTimeAllowed) {
-                show.setSelected(true);
+                show.doClick();
             } else {
-                hide.setSelected(true);
+                hide.doClick();
             }
         }
     }
@@ -467,7 +551,9 @@ public class Habitat {
     class MenuBar extends JMenuBar {
 
         JMenuItem startMI = new JMenuItem("Старт");
+        JMenuItem consoleButton = new JMenuItem("Консоль");
         JMenuItem stopMI = new JMenuItem("Стоп");
+        JMenu FileMenu = new JMenu("Файл");
         JMenuItem currentObjs = new JMenuItem("Текущие объекты");
         JRadioButtonMenuItem mshow = new JRadioButtonMenuItem("Показывать время симуляции", true);
         JRadioButtonMenuItem mhide = new JRadioButtonMenuItem("Скрывать время симуляции");
@@ -477,26 +563,35 @@ public class Habitat {
             JMenu simMenu = new JMenu("Симуляция");
 
             simMenu.add(startMI);
-
             simMenu.add(stopMI);
             simMenu.add(currentObjs);
+            simMenu.add(consoleButton);
             JMenu settingsMenu = new JMenu("Параметры");
 
             settingsMenu.add(showinfoMI);
             settingsMenu.addSeparator();
             ButtonGroup timesetMenu = new ButtonGroup();
 
+            JMenuItem save= new JMenuItem("Сохранить объекты");
+            JMenuItem load = new JMenuItem("Загрузить объекты");
+            FileMenu.add(save);
+            FileMenu.add(load);
             timesetMenu.add(mshow);
             timesetMenu.add(mhide);
             mhide.setSelected(true);
             settingsMenu.add(mshow);
             settingsMenu.add(mhide);
+            add(FileMenu);
             add(simMenu);
             add(settingsMenu);
             setFocusable(true);
             showinfoMI.setSelected(false);
             startMI.addActionListener(e -> resume());
             stopMI.addActionListener(e -> pause());
+
+            consoleButton.addActionListener(e -> {
+                Console console = new Console(Habitat.this);
+            });
 
             showinfoMI.addItemListener(e -> {
                 isStatsAllowed = ((JCheckBoxMenuItem) e.getItem()).isSelected();
@@ -511,6 +606,41 @@ public class Habitat {
                 isTimeAllowed = false;
                 labelTime.setVisible(false);
                 sideMenu.UpdateButtons();
+            });
+            save.addActionListener(e -> {
+                pause();
+                String cwd = new File("").getAbsolutePath();
+                JFileChooser saveDialog = new JFileChooser(cwd);
+                saveDialog.showOpenDialog(frame);
+                File selFile = saveDialog.getSelectedFile();
+                if (selFile != null) {
+                    try {
+                        singleton.saveObj(selFile);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                resume();
+            });
+            load.addActionListener(e -> {
+                pause();
+                String cwd = new File("").getAbsolutePath();
+                JFileChooser loadDialog = new JFileChooser(cwd);
+                loadDialog.showOpenDialog(frame);
+                File selFile = loadDialog.getSelectedFile();
+                if (selFile!=null){
+                    try {
+                        ObjectInputStream ois = new ObjectInputStream(
+                                new FileInputStream(selFile));
+                        singleton = (Singleton) ois.readObject();
+                        for (Vehicle vehicle : singleton.vehicles){
+                            vehicle.setBirthTime(timeFromStart);
+                        }
+                    } catch (IOException | ClassNotFoundException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                redraw();
             });
             currentObjs.addActionListener(e -> {pause(); new curObjs();});
         }
