@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.Socket;
 import java.util.*;
 import java.util.Timer;
 
@@ -162,8 +163,8 @@ public class Habitat
     JPanel field = new JPanel();
     BufferedImage fieldImage;
     private static BufferedImage image;
-    int width = 1366;
-    int height = 768;
+    int width = 1600;
+    int height = 900;
     private Timer timer;
     long time = 0;
     boolean sim_is_working = false;
@@ -184,6 +185,12 @@ public class Habitat
     TextAreaConsole textArea;
     PipedReader pr;
     PipedWriter pw;
+
+    String host;
+    int port;
+    Socket socket;
+    DataInputStream dis;
+    DataOutputStream dos;
 
     public Habitat()
     {
@@ -215,6 +222,9 @@ public class Habitat
         count = 0;
         pr = new PipedReader();
 
+        host = "localhost";
+        port = 1024;
+
         try
         {
             image = ImageIO.read(new File("./src/Habitat.jpg"));
@@ -229,7 +239,7 @@ public class Habitat
         JPanel controlPanel = new JPanel();
         JPanel ordAIbuttons = new JPanel();
         JPanel albAIbuttons = new JPanel();
-        controlPanel.setLayout(new GridLayout(23, 1, 5, 5));
+        controlPanel.setLayout(new GridLayout(25, 1, 5, 5));
         Container container = frame.getContentPane();
 
         JCheckBox show_info = new JCheckBox("Показывать информацию");
@@ -647,6 +657,64 @@ public class Habitat
             }
         });
 
+        // Соединение клиента с сервером и получение списка клиентов
+        StringBuffer clients = new StringBuffer();
+        try
+        {
+            socket = new Socket(host, port);
+            dis = new DataInputStream(socket.getInputStream());
+            dos = new DataOutputStream(socket.getOutputStream());
+            int c = dis.readInt();
+            for (int i = 0; i < c; i++)
+            {
+                if (i == 0) clients.append(dis.readUTF());
+                else clients.append("\n").append(dis.readUTF());
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        JTextArea mark8 = new JTextArea();
+        mark8.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        mark8.setText("Список клиентов сервера");
+        mark8.setEditable(false);
+        mark8.setFocusable(false);
+        JTextArea clientsJTA = new JTextArea();
+        clientsJTA.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        clientsJTA.setText(clients.toString());
+        clientsJTA.setEditable(false);
+
+        Thread getClients = new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while (true)
+                {
+                    try
+                    {
+                        int c = dis.readInt();
+                        if (c != 0)
+                        {
+                            clients.delete(0, clients.length());
+                            for (int i = 0; i < c; i++)
+                            {
+                                if (i == 0) clients.append(dis.readUTF());
+                                else clients.append("\n").append(dis.readUTF());
+                            }
+                            clientsJTA.setText(clients.toString());
+                        }
+                    }
+                    catch (IOException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
         ordAIbuttons.add(stopOrdinaryAI);
         ordAIbuttons.add(resumeOrdinaryAI);
         albAIbuttons.add(stopAlbinoAI);
@@ -675,6 +743,8 @@ public class Habitat
         controlPanel.add(ordPrt);
         controlPanel.add(mark7);
         controlPanel.add(albPrt);
+        controlPanel.add(mark8);
+        controlPanel.add(new JScrollPane(clientsJTA));
 
         container.add(controlPanel, BorderLayout.WEST); // Номер 0 в контейнере container (не изменять)
         container.add(field, BorderLayout.CENTER); // Номер 1 в контейнере container (не изменять)
@@ -737,6 +807,11 @@ public class Habitat
 
                     config_writer.write(N1 +"\n"+ P1 +"\n"+ N2 +"\n"+ Ordinary_Rabbit.lifetime +"\n"+ Albino.lifetime);
                     config_writer.close();
+
+                    dos.writeInt(1);
+                    dis.close();
+                    dos.close();
+                    socket.close();
                 }
                 catch (IOException ex)
                 {
@@ -744,6 +819,8 @@ public class Habitat
                 }
             }
         });
+
+        getClients.start();
     }
 
     public synchronized int consoleReadCommand(char commandNum)
