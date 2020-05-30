@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -658,18 +660,14 @@ public class Habitat
         });
 
         // Соединение клиента с сервером и получение списка клиентов
-        StringBuffer clients = new StringBuffer();
+        Vector<String> clients = new Vector<>();
         try
         {
             socket = new Socket(host, port);
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
             int c = dis.readInt();
-            for (int i = 0; i < c; i++)
-            {
-                if (i == 0) clients.append(dis.readUTF());
-                else clients.append("\n").append(dis.readUTF());
-            }
+            for (int i = 0; i < c; i++) clients.add(dis.readUTF());
         }
         catch (IOException e)
         {
@@ -681,10 +679,9 @@ public class Habitat
         mark8.setText("Список клиентов сервера");
         mark8.setEditable(false);
         mark8.setFocusable(false);
-        JTextArea clientsJTA = new JTextArea();
-        clientsJTA.setFont(new Font("TimesRoman", Font.ITALIC, 14));
-        clientsJTA.setText(clients.toString());
-        clientsJTA.setEditable(false);
+        JList<String> clientsJL = new JList<>(clients);
+        clientsJL.setFont(new Font("TimesRoman", Font.ITALIC, 14));
+        clientsJL.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         Thread getClients = new Thread(new Runnable()
         {
@@ -698,19 +695,49 @@ public class Habitat
                         int c = dis.readInt();
                         if (c != 0)
                         {
-                            clients.delete(0, clients.length());
-                            for (int i = 0; i < c; i++)
-                            {
-                                if (i == 0) clients.append(dis.readUTF());
-                                else clients.append("\n").append(dis.readUTF());
-                            }
-                            clientsJTA.setText(clients.toString());
+                            clients.clear();
+                            for (int i = 0; i < c; i++) clients.add(dis.readUTF());
                         }
                     }
                     catch (IOException e)
                     {
                         e.printStackTrace();
                     }
+                }
+            }
+        });
+
+        Thread receiveDataPack = new Thread(() -> {
+            while (true)
+            {
+                try {
+                    N1 = Byte.toUnsignedInt(dis.readByte());
+                    P1 = Double.parseDouble(Byte.toString(dis.readByte()));
+                    N2 = Byte.toUnsignedInt(dis.readByte());
+                    Ordinary_Rabbit.lifetime = Byte.toUnsignedLong(dis.readByte());
+                    Albino.lifetime = Byte.toUnsignedLong(dis.readByte());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        clientsJL.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                JList<String> l = (JList)e.getSource();
+                try
+                {
+                    dos.writeInt(2);
+                    dos.writeUTF(l.getSelectedValue());
+                    dos.writeInt(N1);
+                    dos.writeDouble(P1);
+                    dos.writeInt(N2);
+                    dos.writeLong(Ordinary_Rabbit.lifetime);
+                    dos.writeLong(Albino.lifetime);
+                } catch (IOException ex)
+                {
+                    ex.printStackTrace();
                 }
             }
         });
@@ -744,7 +771,7 @@ public class Habitat
         controlPanel.add(mark7);
         controlPanel.add(albPrt);
         controlPanel.add(mark8);
-        controlPanel.add(new JScrollPane(clientsJTA));
+        controlPanel.add(new JScrollPane(clientsJL));
 
         container.add(controlPanel, BorderLayout.WEST); // Номер 0 в контейнере container (не изменять)
         container.add(field, BorderLayout.CENTER); // Номер 1 в контейнере container (не изменять)
@@ -821,6 +848,7 @@ public class Habitat
         });
 
         getClients.start();
+        receiveDataPack.start();
     }
 
     public synchronized int consoleReadCommand(char commandNum)
