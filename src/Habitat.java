@@ -191,8 +191,9 @@ public class Habitat
     String host;
     int port;
     Socket socket;
-    DataInputStream dis;
-    DataOutputStream dos;
+    ObjectOutputStream oos;
+    ObjectInputStream ois;
+    Vector<String> clients;
 
     public Habitat()
     {
@@ -225,7 +226,7 @@ public class Habitat
         pr = new PipedReader();
 
         host = "localhost";
-        port = 1024;
+        port = 48655;
 
         try
         {
@@ -660,16 +661,16 @@ public class Habitat
         });
 
         // Соединение клиента с сервером и получение списка клиентов
-        Vector<String> clients = new Vector<>();
         try
         {
             socket = new Socket(host, port);
-            dis = new DataInputStream(socket.getInputStream());
-            dos = new DataOutputStream(socket.getOutputStream());
-            int c = dis.readInt();
-            for (int i = 0; i < c; i++) clients.add(dis.readUTF());
+            Thread.sleep(2000);
+            oos = new ObjectOutputStream(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+            Request r = (Request) ois.readObject();
+            clients = new Vector<>((Vector)r.data);
         }
-        catch (IOException e)
+        catch (IOException | ClassNotFoundException | InterruptedException e)
         {
             e.printStackTrace();
         }
@@ -683,7 +684,7 @@ public class Habitat
         clientsJL.setFont(new Font("TimesRoman", Font.ITALIC, 14));
         clientsJL.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        Thread getClients = new Thread(new Runnable()
+        Thread getRequest = new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -692,14 +693,26 @@ public class Habitat
                 {
                     try
                     {
-                        int c = dis.readInt();
-                        if (c != 0)
+                        Request request = (Request) ois.readObject();
+                        if (request.operationID == 1)
                         {
-                            clients.clear();
-                            for (int i = 0; i < c; i++) clients.add(dis.readUTF());
+                            clients.add((String)request.data);
+                        }
+                        else if (request.operationID == 2)
+                        {
+                            clients.remove((String)request.data);
+                        }
+                        else if (request.operationID == 3)
+                        {
+                            DataPack dataPack = (DataPack) request.data;
+                            N1 = dataPack.N1;
+                            P1 = dataPack.P1;
+                            N2 = dataPack.N2;
+                            Ordinary_Rabbit.lifetime = dataPack.ORLifetime;
+                            Albino.lifetime = dataPack.ALifetime;
                         }
                     }
-                    catch (IOException e)
+                    catch (IOException | ClassNotFoundException e)
                     {
                         e.printStackTrace();
                     }
@@ -707,38 +720,14 @@ public class Habitat
             }
         });
 
-        Thread receiveDataPack = new Thread(() -> {
-            while (true)
+        clientsJL.addListSelectionListener(e -> {
+            JList<String> l = (JList)e.getSource();
+            try
             {
-                try {
-                    N1 = Byte.toUnsignedInt(dis.readByte());
-                    P1 = Double.parseDouble(Byte.toString(dis.readByte()));
-                    N2 = Byte.toUnsignedInt(dis.readByte());
-                    Ordinary_Rabbit.lifetime = Byte.toUnsignedLong(dis.readByte());
-                    Albino.lifetime = Byte.toUnsignedLong(dis.readByte());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        clientsJL.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                JList<String> l = (JList)e.getSource();
-                try
-                {
-                    dos.writeInt(2);
-                    dos.writeUTF(l.getSelectedValue());
-                    dos.writeInt(N1);
-                    dos.writeDouble(P1);
-                    dos.writeInt(N2);
-                    dos.writeLong(Ordinary_Rabbit.lifetime);
-                    dos.writeLong(Albino.lifetime);
-                } catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                }
+                oos.writeObject(new Request(3, new DataPack(N1, P1, N2, Ordinary_Rabbit.lifetime, Albino.lifetime), l.getSelectedValue()));
+            } catch (IOException ex)
+            {
+                ex.printStackTrace();
             }
         });
 
@@ -835,9 +824,9 @@ public class Habitat
                     config_writer.write(N1 +"\n"+ P1 +"\n"+ N2 +"\n"+ Ordinary_Rabbit.lifetime +"\n"+ Albino.lifetime);
                     config_writer.close();
 
-                    dos.writeInt(1);
-                    dis.close();
-                    dos.close();
+                    oos.writeObject(new Request(2));
+                    ois.close();
+                    oos.close();
                     socket.close();
                 }
                 catch (IOException ex)
@@ -847,8 +836,7 @@ public class Habitat
             }
         });
 
-        getClients.start();
-        receiveDataPack.start();
+        getRequest.start();
     }
 
     public synchronized int consoleReadCommand(char commandNum)
