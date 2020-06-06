@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 
 public final class WindowController {
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-    private Habitat habitat = null;
+    private Habitat habitat;
 
     public final void prepare(Habitat habitat) {
         this.habitat = habitat;

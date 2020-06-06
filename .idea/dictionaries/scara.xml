@@ -2,6 +2,7 @@
   <dictionary name="scara">
     <words>
       <w>gprob</w>
+      <w>multicast</w>
     </words>
   </dictionary>
 </component>

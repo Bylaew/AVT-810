@@ -5,18 +5,15 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static nstu.javaprog.util.ImageReader.readImage;
 
 final class Canvas extends JPanel {
     private static final BufferedImage BACKGROUND_IMAGE = readImage("./resources/background.png");
-    private final TextArea statistic = new TextArea(4, 30);
-    private final TextField currentTime = new TextField(5);
+    private final JTextArea statistic = new JTextArea(4, 30);
+    private final JTextField currentTime = new JTextField(5);
     private final JProgressBar progressBar = new JProgressBar();
-    private final CanvasUpdater canvasUpdater = new CanvasUpdater();
-    private ViewContainer container = null;
+    private ViewContainer container;
 
     Canvas() {
         setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -44,7 +41,6 @@ final class Canvas extends JPanel {
 
     final void prepare(ViewContainer container) {
         this.container = container;
-        canvasUpdater.schedule();
     }
 
     private void configureListeners() {
@@ -72,6 +68,9 @@ final class Canvas extends JPanel {
                     case KeyEvent.VK_C:
                         container.changeConsoleView();
                         break;
+                    case KeyEvent.VK_N:
+                        container.activateNetwork();
+                        break;
                 }
             }
         });
@@ -87,27 +86,21 @@ final class Canvas extends JPanel {
         });
     }
 
-    void activateGeneration() {
-        activateUpdater();
-    }
-
     void deactivateGeneration() {
-        deactivateUpdater();
         currentTime.setText(container.getCurrentTime());
+        statistic.setText(container.getStatistic());
         revalidate();
         repaint();
     }
 
     void showStatistic() {
         statistic.setVisible(true);
+        revalidate();
     }
 
     void hideStatistic() {
         statistic.setVisible(false);
-    }
-
-    void updateStatistic() {
-        statistic.setText(container.getStatistic());
+        revalidate();
     }
 
     void showTime() {
@@ -120,22 +113,6 @@ final class Canvas extends JPanel {
         revalidate();
     }
 
-    void updateTime() {
-        currentTime.setText(container.getCurrentTime());
-    }
-
-    boolean isUpdaterActivated() {
-        return canvasUpdater.isActivated();
-    }
-
-    void activateUpdater() {
-        canvasUpdater.activate();
-    }
-
-    void deactivateUpdater() {
-        canvasUpdater.deactivate();
-    }
-
     void activateProgressBar() {
         progressBar.setVisible(true);
         revalidate();
@@ -146,34 +123,7 @@ final class Canvas extends JPanel {
         revalidate();
     }
 
-    private class CanvasUpdater {
-        private volatile boolean isSuspended = true;
-
-        void schedule() {
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (!isSuspended) {
-                        SwingUtilities.invokeLater(() -> {
-                            repaint();
-                            if (currentTime.isVisible())
-                                updateTime();
-                        });
-                    }
-                }
-            }, 0, 33);
-        }
-
-        void activate() {
-            isSuspended = false;
-        }
-
-        void deactivate() {
-            isSuspended = true;
-        }
-
-        boolean isActivated() {
-            return !isSuspended;
-        }
+    void updateTime() {
+        currentTime.setText(container.getCurrentTime());
     }
 }

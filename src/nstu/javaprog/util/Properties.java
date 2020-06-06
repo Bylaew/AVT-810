@@ -7,6 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 public final class Properties implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final float chance;
     private final int delay;
     private final int maxSpeed;
@@ -132,6 +133,16 @@ public final class Properties implements Serializable {
 
     public int getPriority() {
         return priority;
+    }
+
+    @Override
+    public String toString() {
+        return "Probability: " + chance + "\n" +
+                "Delay: " + delay + "\n" +
+                "Minimal speed: " + minSpeed + "\n" +
+                "Maximal speed: " + maxSpeed + "\n" +
+                "Lifetime: " + lifetime + "\n" +
+                "Priority: " + priority;
     }
 
     private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {

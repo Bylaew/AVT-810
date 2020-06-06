@@ -1,5 +1,6 @@
 package nstu.javaprog.view;
 
+import nstu.javaprog.exception.IllegalFormatException;
 import nstu.javaprog.exception.IllegalPropertiesException;
 import nstu.javaprog.util.Properties;
 
@@ -37,19 +38,20 @@ final class EnvironmentSettings extends JDialog {
             "10"
     };
 
-    private final TextField delay = new TextField(10);
-    private final TextField minSpeed = new TextField(10);
-    private final TextField maxSpeed = new TextField(10);
-    private final TextField lifetime = new TextField(10);
+    private final JTextField delay = new JTextField(10);
+    private final JTextField minSpeed = new JTextField(10);
+    private final JTextField maxSpeed = new JTextField(10);
+    private final JTextField lifetime = new JTextField(10);
     private final JComboBox<String> chance = new JComboBox<>(CHANCE_VALUES);
     private final JComboBox<String> priority = new JComboBox<>(PRIORITY_VALUES);
     private final JButton accept = new JButton("Accept");
 
-    EnvironmentSettings(Frame parent, Properties properties, Consumer<Properties> consumer) {
-        super(parent, "Settings", true);
+    EnvironmentSettings(Component parent, String title, Properties properties, Consumer<Properties> setter) {
+        super((Frame) null, title, true);
         setLocationRelativeTo(parent);
         setResizable(false);
         setLayout(new GridLayout(7, 2, 2, 1));
+        setSize(new Dimension(300, 240));
 
         add(new JLabel("Delay"));
         add(delay);
@@ -66,22 +68,26 @@ final class EnvironmentSettings extends JDialog {
         add(new JLabel());
         add(accept);
 
-        setProperties(properties);
-        configureListeners(consumer);
-        pack();
+        setPropertiesToForm(properties);
+        configureListeners(setter);
+    }
+
+    @Override
+    public String toString() {
+        return getTitle();
     }
 
     void activate() {
         setVisible(true);
     }
 
-    private void configureListeners(Consumer<Properties> consumer) {
+    private void configureListeners(Consumer<Properties> setter) {
         accept.addActionListener(event -> {
             try {
                 validateData();
-                consumer.accept(getProperties());
+                setter.accept(getPropertiesFromForm());
                 dispose();
-            } catch (IllegalPropertiesException exception) {
+            } catch (IllegalPropertiesException | IllegalFormatException exception) {
                 JOptionPane.showMessageDialog(
                         this,
                         exception.getMessage(),
@@ -99,33 +105,33 @@ final class EnvironmentSettings extends JDialog {
         });
     }
 
-    private void validateData() {
+    private void validateData() throws IllegalFormatException {
         if (!delay.getText().matches("\\d{1,2}"))
-            throw new IllegalArgumentException(
+            throw new IllegalFormatException(
                     "Invalid delay format\n" +
                             "Valid range from 1 to 99"
             );
 
         if (!minSpeed.getText().matches("\\d"))
-            throw new IllegalArgumentException(
+            throw new IllegalFormatException(
                     "Invalid minimal speed format\n" +
                             "Valid range from 1 to 9"
             );
 
         if (!maxSpeed.getText().matches("\\d"))
-            throw new IllegalArgumentException(
+            throw new IllegalFormatException(
                     "Invalid maximal speed format\n" +
                             "Valid range from 1 to 9"
             );
 
         if (!maxSpeed.getText().matches("\\d{1,2}"))
-            throw new IllegalArgumentException(
+            throw new IllegalFormatException(
                     "Invalid lifetime format\n" +
                             "Valid range from 1 to 99"
             );
     }
 
-    private Properties getProperties() throws IllegalPropertiesException {
+    private Properties getPropertiesFromForm() throws IllegalPropertiesException {
         return Properties.buildPropertiesWithCheckedException(
                 (float) chance.getSelectedIndex() / 10.f,
                 Integer.parseInt(delay.getText()),
@@ -136,7 +142,7 @@ final class EnvironmentSettings extends JDialog {
         );
     }
 
-    private void setProperties(Properties properties) {
+    private void setPropertiesToForm(Properties properties) {
         delay.setText(Integer.toString(properties.getDelay()));
         chance.setSelectedIndex(Math.round(properties.getChance() * 10.f));
         priority.setSelectedIndex(properties.getPriority() - 1);

@@ -15,9 +15,9 @@ final class Menu extends JPanel {
     private final JCheckBox hideTime = new JCheckBox("Hide the time");
     private final JCheckBox statisticAsDialog = new JCheckBox("Statistic as dialog");
     private final JButton aliveEntities = new JButton("Show alive entities");
-    private final JButton goldSettings = new JButton("Gold settings");
-    private final JButton guppySettings = new JButton("Guppy settings");
-    private ViewContainer container = null;
+    private final JButton goldProperties = new JButton("Gold properties");
+    private final JButton guppyProperties = new JButton("Guppy properties");
+    private ViewContainer container;
 
     Menu() {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -40,8 +40,8 @@ final class Menu extends JPanel {
         hideTime.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         statisticAsDialog.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         aliveEntities.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        goldSettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        guppySettings.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        goldProperties.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        guppyProperties.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
 
         activate.setFocusable(false);
         deactivate.setFocusable(false);
@@ -53,8 +53,8 @@ final class Menu extends JPanel {
         hideTime.setFocusable(false);
         statisticAsDialog.setFocusable(false);
         aliveEntities.setFocusable(false);
-        goldSettings.setFocusable(false);
-        guppySettings.setFocusable(false);
+        goldProperties.setFocusable(false);
+        guppyProperties.setFocusable(false);
 
         LineBorder border = new LineBorder(Color.BLACK);
         JPanel top = new JPanel();
@@ -85,8 +85,8 @@ final class Menu extends JPanel {
         add(middle);
 
         bot.setBorder(border);
-        bot.add(goldSettings);
-        bot.add(guppySettings);
+        bot.add(goldProperties);
+        bot.add(guppyProperties);
         add(bot);
 
         configureListeners();
@@ -115,11 +115,46 @@ final class Menu extends JPanel {
 
         statisticAsDialog.addActionListener(event -> container.changeStatisticView(this));
 
-        aliveEntities.addActionListener(event -> container.showAliveEntities());
+        aliveEntities.addActionListener(event -> {
+            container.commitAndDeactivate();
+            JOptionPane.showMessageDialog(
+                    container,
+                    new JScrollPane(
+                            new JList<>(container.getAliveEntities()
+                                    .stream()
+                                    .map(pair -> "Entity id " + pair.getKey() + ", created at " + pair.getValue())
+                                    .toArray()
+                            ),
+                            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
+                    ),
+                    "Alive entities",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            container.rollback();
+        });
 
-        goldSettings.addActionListener(event -> container.changeGoldSettings());
+        goldProperties.addActionListener(event -> {
+            container.commitAndDeactivate();
+            new EnvironmentSettings(
+                    container,
+                    "Gold settings",
+                    container.getGoldProperties(),
+                    container::setGoldProperties
+            ).activate();
+            container.rollback();
+        });
 
-        guppySettings.addActionListener(event -> container.changeGuppySettings());
+        guppyProperties.addActionListener(event -> {
+            container.commitAndDeactivate();
+            new EnvironmentSettings(
+                    container,
+                    "Guppy settings",
+                    container.getGuppyProperties(),
+                    container::setGuppyProperties
+            ).activate();
+            container.rollback();
+        });
     }
 
     void activateGeneration() {

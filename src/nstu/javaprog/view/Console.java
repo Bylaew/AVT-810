@@ -1,5 +1,7 @@
 package nstu.javaprog.view;
 
+import nstu.javaprog.util.Properties;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -18,8 +20,8 @@ final class Console extends JDialog {
     private final ViewContainer container;
     private final ExecutorService executorService = Executors.newFixedThreadPool(1);
 
-    Console(Frame parent, ViewContainer container) throws IOException {
-        super(parent, "Console", false);
+    Console(ViewContainer container) throws IOException {
+        super((Frame) null, "Console", false);
         this.container = container;
 
         PipedInputStream inputStream = new PipedInputStream();
@@ -28,7 +30,7 @@ final class Console extends JDialog {
         writer = new PrintWriter(outputStream, true);
         consoleService = new ConsoleService(inputStream, outputStream);
 
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(container);
         setBounds(600, 200, 150, 130);
         setResizable(false);
 
@@ -129,7 +131,7 @@ final class Console extends JDialog {
             }
         }
 
-        private final class ParsingTask implements Runnable {
+        private class ParsingTask implements Runnable {
             @Override
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
@@ -141,7 +143,7 @@ final class Console extends JDialog {
                 }
             }
 
-            private String parse(String request) {
+            String parse(String request) {
                 String reply;
                 String[] split = request.split(" ");
                 try {
@@ -152,7 +154,17 @@ final class Console extends JDialog {
                     } else {
                         if (split.length == 2) {
                             try {
-                                container.setGoldProbability(Float.parseFloat(split[1]));
+                                Properties old = container.getGoldProperties();
+                                container.setGoldProperties(
+                                        Properties.buildPropertiesWithCheckedException(
+                                                Float.parseFloat(split[1]),
+                                                old.getDelay(),
+                                                old.getMinSpeed(),
+                                                old.getMaxSpeed(),
+                                                old.getLifetime(),
+                                                old.getPriority()
+                                        )
+                                );
                             } catch (NumberFormatException exception) {
                                 throw new IllegalArgumentException(
                                         "2nd parameter must be a numeric value"
@@ -160,7 +172,7 @@ final class Console extends JDialog {
                             }
                             reply = "New goldfish spawn probability was set";
                         } else
-                            reply = "Goldfish spawn probability = " + container.getGoldProbability();
+                            reply = "Goldfish spawn probability = " + container.getGoldProperties().getChance();
                     }
                 } catch (Exception exception) {
                     reply = exception.getMessage();

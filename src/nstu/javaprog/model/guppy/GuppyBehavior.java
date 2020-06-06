@@ -13,5 +13,6 @@ public final class GuppyBehavior extends Behavior {
             if (entity instanceof Guppy)
                 entity.move();
         });
+        view.drawEntities();
     }
 }

@@ -1,6 +1,7 @@
 package nstu.javaprog.view;
 
 import javax.swing.*;
+import java.io.File;
 
 final class MenuBar extends JMenuBar {
     private final JMenuItem open = new JMenuItem("Open");
@@ -14,7 +15,7 @@ final class MenuBar extends JMenuBar {
     private final JCheckBoxMenuItem showTime = new JCheckBoxMenuItem("Show the time");
     private final JCheckBoxMenuItem hideTime = new JCheckBoxMenuItem("Hide the time");
     private final JCheckBoxMenuItem statisticAsDialog = new JCheckBoxMenuItem("Statistic as dialog");
-    private ViewContainer container = null;
+    private ViewContainer container;
 
     MenuBar() {
         deactivate.setEnabled(false);
@@ -56,9 +57,67 @@ final class MenuBar extends JMenuBar {
     }
 
     private void configureListeners() {
-        open.addActionListener(event -> container.open());
+        open.addActionListener(event -> {
+            container.commitAndDeactivate();
+            JFileChooser fileChooser = new JFileChooser(new File("./persistence"));
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                container.strongDeactivateGeneration();
+                container.activateProgressBar();
+                container.open(fileChooser.getSelectedFile(), (exception) ->
+                        SwingUtilities.invokeLater(() -> {
+                            if (exception == null) {
+                                container.deactivateProgressBar();
+                                container.updateCanvas();
+                                JOptionPane.showMessageDialog(
+                                        this,
+                                        "File was successfully opened",
+                                        "Open",
+                                        JOptionPane.INFORMATION_MESSAGE
+                                );
+                            } else {
+                                JOptionPane.showMessageDialog(
+                                        this,
+                                        exception.getMessage(),
+                                        "Open error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                                container.rollback();
+                            }
+                        })
+                );
+            } else
+                container.rollback();
+        });
 
-        save.addActionListener(event -> container.save());
+        save.addActionListener(event -> {
+            container.commitAndDeactivate();
+            JFileChooser fileChooser = new JFileChooser(new File("./persistence"));
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                container.activateProgressBar();
+                container.save(fileChooser.getSelectedFile(), (exception) ->
+                        SwingUtilities.invokeLater(() -> {
+                            if (exception == null) {
+                                container.deactivateProgressBar();
+                                JOptionPane.showMessageDialog(
+                                        this,
+                                        "File was successfully saved",
+                                        "Save",
+                                        JOptionPane.INFORMATION_MESSAGE
+                                );
+                            } else {
+                                JOptionPane.showMessageDialog(
+                                        this,
+                                        exception.getMessage(),
+                                        "Save error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                            }
+                            container.rollback();
+                        })
+                );
+            } else
+                container.rollback();
+        });
 
         activate.addActionListener(event -> container.activateGeneration());
 

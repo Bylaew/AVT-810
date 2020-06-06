@@ -8,6 +8,7 @@ import nstu.javaprog.model.guppy.GuppyBehavior;
 import nstu.javaprog.model.guppy.GuppyProbabilisticCreator;
 import nstu.javaprog.model.repository.InMemoryRepository;
 import nstu.javaprog.util.Properties;
+import nstu.javaprog.view.ViewContainer;
 
 import java.io.*;
 import java.util.*;
@@ -16,12 +17,13 @@ import java.util.function.Consumer;
 
 public final class Habitat {
     private final TickGenerator generator = new TickGenerator();
-    private ProbabilisticCreator goldCreator = null;
-    private ProbabilisticCreator guppyCreator = null;
-    private Behavior goldBehavior = null;
-    private Behavior guppyBehavior = null;
+    private ProbabilisticCreator goldCreator;
+    private ProbabilisticCreator guppyCreator;
+    private Behavior goldBehavior;
+    private Behavior guppyBehavior;
+    private ViewContainer view;
 
-    public final void prepare() {
+    public final void prepare(ViewContainer view) {
         try (Scanner scanner = new Scanner(new File("./resources/habitat.cfg"))) {
             scanner.useLocale(Locale.US);
             goldCreator = new GoldProbabilisticCreator(Properties.buildPropertiesWithCheckedException(
@@ -63,14 +65,16 @@ public final class Habitat {
                     Thread.NORM_PRIORITY
             ));
         }
+        this.view = view;
+
         guppyCreator.prepare(this);
         goldCreator.prepare(this);
 
         goldBehavior = new GoldBehavior(33);
-        goldBehavior.prepare(this);
+        goldBehavior.prepare(this, view);
 
         guppyBehavior = new GuppyBehavior(33);
-        guppyBehavior.prepare(this);
+        guppyBehavior.prepare(this, view);
 
         generator.schedule();
     }
@@ -201,8 +205,8 @@ public final class Habitat {
     }
 
     private class TickGenerator {
-        private final AtomicInteger time = new AtomicInteger();
-        private volatile boolean isSuspended = true;
+        final AtomicInteger time = new AtomicInteger();
+        volatile boolean isSuspended = true;
 
         void schedule() {
             new Timer().schedule(new TimerTask() {
@@ -220,6 +224,7 @@ public final class Habitat {
                             InMemoryRepository.INSTANCE.add(entity, getTime());
 
                         time.incrementAndGet();
+                        view.updateTime();
                     }
                 }
             }, 0, 1000);

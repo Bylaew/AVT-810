@@ -8,17 +8,17 @@ import javax.swing.*;
 
 public final class Launcher {
     public static void main(String[] args) {
-        final Habitat habitat = new Habitat();
-        habitat.prepare();
+        Habitat habitat = new Habitat();
 
-        final WindowController windowController = new WindowController();
+        WindowController windowController = new WindowController();
         windowController.prepare(habitat);
 
         SwingUtilities.invokeLater(() -> {
             ViewContainer viewContainer = new ViewContainer("Aquarium");
-            ViewContainer.setDefaultLookAndFeelDecorated(true);
             viewContainer.prepare(windowController);
             viewContainer.setVisible(true);
+
+            new Thread(() -> habitat.prepare(viewContainer)).start();
         });
     }
 }

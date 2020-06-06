@@ -1,19 +1,23 @@
 package nstu.javaprog.model;
 
+import nstu.javaprog.view.ViewContainer;
+
 import java.util.concurrent.TimeUnit;
 
 public abstract class Behavior {
     private final Object mutex = new Object();
     private final Thread thread;
-    protected Habitat habitat = null;
+    protected Habitat habitat;
+    protected ViewContainer view;
     private volatile boolean isSuspended = true;
 
     public Behavior(int period) {
         thread = new Thread(new Task(period));
     }
 
-    final void prepare(Habitat habitat) {
+    final void prepare(Habitat habitat, ViewContainer view) {
         this.habitat = habitat;
+        this.view = view;
         thread.start();
     }
 
@@ -39,7 +43,7 @@ public abstract class Behavior {
     }
 
     private class Task implements Runnable {
-        private final int period;
+        final int period;
 
         Task(int period) {
             this.period = period;

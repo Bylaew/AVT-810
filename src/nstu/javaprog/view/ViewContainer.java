@@ -1,7 +1,7 @@
 package nstu.javaprog.view;
 
+import javafx.util.Pair;
 import nstu.javaprog.controller.WindowController;
-import nstu.javaprog.exception.IllegalPropertiesException;
 import nstu.javaprog.model.Fish;
 import nstu.javaprog.util.Coordinates;
 import nstu.javaprog.util.Properties;
@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Consumer;
 
 public final class ViewContainer extends JFrame {
@@ -20,10 +21,11 @@ public final class ViewContainer extends JFrame {
     private final Canvas canvas = new Canvas();
     private final Menu menu = new Menu();
     private final MenuBar menuBar = new MenuBar();
-    private WindowController windowController = null;
-    private Console console = null;
     private ControllerStatement statement = new ControllerStatement();
-    private boolean isTwoStepDeactivated = false;
+    private WindowController windowController;
+    private Console console;
+    private Network network;
+    private boolean isTwoStepDeactivated;
 
     public ViewContainer(String title) {
         super(title);
@@ -56,6 +58,8 @@ public final class ViewContainer extends JFrame {
                 windowController.saveGenerationSettings();
                 if (console != null)
                     console.deactivate();
+                if (network != null)
+                    network.deactivate();
             }
         });
     }
@@ -67,12 +71,19 @@ public final class ViewContainer extends JFrame {
         menuBar.prepare(this);
     }
 
+    public void drawEntities() {
+        SwingUtilities.invokeLater(canvas::repaint);
+    }
+
+    public void updateTime() {
+        canvas.updateTime();
+    }
+
     boolean isGenerationActivated() {
         return windowController.isGenerationActivated();
     }
 
     void activateGeneration() {
-        canvas.activateGeneration();
         canvas.hideStatistic();
         menu.activateGeneration();
         menuBar.activateGeneration();
@@ -81,34 +92,38 @@ public final class ViewContainer extends JFrame {
         windowController.activateGuppies();
     }
 
-    private void deactivateAll() {
-        canvas.deactivateGeneration();
-        canvas.showStatistic();
-        canvas.updateStatistic();
-        menu.deactivateGeneration();
-        menuBar.deactivateGeneration();
+    private void deactivateAllExecutors() {
         windowController.deactivateGeneration();
         windowController.deactivateGolds();
         windowController.deactivateGuppies();
+    }
+
+    void strongDeactivateGeneration() {
+        canvas.deactivateGeneration();
+        menu.deactivateGeneration();
+        menuBar.deactivateGeneration();
+        deactivateAllExecutors();
         windowController.reset();
     }
 
     void deactivateGeneration() {
         if (isTwoStepDeactivated) {
-            statement.commit();
-            deactivateAllExecutors();
+            statement.commitAndDeactivate();
             int option = JOptionPane.showConfirmDialog(
                     this,
                     getStatistic(),
                     "Deactivate generation",
                     JOptionPane.OK_CANCEL_OPTION
             );
-            if (option == JOptionPane.OK_OPTION)
-                deactivateAll();
-            else
+            if (option == JOptionPane.OK_OPTION) {
+                strongDeactivateGeneration();
+                canvas.showStatistic();
+            } else
                 statement.rollback();
-        } else
-            deactivateAll();
+        } else {
+            strongDeactivateGeneration();
+            canvas.showStatistic();
+        }
     }
 
     void activateGolds() {
@@ -147,11 +162,8 @@ public final class ViewContainer extends JFrame {
         menuBar.hideTime();
     }
 
-    private void deactivateAllExecutors() {
-        canvas.deactivateUpdater();
-        windowController.deactivateGeneration();
-        windowController.deactivateGolds();
-        windowController.deactivateGuppies();
+    List<Pair<Long, Integer>> getAliveEntities() {
+        return windowController.getAliveEntities();
     }
 
     void changeStatisticView(JComponent component) {
@@ -166,72 +178,45 @@ public final class ViewContainer extends JFrame {
         windowController.doForEachEntity(consumer);
     }
 
-    void changeGoldSettings() {
-        statement.commit();
-        deactivateAllExecutors();
-        new EnvironmentSettings(
-                this,
-                windowController.getGoldProperties(),
-                windowController::setGoldProperties
-        ).activate();
+    Properties getGoldProperties() {
+        return windowController.getGoldProperties();
+    }
+
+    void setGoldProperties(Properties properties) {
+        windowController.setGoldProperties(properties);
+    }
+
+    Properties getGuppyProperties() {
+        return windowController.getGuppyProperties();
+    }
+
+    void setGuppyProperties(Properties properties) {
+        windowController.setGuppyProperties(properties);
+    }
+
+    String getCurrentTime() {
+        return Integer.toString(windowController.getCurrentTime());
+    }
+
+    String getStatistic() {
+        return windowController.getStatistic();
+    }
+
+    void commitAndDeactivate() {
+        statement.commitAndDeactivate();
+    }
+
+    void rollback() {
         statement.rollback();
-    }
-
-    void changeGuppySettings() {
-        statement.commit();
-        deactivateAllExecutors();
-        new EnvironmentSettings(
-                this,
-                windowController.getGuppyProperties(),
-                windowController::setGuppyProperties
-        ).activate();
-        statement.rollback();
-    }
-
-    void showAliveEntities() {
-        statement.commit();
-        deactivateAllExecutors();
-        JOptionPane.showMessageDialog(
-                this,
-                new JScrollPane(
-                        new JList<>(windowController.getAliveEntities()
-                                .stream()
-                                .map(pair -> "Entity id " + pair.getKey() + ", created at " + pair.getValue())
-                                .toArray()
-                        ),
-                        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
-                ),
-                "Alive entities",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-        statement.rollback();
-    }
-
-    float getGoldProbability() {
-        return windowController.getGoldProperties().getChance();
-    }
-
-    void setGoldProbability(float probability) throws IllegalPropertiesException {
-        Properties old = windowController.getGoldProperties();
-        windowController.setGoldProperties(Properties.buildPropertiesWithCheckedException(
-                probability,
-                old.getDelay(),
-                old.getMinSpeed(),
-                old.getMaxSpeed(),
-                old.getLifetime(),
-                old.getPriority()
-        ));
     }
 
     void changeConsoleView() {
         if (console == null) {
             try {
-                console = new Console(this, this);
+                console = new Console(this);
                 console.activate();
             } catch (IOException exception) {
-                statement.commit();
-                deactivateAllExecutors();
+                statement.commitAndDeactivate();
                 JOptionPane.showMessageDialog(
                         this,
                         exception.getMessage(),
@@ -244,96 +229,52 @@ public final class ViewContainer extends JFrame {
             console.changeVisibleState();
     }
 
-    String getCurrentTime() {
-        return Integer.toString(windowController.getCurrentTime());
+    void activateNetwork() {
+        if (network == null) {
+            network = new Network(this);
+            network.activate();
+        }
     }
 
-    String getStatistic() {
-        return windowController.getStatistic();
+    void deactivateNetwork() {
+        if (network != null)
+            network = null;
     }
 
-    void open() {
-        statement.commit();
-        deactivateAllExecutors();
-        JFileChooser fileChooser = new JFileChooser(new File("./persistence"));
-        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            deactivateAll();
-            canvas.hideStatistic();
-            canvas.activateProgressBar();
-            windowController.open(fileChooser.getSelectedFile(), (exception) ->
-                    SwingUtilities.invokeLater(() -> {
-                        if (exception == null) {
-                            canvas.updateTime();
-                            canvas.deactivateProgressBar();
-                            canvas.repaint();
-                            JOptionPane.showMessageDialog(
-                                    this,
-                                    "File was successfully opened",
-                                    "Open",
-                                    JOptionPane.INFORMATION_MESSAGE
-                            );
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    this,
-                                    exception.getMessage(),
-                                    "Open error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                            statement.rollback();
-                        }
-                    })
-            );
-        } else
-            statement.rollback();
+    void activateProgressBar() {
+        canvas.activateProgressBar();
     }
 
-    void save() {
-        statement.commit();
-        deactivateAllExecutors();
-        JFileChooser fileChooser = new JFileChooser(new File("./persistence"));
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            canvas.activateProgressBar();
-            windowController.save(fileChooser.getSelectedFile(), (exception) ->
-                    SwingUtilities.invokeLater(() -> {
-                        if (exception == null) {
-                            canvas.deactivateProgressBar();
-                            JOptionPane.showMessageDialog(
-                                    this,
-                                    "File was successfully saved",
-                                    "Save",
-                                    JOptionPane.INFORMATION_MESSAGE
-                            );
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    this,
-                                    exception.getMessage(),
-                                    "Save error",
-                                    JOptionPane.ERROR_MESSAGE
-                            );
-                        }
-                        statement.rollback();
-                    })
-            );
-        } else
-            statement.rollback();
+    void deactivateProgressBar() {
+        canvas.deactivateProgressBar();
     }
 
-    private final class ControllerStatement {
-        boolean isUpdaterActivated;
+    void updateCanvas() {
+        canvas.repaint();
+        canvas.revalidate();
+    }
+
+    void open(File file, Consumer<Exception> callback) {
+        windowController.open(file, callback);
+    }
+
+    void save(File file, Consumer<Exception> callback) {
+        windowController.save(file, callback);
+    }
+
+    private class ControllerStatement {
         boolean isGenerationActivated;
         boolean isGoldsActivated;
         boolean isGuppiesActivated;
 
-        void commit() {
-            isUpdaterActivated = canvas.isUpdaterActivated();
+        void commitAndDeactivate() {
             isGenerationActivated = windowController.isGenerationActivated();
             isGoldsActivated = windowController.isGoldsActivated();
             isGuppiesActivated = windowController.isGuppiesActivated();
+            deactivateAllExecutors();
         }
 
         void rollback() {
-            if (isUpdaterActivated)
-                canvas.activateUpdater();
             if (isGenerationActivated)
                 windowController.activateGeneration();
             if (isGoldsActivated)

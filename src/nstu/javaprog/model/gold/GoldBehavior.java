@@ -13,5 +13,6 @@ public final class GoldBehavior extends Behavior {
             if (entity instanceof Gold)
                 entity.move();
         });
+        view.drawEntities();
     }
 }
