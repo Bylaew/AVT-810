@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.Vector;
 
+
 public class Singleton implements Serializable {
     private static Singleton instance;
     public  Vector<Vehicle> vehicles = new Vector<>(1000);

@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="AVT-810:jar">
+  <artifact type="jar" build-on-make="true" name="client">
     <output-path>$PROJECT_DIR$</output-path>
     <root id="archive" name="AVT-810.jar">
       <element id="module-output" name="AVT-810" />

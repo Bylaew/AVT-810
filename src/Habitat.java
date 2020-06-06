@@ -13,6 +13,9 @@ public class Habitat {
     MenuBar mainMenu;
     JFrame frame;
     ImagePanel window;
+    CarAI carAI = new CarAI(this);
+    MotoAI motoAI = new MotoAI(this);
+    Client client;
     private int width;
     private int height;
     private Timer startTime;
@@ -24,24 +27,23 @@ public class Habitat {
     private boolean isTimeAllowed;
     private JLabel labelTime;
     private long carLifetime = 1500, motoLifetime = 500;
-    CarAI carAI = new CarAI(this);
-    MotoAI motoAI = new MotoAI(this);
 
     public void init(float N1, float N2, float P1, float P2) {
+
 
 
         concreteFactory = new ConcreteFactory();
         carAI.start();
         motoAI.start();
 
-        this.N1 = N1*100;
-        this.N2 = N2*100;
+        this.N1 = N1 * 100;
+        this.N2 = N2 * 100;
         this.P1 = P1;
         this.P2 = P2;
 
         readConfig();
 
-        frame = new JFrame("Lab 4");
+        frame = new JFrame("Lab 6");
 
 
         window = new ImagePanel();
@@ -56,7 +58,7 @@ public class Habitat {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         double w = screenSize.getWidth();
         double h = screenSize.getHeight();
-        window.setPreferredSize(new Dimension((int)(w/2), (int)(h/2)));
+        window.setPreferredSize(new Dimension((int) (w / 2.5), (int) (h / 2.5)));
 
 
         labelTime = new JLabel();
@@ -132,11 +134,18 @@ public class Habitat {
 
         sideMenu.UpdateButtons();
         mainMenu.UpdateButtons();
-
         frame.setVisible(true);
         window.requestFocus();
         width = window.getWidth();
         height = window.getHeight();
+
+        client = new Client(Habitat.this);
+        sideMenu.swapbutton.addActionListener(e->{
+            int id = (int) sideMenu.connections.getSelectedItem();
+            System.out.println("Кнопка нажата");
+            client.send_objects(id);
+        });
+
     }
 
     private void pause() {
@@ -188,21 +197,22 @@ public class Habitat {
 
             }
         }*/
-            Vehicle cur;
-            Iterator<Vehicle> iter = singleton.vehicles.iterator();
-            synchronized (iter){
-            while (iter.hasNext()){
+        Vehicle cur;
+        Iterator<Vehicle> iter = singleton.vehicles.iterator();
+        synchronized (iter) {
+            while (iter.hasNext()) {
                 cur = iter.next();
-                if (cur.getLifeTime() + cur.getBirthTime() <= timeFromStart ){
+                if (cur.getLifeTime() + cur.getBirthTime() <= timeFromStart) {
                     singleton.Map.remove(cur.getId());
                     singleton.idSet.remove(cur.getId());
                     iter.remove();
                 }
-            }}
+            }
+        }
         redraw();
     }
 
-    private void redraw(){
+    public void redraw() {
         BufferedImage buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics offscreenGraphics = buffer.getGraphics();
         offscreenGraphics.setColor(window.getBackground());
@@ -216,19 +226,19 @@ public class Habitat {
         window.repaint();
     }
 
-    private void saveConfig(){
+    private void saveConfig() {
         try (FileWriter fw = new FileWriter("config.txt")) {
-            fw.write(N1 +"\n"+ P1 +"\n"+ N2 +"\n");
-            fw.write((isStatsAllowed)+"\n");
-            fw.write((isTimeAllowed)+"\n");
-            fw.write((carLifetime)+"\n");
-            fw.write((motoLifetime)+"\n");
+            fw.write(N1 + "\n" + P1 + "\n" + N2 + "\n");
+            fw.write((isStatsAllowed) + "\n");
+            fw.write((isTimeAllowed) + "\n");
+            fw.write((carLifetime) + "\n");
+            fw.write((motoLifetime) + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void readConfig(){
+    private void readConfig() {
         try (FileReader fw = new FileReader("config.txt")) {
             Scanner scanner = new Scanner(fw);
             if (scanner.hasNextLine()) N1 = Float.parseFloat(scanner.nextLine());
@@ -243,20 +253,20 @@ public class Habitat {
         }
     }
 
-    public void reduceMoto(int percent){
+    public void reduceMoto(int percent) {
         int count = 0;
-        for (Vehicle moto: singleton.vehicles){
-            if ( moto instanceof Moto){
+        for (Vehicle moto : singleton.vehicles) {
+            if (moto instanceof Moto) {
                 count++;
             }
         }
         System.out.println("Количество мотоциклов: " + count);
-        int removenumber = (count * percent)/100;
-        System.out.println("Подлежит удалению: "+removenumber);
+        int removenumber = (count * percent) / 100;
+        System.out.println("Подлежит удалению: " + removenumber);
 
         Iterator<Vehicle> iter = singleton.vehicles.iterator();
 
-        while(iter.hasNext() & removenumber > 0) {
+        while (iter.hasNext() & removenumber > 0) {
             Vehicle current = iter.next();
             if (current instanceof Moto) {
                 iter.remove();
@@ -275,6 +285,8 @@ public class Habitat {
         JRadioButton show, hide;
         JTextArea timeText;
         JComboBox<Float> comboBox = new JComboBox<>();
+        JComboBox<Integer> connections = new JComboBox<>();
+        JButton swapbutton = new JButton("Обмен");
 
 
         SideMenu() {
@@ -308,19 +320,18 @@ public class Habitat {
             txt3.setFocusable(false);
             TextField auto_period = new TextField("", 10);
             auto_period.setEnabled(true);
-            auto_period.setText(String.valueOf((int)N1/100));
+            auto_period.setText(String.valueOf((int) N1 / 100));
             TextField moto_period = new TextField("", 10);
             moto_period.setEnabled(true);
-            moto_period.setText(String.valueOf((int)N2/100));
+            moto_period.setText(String.valueOf((int) N2 / 100));
 
             for (int i = 10; i <= 100; i += 10)
                 comboBox.addItem((float) i / 100.0f);
             comboBox.setSelectedItem(P1);
 
 
-
             JLabel txt4 = new JLabel("Время жизни автомобилей");
-            JSlider slider = new JSlider(0, 50, (int)carLifetime/100);
+            JSlider slider = new JSlider(0, 50, (int) carLifetime / 100);
             slider.setMajorTickSpacing(10);
             slider.setMajorTickSpacing(5);
             slider.setPaintLabels(true);
@@ -329,7 +340,7 @@ public class Habitat {
 
             JLabel txt5 = new JLabel("Время жизни мотоциклов");
             TextField motolifefield = new TextField("", 10);
-            motolifefield.setText(""+motoLifetime/100);
+            motolifefield.setText("" + motoLifetime / 100);
 
             left.add(start);
             left.add(stop);
@@ -350,7 +361,6 @@ public class Habitat {
             // ----------------------------\\
 
 
-
             // ----------------- RIGHT SIDE -----------\\
             right.setLayout(new GridLayout(16, 1));
             JButton CarStopButton = new JButton("Остановить автомобили");
@@ -360,7 +370,7 @@ public class Habitat {
             CarResumeButton.setEnabled(false);
             MotoResumeButton.setEnabled(false);
             JComboBox<Integer> CarPriority = new JComboBox<>();
-            JComboBox<Integer> MotoPriority  = new JComboBox<>();
+            JComboBox<Integer> MotoPriority = new JComboBox<>();
             CarPriority.setEditable(false);
             MotoPriority.setEditable(false);
             right.add(CarResumeButton);
@@ -372,33 +382,50 @@ public class Habitat {
                 CarResumeButton.setEnabled(false);
                 CarStopButton.setEnabled(true);
             });
-            CarStopButton.addActionListener( e-> {carAI.pauseAI();
+            CarStopButton.addActionListener(e -> {
+                carAI.pauseAI();
                 CarResumeButton.setEnabled(true);
-                CarStopButton.setEnabled(false);});
-            MotoResumeButton.addActionListener(e -> {motoAI.resumeAI();
+                CarStopButton.setEnabled(false);
+            });
+            MotoResumeButton.addActionListener(e -> {
+                motoAI.resumeAI();
                 MotoResumeButton.setEnabled(false);
                 MotoStopButton.setEnabled(true);
             });
-            MotoStopButton.addActionListener(e -> { motoAI.pauseAI();
+            MotoStopButton.addActionListener(e -> {
+                motoAI.pauseAI();
                 MotoResumeButton.setEnabled(true);
-                MotoStopButton.setEnabled(false);});
+                MotoStopButton.setEnabled(false);
+            });
 
-            for (int i = 1; i <= 2; i++){
+            for (int i = 1; i <= 2; i++) {
                 CarPriority.addItem(i);
                 MotoPriority.addItem(i);
             }
-            CarPriority.addItemListener(e -> carAI.setPriority((int)CarPriority.getSelectedItem()));
-            MotoPriority.addItemListener(e -> carAI.setPriority((int)CarPriority.getSelectedItem()));
+            CarPriority.addItemListener(e -> carAI.setPriority((int) CarPriority.getSelectedItem()));
+            MotoPriority.addItemListener(e -> carAI.setPriority((int) CarPriority.getSelectedItem()));
             right.add(new JLabel("Приоритет потока автомобилей"));
             right.add(CarPriority);
             right.add(new JLabel("Приоритет потока Мотоциклов"));
             right.add(MotoPriority);
+            right.add(new JLabel("Список доступных клиентов:"));
+            right.add(connections);
+            right.add(swapbutton);
+
+
+            /*swapbutton.addActionListener(e -> {
+
+                //int id = (int) connections.getSelectedItem();
+                //System.out.println("Выбран элемент: " + id);
+                if (client == null) System.out.println("Ты дебил");
+                client.send_objects(100);
+            }); */
             // ----------------------------\\
 
-            setLayout(new BoxLayout( this ,BoxLayout.X_AXIS));
+
+            setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
             add(left);
             add(right);
-
 
 
             comboBox.addActionListener(e -> {
@@ -407,21 +434,21 @@ public class Habitat {
             });
 
 
-            slider.addChangeListener(e -> carLifetime = ((JSlider)e.getSource()).getValue()*100);
+            slider.addChangeListener(e -> carLifetime = ((JSlider) e.getSource()).getValue() * 100);
 
             motolifefield.addActionListener(e -> {
-            int a;
-            try {
-                a = Integer.parseInt(motolifefield.getText());
-                if (a >= 0)
-                    motoLifetime = a*100;
-                else throw new NumberFormatException();
-            } catch (NumberFormatException nfe) {
-                JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
-                motolifefield.setText(" ");
-            }
-            window.requestFocus();
-        });
+                int a;
+                try {
+                    a = Integer.parseInt(motolifefield.getText());
+                    if (a >= 0)
+                        motoLifetime = a * 100;
+                    else throw new NumberFormatException();
+                } catch (NumberFormatException nfe) {
+                    JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
+                    motolifefield.setText(" ");
+                }
+                window.requestFocus();
+            });
 
             show.addActionListener(e -> {
                 labelTime.setVisible(true);
@@ -455,10 +482,10 @@ public class Habitat {
                 try {
                     a = Integer.parseInt(auto_period.getText());
                     if (a > 0)
-                        N1 = a*100;
+                        N1 = a * 100;
                     else throw new NumberFormatException();
                 } catch (NumberFormatException nfe) {
-                    N1 = 2*100;
+                    N1 = 2 * 100;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
                     auto_period.setText("");
                 }
@@ -469,10 +496,10 @@ public class Habitat {
                 try {
                     a = Integer.parseInt(moto_period.getText());
                     if (a > 0)
-                        N2 = a*100;
+                        N2 = a * 100;
                     else throw new NumberFormatException();
                 } catch (NumberFormatException nfe) {
-                    N2 = 3*100;
+                    N2 = 3 * 100;
                     JOptionPane.showMessageDialog(null, "Ошибка: Введено неверное значение!");
                     moto_period.setText("");
                 }
@@ -490,7 +517,7 @@ public class Habitat {
             }
             if (isStatsAllowed & !show_info.isSelected()) {
                 show_info.doClick();
-            } else if (!isStatsAllowed & show_info.isSelected()){
+            } else if (!isStatsAllowed & show_info.isSelected()) {
                 show_info.doClick();
             }
             if (isTimeAllowed) {
@@ -572,7 +599,7 @@ public class Habitat {
             settingsMenu.addSeparator();
             ButtonGroup timesetMenu = new ButtonGroup();
 
-            JMenuItem save= new JMenuItem("Сохранить объекты");
+            JMenuItem save = new JMenuItem("Сохранить объекты");
             JMenuItem load = new JMenuItem("Загрузить объекты");
             FileMenu.add(save);
             FileMenu.add(load);
@@ -628,12 +655,12 @@ public class Habitat {
                 JFileChooser loadDialog = new JFileChooser(cwd);
                 loadDialog.showOpenDialog(frame);
                 File selFile = loadDialog.getSelectedFile();
-                if (selFile!=null){
+                if (selFile != null) {
                     try {
                         ObjectInputStream ois = new ObjectInputStream(
                                 new FileInputStream(selFile));
                         singleton = (Singleton) ois.readObject();
-                        for (Vehicle vehicle : singleton.vehicles){
+                        for (Vehicle vehicle : singleton.vehicles) {
                             vehicle.setBirthTime(timeFromStart);
                         }
                     } catch (IOException | ClassNotFoundException ex) {
@@ -642,7 +669,10 @@ public class Habitat {
                 }
                 redraw();
             });
-            currentObjs.addActionListener(e -> {pause(); new curObjs();});
+            currentObjs.addActionListener(e -> {
+                pause();
+                new curObjs();
+            });
         }
 
 
@@ -674,12 +704,12 @@ public class Habitat {
             text.setFont(new Font("Dialog", Font.PLAIN, 16));
 
 
-            for(Map.Entry<Integer,Long> item : singleton.Map.entrySet()){
+            for (Map.Entry<Integer, Long> item : singleton.Map.entrySet()) {
                 str.append("" + "id: ").append(item.getKey()).append("\t").append("  Время рождения: ").append(item.getValue()).append("\n");
             }
-            text.setText(str.toString().substring(0, str.length()-1));
+            text.setText(str.toString().substring(0, str.length() - 1));
 
-            setSize(350,350 );
+            setSize(350, 350);
             setContentPane(new JScrollPane(text));
             setModal(true);
             setResizable(true);
