@@ -1,5 +1,8 @@
 package ru.nstu.javaprog.view;
 
+import ru.nstu.javaprog.api.FishType;
+import ru.nstu.javaprog.exception.IllegalPropertiesException;
+import ru.nstu.javaprog.util.LinkedList;
 import ru.nstu.javaprog.util.Properties;
 
 import javax.swing.*;
@@ -7,6 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.*;
+import java.text.ParseException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -95,6 +99,7 @@ final class Console extends JDialog {
 
     void deactivate() {
         consoleService.interrupt();
+        executorService.shutdown();
         try {
             reader.close();
             writer.close();
@@ -144,15 +149,17 @@ final class Console extends JDialog {
             }
 
             String parse(String request) {
-                String reply;
+                String reply = "";
                 String[] split = request.split(" ");
                 try {
-                    if (split.length == 0 || split.length > 2 || !split[0].equals("gprob")) {
-                        throw new IllegalArgumentException(
-                                "Invalid command " + request + ". Expected gprob [value]"
-                        );
-                    } else {
-                        if (split.length == 2) {
+                    if (split.length < 1) {
+                        throw new ParseException("Invalid command " + request, 0);
+                    }
+                    switch (split[0]) {
+                        case "getGoldProb":
+                            reply = "Goldfish spawn probability = " + container.getGoldProperties().getChance();
+                            break;
+                        case "setGoldProb":
                             try {
                                 Properties old = container.getGoldProperties();
                                 container.setGoldProperties(
@@ -166,15 +173,32 @@ final class Console extends JDialog {
                                         )
                                 );
                             } catch (NumberFormatException exception) {
-                                throw new IllegalArgumentException(
-                                        "2nd parameter must be a numeric value"
-                                );
+                                throw new ParseException("gprob error: 2nd parameter must be a numeric value", 0);
+                            } catch (ArrayIndexOutOfBoundsException exception) {
+                                throw new ParseException("gprob error: 2nd parameter was not found", 0);
                             }
                             reply = "New goldfish spawn probability was set";
-                        } else
-                            reply = "Goldfish spawn probability = " + container.getGoldProperties().getChance();
+                            break;
+                        case "listAdd":
+                            try {
+                                container.addFishToLinkedList(FishType.getTypeByName(split[1]), Long.parseLong(split[2]));
+                            } catch (NumberFormatException exception) {
+                                throw new ParseException("list add error: 3rd parameter must be a numeric value", 0);
+                            } catch (ArrayIndexOutOfBoundsException exception) {
+                                throw new ParseException("list add error: fish type or id was not found", 0);
+                            } catch (IllegalArgumentException exception) {
+                                throw new ParseException("list add error: unknown fish type (must be GOLD or GUPPY)", 0);
+                            }
+                            reply = "Added";
+                            break;
+                        case "listGet":
+                            reply = container.getLinkedList().toString();
+                            break;
+                        case "listRemoveOdd":
+                            reply = LinkedList.removeOdd(container.getLinkedList()).toString();
+                            break;
                     }
-                } catch (Exception exception) {
+                } catch (ParseException | IllegalPropertiesException exception) {
                     reply = exception.getMessage();
                 }
                 return reply;

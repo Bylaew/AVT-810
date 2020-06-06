@@ -16,6 +16,11 @@ final class Gold extends Fish {
     }
 
     @Override
+    public String toString() {
+        return "Gold " + super.toString();
+    }
+
+    @Override
     public FishType getFishType() {
         return FishType.GOLD;
     }

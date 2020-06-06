@@ -56,8 +56,9 @@ public abstract class Fish implements Drawable, Movable, Serializable {
         y = centredY - picHeight / 2;
     }
 
-    private void rotate() {
-
+    @Override
+    public String toString() {
+        return "id:" + id;
     }
 
     public abstract FishType getFishType();

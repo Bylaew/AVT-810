@@ -11,6 +11,7 @@ import ru.nstu.javaprog.model.guppy.GuppyBehavior;
 import ru.nstu.javaprog.model.guppy.GuppyProbabilisticCreator;
 import ru.nstu.javaprog.repository.DatabaseRepository;
 import ru.nstu.javaprog.repository.InMemoryRepository;
+import ru.nstu.javaprog.util.LinkedList;
 import ru.nstu.javaprog.util.Properties;
 import ru.nstu.javaprog.view.ViewContainer;
 
@@ -22,6 +23,7 @@ import java.util.function.Consumer;
 
 public final class Habitat {
     private final TickGenerator generator = new TickGenerator();
+    private final ru.nstu.javaprog.util.LinkedList<Fish> linkedList = new ru.nstu.javaprog.util.LinkedList<>();
     private ProbabilisticCreator goldCreator;
     private ProbabilisticCreator guppyCreator;
     private Behavior goldBehavior;
@@ -106,6 +108,14 @@ public final class Habitat {
     public void setGoldProperties(Properties properties) {
         goldCreator.setProperties(properties);
         goldBehavior.changePriority(properties.getPriority());
+    }
+
+    public void createAndAddFishToLinkedList(FishType fishType, long id) {
+        linkedList.add(fishType.getCreator().createFish(id, 0, 0, 0, 0, 1));
+    }
+
+    public LinkedList<Fish> getLinkedList() {
+        return linkedList;
     }
 
     public Properties getGuppyProperties() {

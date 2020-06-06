@@ -20,5 +20,7 @@ public final class Launcher {
 
             new Thread(() -> habitat.prepare(viewContainer)).start();
         });
+        // 8 лабораторная
+        new LinkedListTest().test();
     }
 }

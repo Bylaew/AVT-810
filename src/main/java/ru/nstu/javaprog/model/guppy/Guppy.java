@@ -16,6 +16,11 @@ final class Guppy extends Fish {
     }
 
     @Override
+    public String toString() {
+        return "Guppy " + super.toString();
+    }
+
+    @Override
     public FishType getFishType() {
         return FishType.GUPPY;
     }

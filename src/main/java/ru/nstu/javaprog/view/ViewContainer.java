@@ -5,6 +5,7 @@ import ru.nstu.javaprog.api.FishType;
 import ru.nstu.javaprog.controller.WindowController;
 import ru.nstu.javaprog.model.Fish;
 import ru.nstu.javaprog.util.Coordinates;
+import ru.nstu.javaprog.util.LinkedList;
 import ru.nstu.javaprog.util.Properties;
 
 import javax.swing.*;
@@ -105,6 +106,14 @@ public final class ViewContainer extends JFrame {
         menuBar.deactivateGeneration();
         deactivateAllExecutors();
         windowController.reset();
+    }
+
+    void addFishToLinkedList(FishType fishType, long id) {
+        windowController.addFishToLinkedList(fishType, id);
+    }
+
+    LinkedList<Fish> getLinkedList() {
+        return windowController.getLinkedList();
     }
 
     void deactivateGeneration() {

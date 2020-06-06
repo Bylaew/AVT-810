@@ -4,6 +4,7 @@ import javafx.util.Pair;
 import ru.nstu.javaprog.api.FishType;
 import ru.nstu.javaprog.model.Fish;
 import ru.nstu.javaprog.model.Habitat;
+import ru.nstu.javaprog.util.LinkedList;
 import ru.nstu.javaprog.util.Properties;
 
 import java.io.File;
@@ -54,6 +55,10 @@ public final class WindowController {
 
     public boolean isGuppiesActivated() {
         return habitat.isGuppiesActivated();
+    }
+
+    public void addFishToLinkedList(FishType fishType, long id) {
+        habitat.createAndAddFishToLinkedList(fishType, id);
     }
 
     public void reset() {
@@ -142,5 +147,9 @@ public final class WindowController {
 
     public void doForEachEntity(Consumer<Fish> consumer) {
         habitat.doForEachEntity(consumer);
+    }
+
+    public LinkedList<Fish> getLinkedList() {
+        return habitat.getLinkedList();
     }
 }
