@@ -2,7 +2,9 @@
   <dictionary name="scara">
     <words>
       <w>gprob</w>
+      <w>jdbc</w>
       <w>multicast</w>
+      <w>nextval</w>
     </words>
   </dictionary>
 </component>
