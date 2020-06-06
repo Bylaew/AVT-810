@@ -1,3 +1,5 @@
+package factory;
+import objects.*;
 public class ConcreteFactory implements AbstractFactory
 {
     @Override

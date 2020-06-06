@@ -1,14 +1,25 @@
+package habitat;
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class UserInterface
 {
     public JFrame frame = new JFrame("Simulation");
-    JPanel simulation_panel = new JPanel(); // разделение фрейма на область симуляциии и настроек
+    public JPanel simulation_panel = new JPanel(); // разделение фрейма на область симуляциии и настроек
     JPanel settings_panel = new JPanel();
+    JPanel connection_panel = new JPanel();
     JTextArea timerInd = new JTextArea();
     //панель инструментов
     JMenuBar menubar = new JMenuBar();
+    JMenu menuDB = new JMenu("DataBase");
+    JMenuItem loadWoodItem = new JMenuItem("Load wood objs");
+    JMenuItem loadStoneItem = new JMenuItem("Load stone objs");
+    JMenuItem saveWoodItem = new JMenuItem("Save wood objs");
+    JMenuItem saveStoneItem = new JMenuItem("Save stone objs");
+    JMenuItem loadAllItem = new JMenuItem("Load all objs");
+    JMenuItem saveAllItem = new JMenuItem("Save all objs");
+
     JMenu menu = new JMenu("Menu");
     JMenuItem startMenuItem = new JMenuItem("Start");
     JMenuItem stopMenuItem = new JMenuItem("Stop");
@@ -17,7 +28,11 @@ public class UserInterface
     ButtonGroup timeItemMenuGroup = new ButtonGroup();
     JRadioButtonMenuItem showTimeMenuItem = new JRadioButtonMenuItem("Show time");
     JRadioButtonMenuItem hideTimeMenuItem = new JRadioButtonMenuItem("Hide time");
-
+    //таблица подключений
+    DefaultTableModel connectionTableModel;
+    JTable connectionTable;
+    JScrollPane scrollPane;
+    JTextArea connectionField = new JTextArea();
     //кнопки
     JPanel onPanel = new JPanel();
     ButtonGroup onGroup = new ButtonGroup();
@@ -67,7 +82,9 @@ public class UserInterface
 
     UserInterface(){
         frame.add(settings_panel, BorderLayout.WEST);// настройки слева
-        frame.add(simulation_panel,BorderLayout.CENTER);// симуляция справа
+        frame.add(simulation_panel,BorderLayout.CENTER);// симуляция в центре
+        frame.add(connection_panel,BorderLayout.EAST);// подключенные клиенты справа
+        frame.setResizable(false);
 
         settings_panel.setBackground(Color.LIGHT_GRAY);
         settings_panel.add(timerInd);
@@ -78,6 +95,14 @@ public class UserInterface
 
         //добавление элементов к верхней панели инструментов
         menubar.add(menu);
+        menubar.add(menuDB);
+        menuDB.add(saveAllItem);
+        menuDB.add(loadAllItem);
+        menuDB.add(saveWoodItem);
+        menuDB.add(loadWoodItem);
+        menuDB.add(saveStoneItem);
+        menuDB.add(loadStoneItem);
+
         menu.add(startMenuItem);
         menu.add(stopMenuItem);
         timeItemMenuGroup.add(showTimeMenuItem);
@@ -118,6 +143,7 @@ public class UserInterface
             cmbPriority1.addItem(i);
             cmbPriority2.addItem(i);
         }
+        ////////////////////////////////////////// settings_panel //////////////////////////////////////////
         //добавление элементов к панели настроек
         settings_panel.setLayout(new GridLayout(23,1,0,0));
         settings_panel.add(onPanel);
@@ -164,6 +190,25 @@ public class UserInterface
         settings_panel.add(consoleButton);
 
         simulation_panel.setVisible(true);
-        settings_panel.setVisible(true);};
+        settings_panel.setVisible(true);
+        ////////////////////////////////////////// connection_panel //////////////////////////////////////////
+        //Connection list
+        String[] cols = {"Client's ID"};
+        int rows = 35;
+        connectionTableModel = new DefaultTableModel(cols, rows);
+        connectionTable = new JTable(connectionTableModel);
+        connectionTable.setShowGrid(false);
+        connectionTable.setCellSelectionEnabled(true);
+        //TableModel tableModel = table.getModel();
+        connectionTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        //table.getColumnModel().getColumn(0).setWidth(100);
+        //scrollPane = new JScrollPane(table);
+        //scrollPane.setPreferredSize(new Dimension(100,720));
+        //connection_panel.add(scrollPane);
+        connection_panel.add(connectionField);
+        //connection_panel.add(connectionTable);
+
+    };
+
 
 }

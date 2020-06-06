@@ -1,3 +1,4 @@
+package objects;
 public interface IBehaviour
 {
     double getX();

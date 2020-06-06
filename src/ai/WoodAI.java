@@ -1,17 +1,18 @@
+package ai;
+import habitat.*;
+import objects.*;
 public class WoodAI extends BaseAI
 {
     Habitat h;
-    WoodAI(Habitat habitat)
+    public WoodAI(Habitat habitat)
     {
         h=habitat;
     }
     public  void run() {
         double speed = 1000;
-        //System.out.println(h.houseSingleton.houseList.get(0).x);
-        //System.out.println(h.houseSingleton.houseList.get(0).y);
         while (true) {
             if (working) {
-                for (int i = 0; i < h.houseSingleton.houseList.size() - 1; i++) {
+                for (int i = 0; i < h.houseSingleton.houseList.size() ; i++) {
 
                     if (h.houseSingleton.houseList.get(i) instanceof Wood) {
                         double x1 = h.houseSingleton.houseList.get(i).x;
@@ -43,7 +44,7 @@ public class WoodAI extends BaseAI
                     }
                 }
                 try {
-                    this.sleep(10);
+                    this.sleep(20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

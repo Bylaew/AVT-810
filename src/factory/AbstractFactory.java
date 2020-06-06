@@ -1,3 +1,5 @@
+package factory;
+import objects.House;
 public interface AbstractFactory
 {
     House createWood(int x, int y);

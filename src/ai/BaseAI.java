@@ -1,5 +1,6 @@
+package ai;
 public abstract class BaseAI extends Thread
 {
-    boolean working;
+    public boolean working;
 
 }

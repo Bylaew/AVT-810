@@ -1,3 +1,11 @@
+package habitat;
+
+import ai.*;
+import factory.*;
+import objects.*;
+import singleton.*;
+
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -17,7 +25,7 @@ public class Habitat {
     boolean simulation = false;
     private Timer timer;
     public float time;
-    Singleton houseSingleton = Singleton.getInstance();
+    public  Singleton houseSingleton = Singleton.getInstance();
     private int counter;
     public UserInterface ui;
     //условия: вероятности и время
@@ -25,14 +33,16 @@ public class Habitat {
     private double p1, p2;
     private int stoneLifeTime;
     private int woodLifeTime;
+    public ClientConnection connection;
     //AI
     WoodAI woodAI = null;
     StoneAI stoneAI = null;
+    //DataBase
+    HouseDB houseDB;
 
-
-    Habitat()  {
+    public Habitat() throws IOException {
         JFrame.setDefaultLookAndFeelDecorated(true);
-
+        houseDB = new HouseDB();
         ui = new UserInterface();
         this.height = 720;
         this.width = 1280;
@@ -59,6 +69,8 @@ public class Habitat {
 
         counter = 0;
         time = 0;
+        connection = new ClientConnection(this);
+
         //слушатели
         ui.frame.addWindowListener(new WindowAdapter() {
             @Override
@@ -192,7 +204,9 @@ public class Habitat {
             }
         });
 
-        ui.cmb1.addItemListener(e -> p1 = (double) ui.cmb1.getSelectedItem());
+        ui.cmb1.addItemListener(e -> {
+            p1 = (double) ui.cmb1.getSelectedItem();
+        });
         ui.cmb2.addItemListener(e -> p2 = (double) ui.cmb2.getSelectedItem());
         ui.cmbPriority1.addItemListener(e -> {
             stoneAI.setPriority((int) ui.cmbPriority1.getSelectedItem());
@@ -378,6 +392,57 @@ public class Habitat {
 
         });
 
+        ui.saveAllItem.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                houseDB.insertAll(houseSingleton.houseList);
+            }
+        });
+        ui.loadAllItem.addActionListener(new ActionListener() {
+            @Override
+            public synchronized void actionPerformed(ActionEvent e) {
+                Vector<House> newVector = houseDB.loadWood();
+                for (int i=0; i<newVector.size();i++)
+                    houseSingleton.houseList.add(newVector.get(i));
+            }
+        });
+        ui.saveWoodItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<House> newHouseVector= new Vector<>();
+                for (int i=0; i<houseSingleton.houseList.size();i++)
+                    if (houseSingleton.houseList.get(i) instanceof Wood)
+                        newHouseVector.add(houseSingleton.houseList.get(i));
+                    houseDB.insertWood(newHouseVector);
+            }
+        });
+        ui.loadWoodItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            Vector<House> newWoodVector = houseDB.loadWood();
+            for (int i=0; i<newWoodVector.size();i++)
+                houseSingleton.houseList.add(newWoodVector.get(i));
+            }
+        });
+        ui.saveStoneItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<House> newHouseVector= new Vector<>();
+                for (int i=0; i<houseSingleton.houseList.size();i++)
+                    if (houseSingleton.houseList.get(i) instanceof Stone)
+                        newHouseVector.add(houseSingleton.houseList.get(i));
+                    houseDB.insertStone(newHouseVector);
+            }
+        });
+        ui.loadStoneItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<House> newStoneVector = houseDB.loadStone();
+                for (int i=0; i<newStoneVector.size();i++)
+                    houseSingleton.houseList.add(newStoneVector.get(i));
+            }
+
+        });
 
     }
 
@@ -405,12 +470,12 @@ public class Habitat {
                 @Override
                 public void run() {
                     update(time, ui.simulation_panel);
-                    time = time + 10;
+                    time = time + 20;
                     ui.timerInd.setText("Время:" + time / 1000);
                     draw();
                 }
             };
-            timer.schedule(tt, 0, 10);
+            timer.schedule(tt, 0, 20);
             woodAI = new WoodAI(this);
             stoneAI = new StoneAI(this);
 
@@ -449,7 +514,7 @@ public class Habitat {
 
         dialogText.setEditable(false);
         dialogText.setFont(new Font("TimesRoman", Font.ITALIC, 30));
-        dialogText.setText("Всего домов: " + counter +
+        dialogText.setText("Всего домов: " + houseSingleton.houseList.size() +
                 "\nДеревянные: " + Wood.counter +
                 "\nКаменные: " + Stone.counter +
                 "\nВремя: " + (time / 1000) + " секунд");
@@ -503,25 +568,30 @@ public class Habitat {
                 if (e.getKeyCode() == e.VK_ENTER) {
                     String[] input = console.getText().split("\n");
 
-                    if(input[input.length-1].equals("getchance"))
-                    {
+                    if(input[input.length-1].equals("getchance")) {
                         console.append("\n" + p1 + "\n");
-                        console.setCaretPosition(console.getText().length());
                         System.out.println(input[input.length-1].split(" "));
                     }
-                    else
-                        {
+                    else {
                         String[] newInput;
                         String com = "";double temp = 0;double temp2;
                         newInput=input[input.length-1].split(" ");
-                        if (newInput.length==2)
-                        {
-                            if (newInput[0].equals("setchance"))
-                            {
+                        if (newInput.length==2) {
+                            if (newInput[0].equals("setchance")) {
                                 p1=Double.parseDouble(newInput[1]);
+                                ui.cmb1.setSelectedItem(p1);
+                            }
+                            if (newInput[0].equals("get")) {
+                                int id = Integer.parseInt(newInput[1]);
+                                try {
+                                    connection.receive(id);
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
                             }
                         }
                     }
+                    console.setCaretPosition(console.getText().length());
                 }
 
             }
@@ -593,11 +663,14 @@ public class Habitat {
         int w = ui.simulation_panel.getWidth();
         int h = ui.simulation_panel.getHeight();
         BufferedImage bufferedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < houseSingleton.houseList.size() - 1; i++) {
+
+        for (int i = 0; i < houseSingleton.houseList.size() ; i++) {
             bufferedImage.getGraphics().drawImage(houseSingleton.houseList.get(i).getImage(),
                     (int) houseSingleton.houseList.get(i).getX(), (int) houseSingleton.houseList.get(i).getY(), null);
         }
+
         ui.simulation_panel.getGraphics().drawImage(bufferedImage, 0, 0, w, h, null);
+
     }
 
     public void loadObj() throws IOException, ClassNotFoundException {
@@ -631,5 +704,15 @@ public class Habitat {
             this.woodLifeTime = Integer.parseInt(scan.nextLine());
             fr.close();
         }
+    }
+
+    public void updateConnections(ArrayList<Integer> list)
+    {
+
+       System.out.println("Updating connection list");
+        ui.connectionField.setText("Current connections:");
+      for (int i = 0; i<list.size();i++)
+        ui.connectionField.setText(ui.connectionField.getText()+"\n"+list.get(i).toString());
+
     }
 }

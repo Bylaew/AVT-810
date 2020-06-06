@@ -1,7 +1,11 @@
+package ai;
+import habitat.*;
+import objects.*;
+
 public class StoneAI extends BaseAI
 {
     Habitat h;
-    StoneAI(Habitat habitat)
+    public StoneAI(Habitat habitat)
     {
         h=habitat;
     }
@@ -9,7 +13,8 @@ public class StoneAI extends BaseAI
         double speed = 1000;
         while (true) {
             if (working) {
-                for (int i = 0; i < h.houseSingleton.houseList.size() - 1; i++) {
+
+                for (int i = 0; i < h.houseSingleton.houseList.size(); i++) {
                     if (h.houseSingleton.houseList.get(i) instanceof Stone) {
                         double x1 = h.houseSingleton.houseList.get(i).x;
                         double y1 = h.houseSingleton.houseList.get(i).y;
@@ -30,14 +35,13 @@ public class StoneAI extends BaseAI
                             h.houseSingleton.houseList.get(i).setTact(tact);
                             x1 = x1 + h.houseSingleton.houseList.get(i).getVx();
                             y1 = y1 + h.houseSingleton.houseList.get(i).getVy();
-
                             h.houseSingleton.houseList.get(i).setX(x1);
                             h.houseSingleton.houseList.get(i).setY(y1);
                         }
                     }
                 }
                 try {
-                    this.sleep(10);
+                    this.sleep(20);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

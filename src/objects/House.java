@@ -1,3 +1,4 @@
+package objects;
 import java.awt.*;
 import java.io.Serializable;
 
@@ -11,8 +12,9 @@ public abstract class House implements IBehaviour, Serializable //все дом�
     public int id;
     public double vx=0;
     public double vy=0;
-    private int tact=0;
-    private int lasttact=0;
+    public int tact=0;
+    public int lasttact=0;
+    private static final long serialVersionUID=2L;
 
     public void setId(int id) {
         this.id = id;

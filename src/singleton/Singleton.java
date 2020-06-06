@@ -1,5 +1,6 @@
+package singleton;
+import objects.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -12,6 +13,7 @@ public class Singleton implements Serializable
     public Vector<House> houseList = new Vector<>(100);
     public HashSet<Integer> idList = new HashSet<>(100);
     public TreeMap<Integer, Long> mapList = new TreeMap<>();
+    private static final long serialVersionUID=1L;
     public static Singleton getInstance()
     {
         if(instance == null)
@@ -39,5 +41,9 @@ public class Singleton implements Serializable
         outStream.writeObject(this);
     }
 
+    public Object readResolve()
+    {
+        return instance;
+    }
 }
 
